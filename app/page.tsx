@@ -1,3 +1,7 @@
+'use client';
+
+import Link from 'next/link';
+
 const missions = [
   {
     title: 'Binary Bounty',
@@ -42,8 +46,12 @@ export default function HomePage() {
           </p>
 
           <div className="cta-row">
-            <button className="primary">Start Quest</button>
-            <button className="secondary">View syllabus</button>
+            <Link href="/quests" className="primary button-link">
+              Start Quest
+            </Link>
+            <a href="#missions" className="secondary button-link">
+              View syllabus
+            </a>
           </div>
 
           <div className="stats">
@@ -82,7 +90,7 @@ export default function HomePage() {
         ))}
       </section>
 
-      <section className="missions">
+      <section id="missions" className="missions">
         <div className="section-heading">
           <p className="eyebrow">ACTIVE MISSIONS</p>
           <h2>Pick your next challenge</h2>
@@ -97,7 +105,9 @@ export default function HomePage() {
               </div>
               <h3>{mission.title}</h3>
               <p>{mission.description}</p>
-              <button>Enter mission</button>
+              <Link href="/quests" className="mission-button">
+                Enter mission
+              </Link>
             </article>
           ))}
         </div>

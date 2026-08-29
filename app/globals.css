@@ -29,7 +29,8 @@ body {
   color: var(--text);
 }
 
-button {
+button,
+a {
   font: inherit;
 }
 
@@ -73,21 +74,28 @@ button {
   display: flex;
   gap: 16px;
   margin-top: 28px;
+  flex-wrap: wrap;
 }
 
+.button-link,
 .primary,
 .secondary,
-.mission-card button {
+.mission-button,
+.choice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   border: none;
   border-radius: 12px;
   padding: 0.9rem 1.4rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
 .primary,
-.mission-card button {
+.mission-button {
   background: linear-gradient(135deg, var(--primary), #8b5cf6);
   color: white;
   box-shadow: var(--shadow);
@@ -99,10 +107,13 @@ button {
   color: var(--text);
 }
 
+.button-link:hover,
 .primary:hover,
 .secondary:hover,
-.mission-card button:hover {
+.mission-button:hover,
+.choice:hover {
   transform: translateY(-2px);
+  box-shadow: 0 18px 32px rgba(124, 58, 237, 0.2);
 }
 
 .stats {
@@ -194,7 +205,7 @@ button {
   font-size: 0.92rem;
 }
 
-.missions {
+.missions, .quest-page {
   margin-top: 72px;
 }
 
@@ -213,7 +224,7 @@ button {
   gap: 22px;
 }
 
-.mission-card {
+.mission-card, .quest-card {
   background: rgba(15, 23, 42, 0.82);
   border: 1px solid var(--border);
   border-radius: 22px;
@@ -243,20 +254,90 @@ button {
   font-weight: 700;
 }
 
-.mission-card h3 {
+.mission-card h3, .quest-card h2 {
   margin: 0 0 12px;
   font-size: 1.55rem;
 }
 
-.mission-card p {
+.mission-card p, .prompt {
   color: var(--muted);
   line-height: 1.6;
   margin: 0 0 18px;
 }
 
+.quest-list {
+  display: grid;
+  gap: 22px;
+}
+
+.concept-tag {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  background: rgba(124, 58, 237, 0.18);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  color: #ddd6fe;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.choice {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.choice.selected {
+  border-color: rgba(34, 211, 238, 0.7);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.choice.correct {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.6);
+}
+
+.choice.wrong {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+
+.result.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.result.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.result span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
 @media (max-width: 900px) {
   .hero,
-  .mission-grid {
+  .mission-grid,
+  .choices {
     grid-template-columns: 1fr;
   }
 
