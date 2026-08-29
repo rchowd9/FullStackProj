@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 import { NextResponse } from 'next/server';
 
 type LeaderboardEntry = {
@@ -18,6 +18,13 @@ const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
 
 let memoryLeaderboard: LeaderboardEntry[] = [...DEFAULT_LEADERBOARD];
 
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
+
 function isLeaderboardEntry(value: unknown): value is LeaderboardEntry {
   if (!value || typeof value !== 'object') return false;
 
@@ -32,8 +39,8 @@ function isLeaderboardEntry(value: unknown): value is LeaderboardEntry {
 
 async function readLeaderboard(): Promise<LeaderboardEntry[]> {
   try {
-    if (process.env.KV_URL || process.env.KV_REST_API_URL) {
-      const value = await kv.get<LeaderboardEntry[]>(LEADERBOARD_KEY);
+    if (redis) {
+      const value = await redis.get<LeaderboardEntry[]>(LEADERBOARD_KEY);
       if (Array.isArray(value) && value.length > 0 && value.every(isLeaderboardEntry)) {
         memoryLeaderboard = value;
         return value;
@@ -50,11 +57,11 @@ async function writeLeaderboard(entries: LeaderboardEntry[]) {
   memoryLeaderboard = entries;
 
   try {
-    if (process.env.KV_URL || process.env.KV_REST_API_URL) {
-      await kv.set(LEADERBOARD_KEY, entries);
+    if (redis) {
+      await redis.set(LEADERBOARD_KEY, entries);
     }
   } catch (error) {
-    console.warn('Could not persist leaderboard to Vercel KV. Keeping in-memory fallback.', error);
+    console.warn('Could not persist leaderboard to Upstash Redis. Keeping in-memory fallback.', error);
   }
 }
 
