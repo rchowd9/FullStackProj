@@ -1,0 +1,266 @@
+:root {
+  --bg: #090b17;
+  --panel: rgba(17, 23, 45, 0.9);
+  --panel-strong: #121a34;
+  --primary: #7c3aed;
+  --secondary: #22d3ee;
+  --accent: #facc15;
+  --text: #edf2ff;
+  --muted: #a9b5d3;
+  --border: rgba(148, 163, 184, 0.2);
+  --shadow: 0 30px 60px rgba(76, 29, 149, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(124, 58, 237, 0.25), transparent 35%),
+    linear-gradient(135deg, #090b17 0%, #111827 40%, #0b1120 100%);
+  color: var(--text);
+}
+
+button {
+  font: inherit;
+}
+
+.page-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.eyebrow {
+  margin: 0 0 16px;
+  color: var(--secondary);
+  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  max-width: 620px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 18px 0 0;
+}
+
+.cta-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.primary,
+.secondary,
+.mission-card button {
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.primary,
+.mission-card button {
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.secondary {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.primary:hover,
+.secondary:hover,
+.mission-card button:hover {
+  transform: translateY(-2px);
+}
+
+.stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats strong {
+  font-size: 1.75rem;
+}
+
+.stats span {
+  color: var(--muted);
+}
+
+.hero-panel {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-card {
+  width: min(100%, 360px);
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.avatar-badge {
+  display: inline-block;
+  background: rgba(34, 211, 238, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.avatar-coin {
+  margin: 28px auto 20px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  background: radial-gradient(circle at 30% 30%, #fef3c7, #f59e0b 45%, #7c2d12 100%);
+  color: #fff7cd;
+  box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.3);
+}
+
+.avatar-card h3 {
+  margin: 0 0 18px;
+  font-size: 1.6rem;
+}
+
+.avatar-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.learning-strip {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.92rem;
+}
+
+.missions {
+  margin-top: 72px;
+}
+
+.section-heading {
+  margin-bottom: 24px;
+}
+
+.section-heading h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 0;
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.mission-card {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+}
+
+.mission-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.difficulty {
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.xp {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mission-card h3 {
+  margin: 0 0 12px;
+  font-size: 1.55rem;
+}
+
+.mission-card p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    gap: 40px;
+  }
+}
