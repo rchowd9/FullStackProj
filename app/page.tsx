@@ -1,6 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+type LeaderboardEntry = {
+  name: string;
+  xp: number;
+  streak: number;
+  badge: string;
+};
 
 const missions = [
   {
@@ -35,6 +43,15 @@ const concepts = [
 ];
 
 export default function HomePage() {
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    fetch('/api/leaderboard')
+      .then((res) => res.json())
+      .then((data) => setLeaderboard(data.leaderboard ?? []))
+      .catch(() => setLeaderboard([]));
+  }, []);
+
   return (
     <main className="page-shell">
       <section className="hero">
@@ -109,6 +126,27 @@ export default function HomePage() {
                 Enter mission
               </Link>
             </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="leaderboard-panel">
+        <div className="section-heading">
+          <p className="eyebrow">HALL OF FAME</p>
+          <h2>Global leaderboard</h2>
+        </div>
+
+        <div className="leaderboard-list">
+          {leaderboard.map((entry, index) => (
+            <div key={`${entry.name}-${index}`} className="leaderboard-row">
+              <span className="leaderboard-rank">#{index + 1}</span>
+              <div className="leaderboard-name-wrap">
+                <strong>{entry.name}</strong>
+                <small>{entry.badge}</small>
+              </div>
+              <span className="leaderboard-xp">{entry.xp} XP</span>
+              <span className="leaderboard-streak">{entry.streak} day streak</span>
+            </div>
           ))}
         </div>
       </section>
