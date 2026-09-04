@@ -7,6 +7,7 @@ type Quest = {
   title: string;
   difficulty: string;
   xp: number;
+  category: string;
   concept: string;
   prompt: string;
   choices: string[];
@@ -22,8 +23,15 @@ export default function QuestsPage() {
   useEffect(() => {
     fetch('/api/quests')
       .then((res) => res.json())
-      .then((data) => setQuests(data.quests));
+      .then((data) => setQuests(data.quests ?? []));
   }, []);
+
+  const groupedQuests = Array.from(
+    new Set(quests.map((quest) => quest.category))
+  ).map((category) => ({
+    category,
+    items: quests.filter((quest) => quest.category === category),
+  }));
 
   const handleAnswer = (questId: string, answer: string) => {
     setSelectedAnswers((prev) => ({ ...prev, [questId]: answer }));
@@ -39,55 +47,64 @@ export default function QuestsPage() {
       </section>
 
       <div className="quest-list">
-        {quests.map((quest) => {
-          const selected = selectedAnswers[quest.id];
-          const isCorrect = selected === quest.correctAnswer;
+        {groupedQuests.map((group) => (
+          <div key={group.category} className="category-group">
+            <div className="category-header">
+              <p className="eyebrow">CATEGORY</p>
+              <h2>{group.category}</h2>
+            </div>
 
-          return (
-            <article key={quest.id} className="quest-card">
-              <div className="mission-topline">
-                <span className="difficulty">{quest.difficulty}</span>
-                <span className="xp">+{quest.xp} XP</span>
-              </div>
+            {group.items.map((quest) => {
+              const selected = selectedAnswers[quest.id];
+              const isCorrect = selected === quest.correctAnswer;
 
-              <p className="concept-tag">{quest.concept}</p>
-              <h2>{quest.title}</h2>
-              <p className="prompt">{quest.prompt}</p>
+              return (
+                <article key={quest.id} className="quest-card">
+                  <div className="mission-topline">
+                    <span className="difficulty">{quest.difficulty}</span>
+                    <span className="xp">+{quest.xp} XP</span>
+                  </div>
 
-              <div className="choices">
-                {quest.choices.map((choice) => {
-                  const active = selected === choice;
-                  const right = choice === quest.correctAnswer;
+                  <p className="concept-tag">{quest.concept}</p>
+                  <h2>{quest.title}</h2>
+                  <p className="prompt">{quest.prompt}</p>
 
-                  let className = 'choice';
-                  if (submitted[quest.id]) {
-                    if (right) className += ' correct';
-                    if (active && !right) className += ' wrong';
-                  } else if (active) {
-                    className += ' selected';
-                  }
+                  <div className="choices">
+                    {quest.choices.map((choice) => {
+                      const active = selected === choice;
+                      const right = choice === quest.correctAnswer;
 
-                  return (
-                    <button
-                      key={choice}
-                      className={className}
-                      onClick={() => handleAnswer(quest.id, choice)}
-                    >
-                      {choice}
-                    </button>
-                  );
-                })}
-              </div>
+                      let className = 'choice';
+                      if (submitted[quest.id]) {
+                        if (right) className += ' correct';
+                        if (active && !right) className += ' wrong';
+                      } else if (active) {
+                        className += ' selected';
+                      }
 
-              {submitted[quest.id] && (
-                <div className={`result ${isCorrect ? 'success' : 'error'}`}>
-                  <strong>{isCorrect ? 'Correct!' : 'Not quite.'}</strong>
-                  <span>{quest.explanation}</span>
-                </div>
-              )}
-            </article>
-          );
-        })}
+                      return (
+                        <button
+                          key={choice}
+                          className={className}
+                          onClick={() => handleAnswer(quest.id, choice)}
+                        >
+                          {choice}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {submitted[quest.id] && (
+                    <div className={`result ${isCorrect ? 'success' : 'error'}`}>
+                      <strong>{isCorrect ? 'Correct!' : 'Not quite.'}</strong>
+                      <span>{quest.explanation}</span>
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </main>
   );
