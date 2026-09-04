@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 type Quest = {
   id: string;
@@ -17,6 +17,14 @@ type Quest = {
 };
 
 export default function QuestsPage() {
+  return (
+    <Suspense fallback={<main className="page-shell quest-page"><p>Loading quests...</p></main>}>
+      <QuestsContent />
+    </Suspense>
+  );
+}
+
+function QuestsContent() {
   const searchParams = useSearchParams();
   const [quests, setQuests] = useState<Quest[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
