@@ -1,5 +1,6 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 type Quest = {
@@ -16,6 +17,7 @@ type Quest = {
 };
 
 export default function QuestsPage() {
+  const searchParams = useSearchParams();
   const [quests, setQuests] = useState<Quest[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
@@ -26,11 +28,16 @@ export default function QuestsPage() {
       .then((data) => setQuests(data.quests ?? []));
   }, []);
 
+  const selectedCategory = searchParams.get('category');
+  const visibleQuests = selectedCategory
+    ? quests.filter((quest) => quest.category === selectedCategory)
+    : quests;
+
   const groupedQuests = Array.from(
-    new Set(quests.map((quest) => quest.category))
+    new Set(visibleQuests.map((quest) => quest.category))
   ).map((category) => ({
     category,
-    items: quests.filter((quest) => quest.category === category),
+    items: visibleQuests.filter((quest) => quest.category === category),
   }));
 
   const handleAnswer = (questId: string, answer: string) => {
@@ -42,8 +49,12 @@ export default function QuestsPage() {
     <main className="page-shell quest-page">
       <section className="quest-header">
         <p className="eyebrow">MISSION CONTROL</p>
-        <h1>Quest Board</h1>
-        <p className="subtitle">Answer challenges to earn XP and unlock new topics.</p>
+        <h1>{selectedCategory ? `${selectedCategory} Quest Board` : 'Quest Board'}</h1>
+        <p className="subtitle">
+          {selectedCategory
+            ? `Focus on ${selectedCategory} challenges and earn XP.`
+            : 'Answer challenges to earn XP and unlock new topics.'}
+        </p>
       </section>
 
       <div className="quest-list">

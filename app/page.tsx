@@ -12,22 +12,25 @@ type LeaderboardEntry = {
 
 const missions = [
   {
-    title: 'Binary Bounty',
+    title: 'AI Bootcamp',
+    category: 'AI',
     difficulty: 'Beginner',
     xp: 120,
-    description: 'Convert bytes into treasure and understand how computers count.',
+    description: 'Train your agent instincts and reason through real AI challenges.',
   },
   {
-    title: 'Loop Lab',
+    title: 'ML Lab',
+    category: 'Machine Learning',
     difficulty: 'Intermediate',
     xp: 240,
-    description: 'Use repetition to defeat a boss with fewer lines of code.',
+    description: 'Explore supervised learning, evaluation, and the model patterns behind prediction.',
   },
   {
-    title: 'Algorithm Arena',
+    title: 'Data Mine',
+    category: 'Data Mining',
     difficulty: 'Advanced',
     xp: 500,
-    description: 'Pick the fastest route through a maze of zombies and trees.',
+    description: 'Uncover hidden relationships and patterns in large, noisy datasets.',
   },
 ];
 
@@ -122,7 +125,13 @@ export default function HomePage() {
               </div>
               <h3>{mission.title}</h3>
               <p>{mission.description}</p>
-              <Link href="/quests" className="mission-button">
+              <Link
+                href={{
+                  pathname: '/quests',
+                  query: { category: mission.category },
+                }}
+                className="mission-button"
+              >
                 Enter mission
               </Link>
             </article>
