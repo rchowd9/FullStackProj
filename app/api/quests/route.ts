@@ -62,6 +62,18 @@ const quests = [
     explanation: 'Overfitting happens when the model learns noise or memorizes the training set instead of generalizing to unseen examples.'
   },
   {
+  id: 'ml-regularization',
+  title: 'Penalty Power',
+  difficulty: 'Advanced',
+  xp: 500,
+  category: 'Machine Learning',
+  concept: 'Regularization',
+  prompt: 'Why is regularization used in machine learning?',
+  choices: ['To increase model size', 'To prevent overfitting by penalizing complexity', 'To remove all features', 'To guarantee perfect accuracy'],
+  correctAnswer: 'To prevent overfitting by penalizing complexity',
+  explanation: 'Regularization discourages overly complex models that memorize training data.'
+},
+  {
     id: 'mining-association',
     title: 'Pattern Mining',
     difficulty: 'Intermediate',
