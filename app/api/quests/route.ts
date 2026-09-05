@@ -170,6 +170,18 @@ const quests = [
     explanation: 'Caching stores frequently accessed data closer to the caller so repeated requests can be served faster.'
   },
   {
+  id: 'design-loadbalancing',
+  title: 'Balance Beam',
+  difficulty: 'Intermediate',
+  xp: 310,
+  category: 'System Design',
+  concept: 'Load Balancing',
+  prompt: 'What is the main purpose of a load balancer?',
+  choices: ['To store backups', 'To distribute traffic across multiple servers', 'To compress logs', 'To remove caching'],
+  correctAnswer: 'To distribute traffic across multiple servers',
+  explanation: 'Load balancers improve reliability and performance by spreading workload.'
+},
+  {
     id: 'crypto-hash',
     title: 'Hashing Hunt',
     difficulty: 'Beginner',
