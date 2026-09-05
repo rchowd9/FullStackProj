@@ -182,6 +182,18 @@ const quests = [
     explanation: 'A hash function maps input data to a fixed digest useful for integrity checks and password storage workflows.'
   },
   {
+  id: 'crypto-rsa',
+  title: 'RSA Reveal',
+  difficulty: 'Advanced',
+  xp: 480,
+  category: 'Cryptography',
+  concept: 'Public Key Cryptography',
+  prompt: 'What makes RSA a public-key algorithm?',
+  choices: ['It uses hashing only', 'It uses separate public and private keys', 'It stores keys in plain text', 'It requires no math'],
+  correctAnswer: 'It uses separate public and private keys',
+  explanation: 'RSA relies on key pairs for secure communication.'
+},
+  {
     id: 'crypto-encryption',
     title: 'Cipher Check',
     difficulty: 'Advanced',
