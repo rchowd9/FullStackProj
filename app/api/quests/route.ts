@@ -26,6 +26,18 @@ const quests = [
     explanation: 'Modern AI systems often break a problem into intermediate reasoning steps before giving a final answer.'
   },
   {
+  id: 'ai-rl-policy',
+  title: 'Reward Route',
+  difficulty: 'Intermediate',
+  xp: 260,
+  category: 'AI',
+  concept: 'Reinforcement Learning',
+  prompt: 'In reinforcement learning, what does a policy represent?',
+  choices: ['A set of labels', 'A mapping from states to actions', 'A database schema', 'A loss function'],
+  correctAnswer: 'A mapping from states to actions',
+  explanation: 'A policy defines how an agent chooses actions based on the current state.'
+},
+  {
     id: 'ml-supervised',
     title: 'Labeled Learning',
     difficulty: 'Beginner',
