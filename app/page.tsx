@@ -32,6 +32,34 @@ const missions = [
     xp: 500,
     description: 'Uncover hidden relationships and patterns in large, noisy datasets.',
   },
+  {
+    title: 'DBMS Dossier',
+    category: 'DBMS',
+    difficulty: 'Beginner',
+    xp: 150,
+    description: 'Manage schemas, relationships, and efficient storage with database fundamentals.',
+  },
+  {
+    title: 'Kernel Quest',
+    category: 'Operating Systems',
+    difficulty: 'Intermediate',
+    xp: 300,
+    description: 'Understand scheduling, memory, and process control inside the operating system.',
+  },
+  {
+    title: 'System Forge',
+    category: 'System Design',
+    difficulty: 'Advanced',
+    xp: 520,
+    description: 'Design scalable, resilient systems that handle growth and real-world traffic.',
+  },
+  {
+    title: 'Cipher Vault',
+    category: 'Cryptography',
+    difficulty: 'Advanced',
+    xp: 540,
+    description: 'Explore hashes, encryption, and the secrets behind secure communication.',
+  },
 ];
 
 const concepts = [

@@ -72,6 +72,102 @@ const quests = [
     choices: ['It creates more labels automatically', 'It reduces noise and makes high-dimensional data easier to analyze', 'It turns all data into binary form', 'It guarantees perfect predictions'],
     correctAnswer: 'It reduces noise and makes high-dimensional data easier to analyze',
     explanation: 'Dimensionality reduction helps simplify large feature spaces while preserving the important structure in the data.'
+  },
+  {
+    id: 'dbms-normalization',
+    title: 'Schema Cleanup',
+    difficulty: 'Beginner',
+    xp: 130,
+    category: 'DBMS',
+    concept: 'Normalization',
+    prompt: 'What is the main purpose of normalization in a database?',
+    choices: ['To speed up all queries equally', 'To reduce redundancy and improve data integrity', 'To hide all table names', 'To convert SQL into JSON'],
+    correctAnswer: 'To reduce redundancy and improve data integrity',
+    explanation: 'Normalization organizes data to minimize duplication and keep records consistent across the database.'
+  },
+  {
+    id: 'dbms-index',
+    title: 'Index Boost',
+    difficulty: 'Intermediate',
+    xp: 260,
+    category: 'DBMS',
+    concept: 'Indexing',
+    prompt: 'Why are database indexes created?',
+    choices: ['To rewrite SQL queries', 'To speed up data lookup for common searches', 'To store backups permanently', 'To encrypt table rows'],
+    correctAnswer: 'To speed up data lookup for common searches',
+    explanation: 'Indexes let databases locate rows faster without scanning every record in a table.'
+  },
+  {
+    id: 'os-scheduling',
+    title: 'Scheduler Showdown',
+    difficulty: 'Intermediate',
+    xp: 280,
+    category: 'Operating Systems',
+    concept: 'Process Scheduling',
+    prompt: 'What does a process scheduler decide?',
+    choices: ['Which application should run next', 'How many users can log in', 'Whether a database is normalized', 'How to compress a file'],
+    correctAnswer: 'Which application should run next',
+    explanation: 'A scheduler manages CPU time allocation so processes get a fair and efficient share of execution.'
+  },
+  {
+    id: 'os-memory',
+    title: 'Memory Maze',
+    difficulty: 'Advanced',
+    xp: 430,
+    category: 'Operating Systems',
+    concept: 'Memory Management',
+    prompt: 'Why is virtual memory important?',
+    choices: ['It lets the system use more memory than may physically be available', 'It makes files smaller automatically', 'It prevents all CPU interrupts', 'It replaces the file system'],
+    correctAnswer: 'It lets the system use more memory than may physically be available',
+    explanation: 'Virtual memory extends logical memory space and helps systems run larger workloads by managing paging and swapping.'
+  },
+  {
+    id: 'design-scalability',
+    title: 'Scale Like a Pro',
+    difficulty: 'Intermediate',
+    xp: 310,
+    category: 'System Design',
+    concept: 'Scalability',
+    prompt: 'What is scalability in system design?',
+    choices: ['The ability to handle increased load without major redesign', 'A way to reduce storage cost only', 'The process of writing SQL queries', 'A method to prevent code compilation'],
+    correctAnswer: 'The ability to handle increased load without major redesign',
+    explanation: 'Scalable systems can grow with demand by adding capacity or distributing work efficiently.'
+  },
+  {
+    id: 'design-caching',
+    title: 'Cache Quest',
+    difficulty: 'Advanced',
+    xp: 470,
+    category: 'System Design',
+    concept: 'Caching',
+    prompt: 'Why do large systems use caches?',
+    choices: ['To remove the need for databases', 'To reduce repeated expensive work and improve latency', 'To guarantee security', 'To replace all load balancers'],
+    correctAnswer: 'To reduce repeated expensive work and improve latency',
+    explanation: 'Caching stores frequently accessed data closer to the caller so repeated requests can be served faster.'
+  },
+  {
+    id: 'crypto-hash',
+    title: 'Hashing Hunt',
+    difficulty: 'Beginner',
+    xp: 140,
+    category: 'Cryptography',
+    concept: 'Hash Functions',
+    prompt: 'What is a hash function mainly used for?',
+    choices: ['To encrypt data in reverse', 'To generate a fixed-size digest from input data', 'To store all user passwords in plain text', 'To create an index for a CPU'],
+    correctAnswer: 'To generate a fixed-size digest from input data',
+    explanation: 'A hash function maps input data to a fixed digest useful for integrity checks and password storage workflows.'
+  },
+  {
+    id: 'crypto-encryption',
+    title: 'Cipher Check',
+    difficulty: 'Advanced',
+    xp: 480,
+    category: 'Cryptography',
+    concept: 'Encryption',
+    prompt: 'What is the main goal of encryption?',
+    choices: ['To hide information from unauthorized parties', 'To slow down database queries', 'To randomize the CPU clock', 'To replace all network protocols'],
+    correctAnswer: 'To hide information from unauthorized parties',
+    explanation: 'Encryption transforms readable data into encoded form so only authorized parties can understand it.'
   }
 ];
 
