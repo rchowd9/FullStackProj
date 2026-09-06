@@ -271,6 +271,19 @@ const quests = [
   correctAnswer: 'ALU',
   explanation: 'The Arithmetic Logic Unit (ALU) handles mathematical and logical computations.'
 },
+
+{
+  id: 'arch-risc-vs-cisc',
+  title: 'Instruction Styles',
+  difficulty: 'Advanced',
+  xp: 500,
+  category: 'Computer Architecture',
+  concept: 'Instruction Sets',
+  prompt: 'What distinguishes RISC from CISC architectures?',
+  choices: ['RISC uses simpler instructions executed faster', 'CISC avoids using instructions', 'RISC encrypts all instructions', 'CISC eliminates memory'],
+  correctAnswer: 'RISC uses simpler instructions executed faster',
+  explanation: 'RISC emphasizes a small set of simple instructions, while CISC uses more complex ones.'
+},
   
 
 ];
