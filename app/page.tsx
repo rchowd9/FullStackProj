@@ -62,11 +62,11 @@ const missions = [
   },
 
   {
-    title: 'Cipher Vault',
+    title: 'Architecture Analyzers',
     category: 'Computer Architecture',
     difficulty: 'Advanced',
     xp: 560,
-    description: 'Explore hashes, encryption, and the secrets behind secure communication.',
+    description: 'Discover how a computer.',
   },
 ];
 
