@@ -70,7 +70,7 @@ const missions = [
   },
 
   {
-    title: '',
+    title: 'Cyber Evangelists', 
     category: 'Cybersecurity',
     difficulty: 'Advanced',
     xp: 580,
