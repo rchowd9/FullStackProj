@@ -219,6 +219,19 @@ const quests = [
   correctAnswer: 'It uses separate public and private keys',
   explanation: 'RSA relies on key pairs for secure communication.'
 },
+
+{
+  id: 'cyber-authentication',
+  title: 'Auth Basics',
+  difficulty: 'Beginner',
+  xp: 150,
+  category: 'Cybersecurity',
+  concept: 'Authentication',
+  prompt: 'What is the main purpose of authentication in cybersecurity?',
+  choices: ['To identify and verify users', 'To encrypt all files', 'To delete unused accounts', 'To monitor CPU usage'],
+  correctAnswer: 'To identify and verify users',
+  explanation: 'Authentication ensures that only legitimate users can access systems or data.'
+},
   
 
 ];
