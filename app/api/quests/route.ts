@@ -232,6 +232,19 @@ const quests = [
   correctAnswer: 'To identify and verify users',
   explanation: 'Authentication ensures that only legitimate users can access systems or data.'
 },
+
+{
+  id: 'cyber-phishing',
+  title: 'Phishing Alert',
+  difficulty: 'Intermediate',
+  xp: 280,
+  category: 'Cybersecurity',
+  concept: 'Threats',
+  prompt: 'Which attack tricks users into revealing sensitive information through fake emails or websites?',
+  choices: ['Phishing', 'SQL injection', 'DDoS', 'Man-in-the-middle'],
+  correctAnswer: 'Phishing',
+  explanation: 'Phishing attacks impersonate trusted sources to steal credentials or personal data.'
+},
   
 
 ];
