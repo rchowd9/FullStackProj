@@ -181,6 +181,20 @@ const quests = [
   correctAnswer: 'To distribute traffic across multiple servers',
   explanation: 'Load balancers improve reliability and performance by spreading workload.'
 },
+
+{
+  id: 'crypto-symmetric',
+  title: 'Key Match',
+  difficulty: 'Intermediate',
+  xp: 260,
+  category: 'Cryptography',
+  concept: 'Symmetric Encryption',
+  prompt: 'What characterizes symmetric encryption?',
+  choices: ['Different keys for encryption and decryption', 'Same key for encryption and decryption', 'No keys used', 'Only hashes are generated'],
+  correctAnswer: 'Same key for encryption and decryption',
+  explanation: 'Symmetric encryption uses one shared key for both operations.'
+},
+
   {
     id: 'crypto-hash',
     title: 'Hashing Hunt',
@@ -205,18 +219,8 @@ const quests = [
   correctAnswer: 'It uses separate public and private keys',
   explanation: 'RSA relies on key pairs for secure communication.'
 },
-  {
-    id: 'crypto-encryption',
-    title: 'Cipher Check',
-    difficulty: 'Advanced',
-    xp: 480,
-    category: 'Cryptography',
-    concept: 'Encryption',
-    prompt: 'What is the main goal of encryption?',
-    choices: ['To hide information from unauthorized parties', 'To slow down database queries', 'To randomize the CPU clock', 'To replace all network protocols'],
-    correctAnswer: 'To hide information from unauthorized parties',
-    explanation: 'Encryption transforms readable data into encoded form so only authorized parties can understand it.'
-  }
+  
+
 ];
 
 export async function GET() {
