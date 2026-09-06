@@ -66,7 +66,7 @@ const missions = [
     category: 'Computer Architecture',
     difficulty: 'Advanced',
     xp: 560,
-    description: 'Discover how a computer.',
+    description: 'Discover how a computer is organized and designed.',
   },
 ];
 
