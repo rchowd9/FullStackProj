@@ -68,6 +68,14 @@ const missions = [
     xp: 560,
     description: 'Discover how a computer is organized and designed.',
   },
+
+  {
+    title: 'Architecture Analyzers',
+    category: 'Computer Architecture',
+    difficulty: 'Advanced',
+    xp: 560,
+    description: 'Discover how a computer is organized and designed.',
+  },
 ];
 
 const concepts = [
