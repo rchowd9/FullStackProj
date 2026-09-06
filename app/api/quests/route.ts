@@ -273,6 +273,19 @@ const quests = [
 },
 
 {
+  id: 'arch-cache',
+  title: 'Cache Clarity',
+  difficulty: 'Intermediate',
+  xp: 290,
+  category: 'Computer Architecture',
+  concept: 'Memory Hierarchy',
+  prompt: 'Why are CPU caches used?',
+  choices: ['To store backups', 'To reduce latency by keeping frequently used data close', 'To replace RAM', 'To encrypt memory'],
+  correctAnswer: 'To reduce latency by keeping frequently used data close',
+  explanation: 'Caches provide faster access to data than main memory, improving performance.'
+}, 
+
+{
   id: 'arch-risc-vs-cisc',
   title: 'Instruction Styles',
   difficulty: 'Advanced',
@@ -284,6 +297,8 @@ const quests = [
   correctAnswer: 'RISC uses simpler instructions executed faster',
   explanation: 'RISC emphasizes a small set of simple instructions, while CISC uses more complex ones.'
 },
+
+
   
 
 ];
