@@ -74,7 +74,7 @@ const missions = [
     category: 'Cybersecurity',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'Discover how a computer is organized and designed.',
+    description: 'Find out how to protect your computers from attacks.',
   },
 ];
 
