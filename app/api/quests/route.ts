@@ -245,6 +245,19 @@ const quests = [
   correctAnswer: 'Phishing',
   explanation: 'Phishing attacks impersonate trusted sources to steal credentials or personal data.'
 },
+
+{
+  id: 'cyber-zero-trust',
+  title: 'Zero Trust',
+  difficulty: 'Advanced',
+  xp: 480,
+  category: 'Cybersecurity',
+  concept: 'Access Control',
+  prompt: 'What is the principle behind zero trust security?',
+  choices: ['Always trust internal users', 'Never trust, always verify', 'Encrypt only external traffic', 'Allow anonymous access'],
+  correctAnswer: 'Never trust, always verify',
+  explanation: 'Zero trust requires continuous verification of all users and devices, regardless of location.'
+}
   
 
 ];
