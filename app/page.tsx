@@ -70,10 +70,10 @@ const missions = [
   },
 
   {
-    title: 'Architecture Analyzers',
+    title: '',
     category: 'Cybersecurity',
     difficulty: 'Advanced',
-    xp: 560,
+    xp: 580,
     description: 'Discover how a computer is organized and designed.',
   },
 ];
