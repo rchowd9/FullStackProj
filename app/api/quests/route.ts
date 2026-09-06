@@ -257,7 +257,20 @@ const quests = [
   choices: ['Always trust internal users', 'Never trust, always verify', 'Encrypt only external traffic', 'Allow anonymous access'],
   correctAnswer: 'Never trust, always verify',
   explanation: 'Zero trust requires continuous verification of all users and devices, regardless of location.'
-}
+},
+
+{
+  id: 'arch-cpu-components',
+  title: 'CPU Core',
+  difficulty: 'Beginner',
+  xp: 140,
+  category: 'Computer Architecture',
+  concept: 'CPU',
+  prompt: 'Which component of the CPU performs arithmetic and logical operations?',
+  choices: ['Control Unit', 'ALU', 'Cache', 'Registers'],
+  correctAnswer: 'ALU',
+  explanation: 'The Arithmetic Logic Unit (ALU) handles mathematical and logical computations.'
+},
   
 
 ];
