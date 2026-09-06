@@ -60,6 +60,14 @@ const missions = [
     xp: 540,
     description: 'Explore hashes, encryption, and the secrets behind secure communication.',
   },
+
+  {
+    title: 'Cipher Vault',
+    category: 'Computer Architecture',
+    difficulty: 'Advanced',
+    xp: 560,
+    description: 'Explore hashes, encryption, and the secrets behind secure communication.',
+  },
 ];
 
 const concepts = [
