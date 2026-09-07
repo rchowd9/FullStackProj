@@ -90,7 +90,7 @@ const missions = [
     category: 'Distributed Systems',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'Find out how to protect your computers from attacks.',
+    description: 'collection of independent computers and devices that work together over a network.', 
   }, 
 ];
 
