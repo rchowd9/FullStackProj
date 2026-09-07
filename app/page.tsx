@@ -82,7 +82,7 @@ const missions = [
     category: 'Software Engineering',
     difficulty: 'Advanced',
     xp: 580, 
-    description: 'Find out how to protect your computers from attacks.',
+    description: 'Design and write programs for computers and other devices.',
   },
 ];
 
