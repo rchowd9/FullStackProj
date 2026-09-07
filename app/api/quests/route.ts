@@ -337,6 +337,19 @@ const quests = [
   explanation: 'Event sourcing stores all events, enabling auditability and reconstruction of past states.'
 },
 
+{
+  id: 'ds-2pc-limitations',
+  title: 'Commit Crisis',
+  difficulty: 'Advanced',
+  xp: 560,
+  category: 'Distributed Systems',
+  concept: 'Distributed Transactions',
+  prompt: 'What is a major limitation of two-phase commit (2PC)?',
+  choices: ['It scales infinitely', 'It can block indefinitely if the coordinator fails', 'It eliminates all network latency', 'It guarantees perfect fault tolerance'],
+  correctAnswer: 'It can block indefinitely if the coordinator fails',
+  explanation: '2PC is not fault-tolerant; coordinator failure can halt the entire transaction.'
+}, 
+
 ];
 
 export async function GET() {
