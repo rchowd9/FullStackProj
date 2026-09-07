@@ -296,7 +296,20 @@ const quests = [
   choices: ['RISC uses simpler instructions executed faster', 'CISC avoids using instructions', 'RISC encrypts all instructions', 'CISC eliminates memory'],
   correctAnswer: 'RISC uses simpler instructions executed faster',
   explanation: 'RISC emphasizes a small set of simple instructions, while CISC uses more complex ones.'
-} 
+},
+
+{
+  id: 'se-testing-pyramid',
+  title: 'Pyramid Precision',
+  difficulty: 'Advanced',
+  xp: 510,
+  category: 'Software Engineering',
+  concept: 'Testing',
+  prompt: 'Why is relying heavily on end-to-end tests risky?',
+  choices: ['They run extremely fast', 'They are brittle and slow to execute', 'They eliminate the need for unit tests', 'They guarantee perfect coverage'],
+  correctAnswer: 'They are brittle and slow to execute',
+  explanation: 'End-to-end tests are expensive and prone to breaking, so balanced test layers are essential.'
+}, 
 
 ];
 
