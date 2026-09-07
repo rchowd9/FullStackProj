@@ -84,6 +84,14 @@ const missions = [
     xp: 580, 
     description: 'Design and write programs for computers and other devices.',
   },
+
+  {s
+    title: 'Cyber Evangelists', 
+    category: 'Cybersecurity',
+    difficulty: 'Advanced',
+    xp: 580,
+    description: 'Find out how to protect your computers from attacks.',
+  },
 ];
 
 const concepts = [
