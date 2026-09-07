@@ -350,6 +350,19 @@ const quests = [
   explanation: '2PC is not fault-tolerant; coordinator failure can halt the entire transaction.'
 }, 
 
+{
+  id: 'ds-lamport-clocks',
+  title: 'Logical Time',
+  difficulty: 'Advanced',
+  xp: 570,
+  category: 'Distributed Systems',
+  concept: 'Clock Synchronization',
+  prompt: 'What problem do Lamport clocks solve?',
+  choices: ['Encrypting timestamps', 'Ordering events without relying on physical time', 'Reducing CPU usage', 'Guaranteeing global consistency'],
+  correctAnswer: 'Ordering events without relying on physical time',
+  explanation: 'Lamport clocks provide logical ordering in distributed systems where physical clocks may drift.'
+}, 
+
 ];
 
 export async function GET() {
