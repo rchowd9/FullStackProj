@@ -338,6 +338,19 @@ const quests = [
 },
 
 {
+  id: 'ds-cap-theorem',
+  title: 'CAP Conundrum',
+  difficulty: 'Advanced',
+  xp: 550,
+  category: 'Distributed Systems',
+  concept: 'CAP Theorem',
+  prompt: 'In a partitioned distributed system, why might an AP design be chosen over CP?',
+  choices: ['To guarantee strict consistency', 'To maintain availability despite network failures', 'To reduce server count', 'To eliminate replication'],
+  correctAnswer: 'To maintain availability despite network failures',
+  explanation: 'AP systems prioritize availability when partitions occur, accepting eventual consistency.'
+}, 
+
+{
   id: 'ds-2pc-limitations',
   title: 'Commit Crisis',
   difficulty: 'Advanced',
