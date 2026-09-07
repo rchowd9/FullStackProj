@@ -76,6 +76,14 @@ const missions = [
     xp: 580,
     description: 'Find out how to protect your computers from attacks.',
   },
+
+  {
+    title: 'Tech Devs', 
+    category: 'Cybersecurity',
+    difficulty: 'Advanced',
+    xp: 580,
+    description: 'Find out how to protect your computers from attacks.',
+  },
 ];
 
 const concepts = [
