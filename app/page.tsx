@@ -86,12 +86,12 @@ const missions = [
   },
 
   {
-    title: '',  
+    title: 'Redistributed',  
     category: 'Distributed Systems',
     difficulty: 'Advanced',
     xp: 580,
     description: 'Find out how to protect your computers from attacks.',
-  },
+  }, 
 ];
 
 const concepts = [
