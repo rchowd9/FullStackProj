@@ -311,6 +311,32 @@ const quests = [
   explanation: 'End-to-end tests are expensive and prone to breaking, so balanced test layers are essential.'
 }, 
 
+{
+  id: 'se-design-singleton',
+  title: 'Singleton Scrutiny',
+  difficulty: 'Advanced',
+  xp: 500,
+  category: 'Software Engineering',
+  concept: 'Design Patterns',
+  prompt: 'Why is the Singleton pattern often discouraged in large systems?',
+  choices: ['It increases performance', 'It introduces hidden global state and tight coupling', 'It guarantees thread safety', 'It simplifies dependency injection'],
+  correctAnswer: 'It introduces hidden global state and tight coupling',
+  explanation: 'Singletons act like global variables, making testing and modular design more difficult.'
+}, 
+
+{
+  id: 'se-event-sourcing',
+  title: 'Event Echo',
+  difficulty: 'Advanced',
+  xp: 530,
+  category: 'Software Engineering',
+  concept: 'Architecture',
+  prompt: 'What is a key advantage of event sourcing?',
+  choices: ['It removes the need for databases', 'It provides a complete history of state changes', 'It eliminates concurrency issues', 'It guarantees constant-time queries'],
+  correctAnswer: 'It provides a complete history of state changes',
+  explanation: 'Event sourcing stores all events, enabling auditability and reconstruction of past states.'
+},
+
 ];
 
 export async function GET() {
