@@ -106,7 +106,7 @@ const missions = [
     category: 'OOP',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'System of interconnected computing devices that communicate and share resources with one another.', 
+    description: 'Organizing complex programs by breaking them into objects.', 
   }, 
 
 
