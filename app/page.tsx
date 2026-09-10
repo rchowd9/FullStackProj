@@ -100,6 +100,16 @@ const missions = [
     xp: 580,
     description: 'System of interconnected computing devices that communicate and share resources with one another.', 
   }, 
+
+  {
+    title: 'Object-Oriented',  
+    category: 'OOP',
+    difficulty: 'Advanced',
+    xp: 580,
+    description: 'System of interconnected computing devices that communicate and share resources with one another.', 
+  }, 
+
+
 ];
 
 const concepts = [
