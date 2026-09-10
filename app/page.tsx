@@ -92,6 +92,14 @@ const missions = [
     xp: 580,
     description: 'collection of independent computers and devices that work together over a network.', 
   }, 
+
+  {
+    title: 'Redistributed',  
+    category: 'Distributed Systems',
+    difficulty: 'Advanced',
+    xp: 580,
+    description: 'collection of independent computers and devices that work together over a network.', 
+  }, 
 ];
 
 const concepts = [
