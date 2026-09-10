@@ -441,6 +441,19 @@ const quests = [
   explanation: 'Reflection allows modifying or accessing private members, increasing risk of runtime errors and security issues.'
 },
 
+{
+  id: 'oop-object-lifecycle',
+  title: 'Lifecycle Labyrinth',
+  difficulty: 'Advanced',
+  xp: 590,
+  category: 'OOP',
+  concept: 'Memory & Lifecycle',
+  prompt: 'In languages with manual memory management, what makes object lifecycle management particularly challenging?',
+  choices: ['Objects never reference each other', 'Circular references can cause memory leaks without garbage collection', 'Constructors always free memory', 'Destructors run automatically at compile time'],
+  correctAnswer: 'Circular references can cause memory leaks without garbage collection',
+  explanation: 'Manual memory management requires careful handling of reference cycles to avoid leaks.'
+},
+
 ];
 
 export async function GET() {
