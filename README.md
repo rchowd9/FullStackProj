@@ -6,8 +6,11 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 
 - Gamified learning interface
 - CS concept cards and missions
-- Responsive landing page
-- Easy to extend into a full app with auth, quizzes, dashboards, and leaderboards
+- Progress cockpit with XP, streak, cycle goals, and daily challenge
+- Searchable and filterable quest board
+- Persistent local quest completion state shared across the home dashboard and quiz flow
+- Redis-backed leaderboard with an in-memory development fallback
+- Responsive interface for desktop and mobile
 
 ## Local development
 
@@ -23,14 +26,6 @@ npm run dev
 3. Use the default Next.js settings.
 4. Deploy.
 
-## Idea for the full version
+## Progress storage
 
-Turn this into a multiplayer learning platform where students:
-
-- complete quests
-- answer coding puzzles
-- unlock badges
-- join weekly challenges
-- track progress in dashboards
-
-This is a strong starter concept for a fun educational SaaS project.
+Quest completion is stored in the browser under `code-quest:progress`, so the prototype works without authentication or a database. Leaderboard submissions use Upstash Redis when `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, and fall back to process memory for local development.
