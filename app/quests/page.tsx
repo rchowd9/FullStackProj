@@ -29,17 +29,40 @@ function QuestsContent() {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
+  const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
+  const [difficulty, setDifficulty] = useState('All levels');
 
   useEffect(() => {
+    const savedProgress = window.localStorage.getItem('code-quest:progress');
+    if (savedProgress) {
+      try {
+        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown };
+        if (Array.isArray(parsed.completedIds)) {
+          setCompletedIds(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
+        }
+      } catch {
+        window.localStorage.removeItem('code-quest:progress');
+      }
+    }
+
     fetch('/api/quests')
       .then((res) => res.json())
       .then((data) => setQuests(data.quests ?? []));
   }, []);
 
+  useEffect(() => {
+    window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds }));
+  }, [completedIds]);
+
   const selectedCategory = searchParams.get('category');
-  const visibleQuests = selectedCategory
-    ? quests.filter((quest) => quest.category === selectedCategory)
-    : quests;
+  const visibleQuests = quests.filter((quest) => {
+    const matchesCategory = !selectedCategory || quest.category === selectedCategory;
+    const matchesDifficulty = difficulty === 'All levels' || quest.difficulty === difficulty;
+    const searchTerm = search.trim().toLowerCase();
+    const matchesSearch = !searchTerm || `${quest.title} ${quest.concept} ${quest.prompt}`.toLowerCase().includes(searchTerm);
+    return matchesCategory && matchesDifficulty && matchesSearch;
+  });
 
   const groupedQuests = Array.from(
     new Set(visibleQuests.map((quest) => quest.category))
@@ -51,6 +74,11 @@ function QuestsContent() {
   const handleAnswer = (questId: string, answer: string) => {
     setSelectedAnswers((prev) => ({ ...prev, [questId]: answer }));
     setSubmitted((prev) => ({ ...prev, [questId]: true }));
+
+    const quest = quests.find((item) => item.id === questId);
+    if (quest?.correctAnswer === answer) {
+      setCompletedIds((previous) => previous.includes(questId) ? previous : [...previous, questId]);
+    }
   };
 
   return (
@@ -63,6 +91,20 @@ function QuestsContent() {
             ? `Focus on ${selectedCategory} challenges and earn XP.`
             : 'Answer challenges to earn XP and unlock new topics.'}
         </p>
+      </section>
+
+      <section className="quest-toolbar" aria-label="Quest filters">
+        <label className="search-field">
+          <span>⌕</span>
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search concepts, missions..." />
+        </label>
+        <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)} aria-label="Filter by difficulty">
+          <option>All levels</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+        <div className="quest-summary"><strong>{completedIds.length}</strong> cleared <span>•</span> <strong>{quests.length - completedIds.length}</strong> remaining</div>
       </section>
 
       <div className="quest-list">
@@ -81,7 +123,7 @@ function QuestsContent() {
                 <article key={quest.id} className="quest-card">
                   <div className="mission-topline">
                     <span className="difficulty">{quest.difficulty}</span>
-                    <span className="xp">+{quest.xp} XP</span>
+                    <span className={completedIds.includes(quest.id) ? 'completed-label' : 'xp'}>{completedIds.includes(quest.id) ? '✓ CLEARED' : `+${quest.xp} XP`}</span>
                   </div>
 
                   <p className="concept-tag">{quest.concept}</p>

@@ -307,6 +307,16 @@ a {
   gap: 22px;
 }
 
+.quest-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) 170px auto; gap: 12px; align-items: center; margin: 34px 0 28px; }
+.search-field { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 14px; border: 1px solid var(--border); border-radius: 12px; background: rgba(15, 23, 42, 0.72); color: var(--muted); }
+.search-field input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text); }
+.search-field input::placeholder { color: #7180a5; }
+.quest-toolbar select { min-height: 46px; padding: 0 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(15, 23, 42, 0.72); color: var(--text); }
+.quest-summary { color: var(--muted); font-size: 0.8rem; text-align: right; }
+.quest-summary strong { color: var(--lime); }
+.quest-summary span { margin: 0 5px; color: var(--border); }
+.completed-label { color: var(--lime); font-size: 0.8rem; font-weight: 800; }
+
 .concept-tag {
   display: inline-block;
   margin: 0 0 14px;
@@ -435,6 +445,8 @@ a {
   .command-stat { border-left: 0; border-top: 1px solid var(--border); padding: 12px 0 0; }
   .daily-art { min-height: 90px; }
   .daily-rewards { flex-wrap: wrap; }
+  .quest-toolbar { grid-template-columns: 1fr; }
+  .quest-summary { text-align: left; }
   .leaderboard-row {
     grid-template-columns: 1fr;
   }
