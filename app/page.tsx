@@ -98,7 +98,7 @@ const missions = [
     category: 'Computer Networking',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'collection of independent computers and devices that work together over a network.', 
+    description: 'System of interconnected computing devices that communicate and share resources with one another.', 
   }, 
 ];
 
