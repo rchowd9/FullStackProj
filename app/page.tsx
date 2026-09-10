@@ -107,6 +107,22 @@ const concepts = [
 
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [completedQuests, setCompletedQuests] = useState<string[]>([]);
+
+  useEffect(() => {
+    const savedProgress = window.localStorage.getItem('code-quest:progress');
+
+    if (savedProgress) {
+      try {
+        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown };
+        if (Array.isArray(parsed.completedIds)) {
+          setCompletedQuests(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
+        }
+      } catch {
+        window.localStorage.removeItem('code-quest:progress');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -117,6 +133,15 @@ export default function HomePage() {
 
   return (
     <main className="page-shell">
+      <nav className="top-nav" aria-label="Primary navigation">
+        <Link href="/" className="brand-mark"><span className="brand-orb">CQ</span> Code Quest</Link>
+        <div className="nav-links">
+          <a href="#missions">Missions</a>
+          <Link href="/quests">Quest board</Link>
+          <span className="profile-pill"><span className="online-dot" /> Byte Knight</span>
+        </div>
+      </nav>
+
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">LEVEL UP YOUR BRAIN</p>
@@ -152,16 +177,25 @@ export default function HomePage() {
 
         <div className="hero-panel">
           <div className="avatar-card">
-            <div className="avatar-badge">LVL 14</div>
+            <div className="avatar-badge">LVL 14 <span>• ON A ROLL</span></div>
             <div className="avatar-coin">◉</div>
             <h3>Player: Byte Knight</h3>
             <ul>
-              <li>XP: 12,450</li>
-              <li>Streak: 9 days</li>
-              <li>Guild: Logic Legends</li>
+              <li><span>XP earned</span><strong>{12_450 + completedQuests.length * 120}</strong></li>
+              <li><span>Streak</span><strong>9 days</strong></li>
+              <li><span>Guild</span><strong>Logic Legends</strong></li>
             </ul>
+            <div className="level-progress"><span style={{ width: `${Math.min(100, 42 + completedQuests.length * 8)}%` }} /></div>
+            <small className="progress-caption">{completedQuests.length} quests cleared this cycle</small>
           </div>
         </div>
+      </section>
+
+      <section className="command-bar" aria-label="Your learning progress">
+        <div className="command-label"><span className="pulse-dot" /> DAILY RUN <strong>Tuesday, September 9</strong></div>
+        <div className="command-stat"><span>Cycle progress</span><strong>{completedQuests.length}/12 quests</strong></div>
+        <div className="command-stat"><span>Next reward</span><strong>+500 XP <small>at 12 quests</small></strong></div>
+        <Link href="/quests" className="command-action">Resume run <span>→</span></Link>
       </section>
 
       <section className="learning-strip">
@@ -172,8 +206,11 @@ export default function HomePage() {
 
       <section id="missions" className="missions">
         <div className="section-heading">
-          <p className="eyebrow">ACTIVE MISSIONS</p>
-          <h2>Pick your next challenge</h2>
+          <div>
+            <p className="eyebrow">ACTIVE MISSIONS</p>
+            <h2>Pick your next challenge</h2>
+          </div>
+          <Link href="/quests" className="text-link">View all missions →</Link>
         </div>
 
         <div className="mission-grid">
@@ -185,6 +222,7 @@ export default function HomePage() {
               </div>
               <h3>{mission.title}</h3>
               <p>{mission.description}</p>
+              <div className="mission-meta"><span>▰ 3 checkpoints</span><span>◷ 8 min</span></div>
               <Link
                 href={{
                   pathname: '/quests',
@@ -197,6 +235,17 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="daily-challenge">
+        <div className="daily-art"><span>DAILY</span><strong>⚡</strong><small>RUN 09</small></div>
+        <div className="daily-copy">
+          <p className="eyebrow">LIMITED-TIME CHALLENGE</p>
+          <h2>The Cache is Lava</h2>
+          <p>Architect a caching strategy before latency melts your service. Three scenarios. One clean design.</p>
+          <div className="daily-rewards"><span>+350 XP</span><span>Rare badge</span><span>Ends in 08:42:16</span></div>
+        </div>
+        <Link href="/quests?category=System%20Design" className="primary button-link">Take the challenge</Link>
       </section>
 
       <section className="leaderboard-panel">

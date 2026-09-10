@@ -9,6 +9,8 @@
   --muted: #a9b5d3;
   --border: rgba(148, 163, 184, 0.2);
   --shadow: 0 30px 60px rgba(76, 29, 149, 0.35);
+  --lime: #b8f34a;
+  --orange: #ff8a4c;
 }
 
 * {
@@ -22,7 +24,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
   background:
     radial-gradient(circle at top, rgba(124, 58, 237, 0.25), transparent 35%),
     linear-gradient(135deg, #090b17 0%, #111827 40%, #0b1120 100%);
@@ -39,6 +41,15 @@ a {
   margin: 0 auto;
   padding: 48px 24px 64px;
 }
+
+.top-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 62px; }
+.brand-mark, .nav-links a { color: var(--text); text-decoration: none; }
+.brand-mark { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.02em; }
+.brand-orb { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-right: 9px; border-radius: 10px; background: var(--lime); color: #14200a; font-size: 0.72rem; }
+.nav-links { display: flex; align-items: center; gap: 26px; color: var(--muted); font-size: 0.88rem; }
+.nav-links a:hover, .text-link:hover { color: var(--lime); }
+.profile-pill { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); }
+.online-dot, .pulse-dot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 4px rgba(184, 243, 74, 0.1); }
 
 .hero {
   display: grid;
@@ -161,6 +172,7 @@ a {
   font-size: 0.75rem;
   font-weight: 700;
 }
+.avatar-badge span { color: var(--lime); margin-left: 7px; font-size: 0.62rem; }
 
 .avatar-coin {
   margin: 28px auto 20px;
@@ -188,6 +200,19 @@ a {
   gap: 10px;
   color: var(--muted);
 }
+.avatar-card li { display: flex; justify-content: space-between; gap: 16px; }
+.avatar-card li strong { color: var(--text); font-size: 0.9rem; }
+.level-progress { height: 6px; margin-top: 24px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,0.08); }
+.level-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--secondary), var(--lime)); }
+.progress-caption { display: block; margin-top: 9px; color: var(--muted); font-size: 0.72rem; }
+.command-bar { display: grid; grid-template-columns: 1.5fr 1fr 1fr auto; gap: 20px; align-items: center; margin-top: 42px; padding: 17px 20px; border: 1px solid var(--border); border-radius: 16px; background: rgba(184, 243, 74, 0.045); }
+.command-label { display: flex; align-items: center; gap: 10px; color: var(--lime); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; }
+.command-label strong { color: var(--muted); font-size: 0.76rem; font-weight: 500; letter-spacing: 0; }
+.command-stat { display: flex; flex-direction: column; gap: 4px; border-left: 1px solid var(--border); padding-left: 20px; }
+.command-stat span, .command-stat small { color: var(--muted); font-size: 0.72rem; }
+.command-stat strong { font-size: 0.95rem; }
+.command-action { color: var(--lime); text-decoration: none; font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
+.command-action span { margin-left: 5px; font-size: 1.2rem; }
 
 .learning-strip {
   margin-top: 40px;
@@ -210,8 +235,12 @@ a {
 }
 
 .section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
   margin-bottom: 24px;
 }
+.text-link { color: var(--secondary); text-decoration: none; font-size: 0.85rem; font-weight: 700; }
 
 .section-heading h2 {
   font-size: clamp(2rem, 4vw, 3rem);
@@ -264,6 +293,14 @@ a {
   line-height: 1.6;
   margin: 0 0 18px;
 }
+.mission-meta { display: flex; gap: 14px; margin: -3px 0 18px; color: #7180a5; font-size: 0.72rem; }
+.daily-challenge { display: grid; grid-template-columns: 130px 1fr auto; gap: 24px; align-items: center; margin-top: 72px; padding: 20px; border: 1px solid rgba(255, 138, 76, 0.35); border-radius: 22px; background: linear-gradient(110deg, rgba(255, 138, 76, 0.13), rgba(15, 23, 42, 0.9) 54%); }
+.daily-art { display: grid; place-items: center; min-height: 130px; border-radius: 15px; background: #20284a; color: var(--orange); }
+.daily-art span, .daily-art small { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.16em; }
+.daily-art strong { font-size: 3rem; color: var(--accent); }
+.daily-copy h2 { margin: 0 0 7px; font-size: 1.7rem; }
+.daily-copy p:not(.eyebrow) { margin: 0; color: var(--muted); line-height: 1.5; }
+.daily-rewards { display: flex; gap: 18px; margin-top: 15px; color: var(--orange); font-size: 0.75rem; font-weight: 700; }
 
 .quest-list {
   display: grid;
@@ -344,6 +381,9 @@ a {
   .hero {
     gap: 40px;
   }
+  .command-bar, .daily-challenge { grid-template-columns: 1fr 1fr; }
+  .command-label { grid-column: 1 / -1; }
+  .daily-challenge .button-link { justify-self: start; }
 }
 
 .leaderboard-panel {
@@ -389,6 +429,12 @@ a {
 }
 
 @media (max-width: 760px) {
+  .top-nav { margin-bottom: 42px; }
+  .nav-links a { display: none; }
+  .command-bar, .daily-challenge { grid-template-columns: 1fr; }
+  .command-stat { border-left: 0; border-top: 1px solid var(--border); padding: 12px 0 0; }
+  .daily-art { min-height: 90px; }
+  .daily-rewards { flex-wrap: wrap; }
   .leaderboard-row {
     grid-template-columns: 1fr;
   }
