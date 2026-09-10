@@ -30,8 +30,11 @@ function QuestsContent() {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
   const [completedIds, setCompletedIds] = useState<string[]>([]);
+  const [missedIds, setMissedIds] = useState<string[]>([]);
+  const [progressLoaded, setProgressLoaded] = useState(false);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('All levels');
+  const [reviewMisses, setReviewMisses] = useState(false);
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -41,10 +44,14 @@ function QuestsContent() {
         if (Array.isArray(parsed.completedIds)) {
           setCompletedIds(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
         }
+        if (Array.isArray(parsed.missedIds)) {
+          setMissedIds(parsed.missedIds.filter((id): id is string => typeof id === 'string'));
+        }
       } catch {
         window.localStorage.removeItem('code-quest:progress');
       }
     }
+    setProgressLoaded(true);
 
     fetch('/api/quests')
       .then((res) => res.json())
@@ -52,16 +59,19 @@ function QuestsContent() {
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds }));
-  }, [completedIds]);
+    if (progressLoaded) {
+      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds }));
+    }
+  }, [completedIds, missedIds, progressLoaded]);
 
   const selectedCategory = searchParams.get('category');
   const visibleQuests = quests.filter((quest) => {
     const matchesCategory = !selectedCategory || quest.category === selectedCategory;
     const matchesDifficulty = difficulty === 'All levels' || quest.difficulty === difficulty;
+    const matchesReview = !reviewMisses || missedIds.includes(quest.id);
     const searchTerm = search.trim().toLowerCase();
     const matchesSearch = !searchTerm || `${quest.title} ${quest.concept} ${quest.prompt}`.toLowerCase().includes(searchTerm);
-    return matchesCategory && matchesDifficulty && matchesSearch;
+    return matchesCategory && matchesDifficulty && matchesReview && matchesSearch;
   });
 
   const groupedQuests = Array.from(
@@ -78,7 +88,18 @@ function QuestsContent() {
     const quest = quests.find((item) => item.id === questId);
     if (quest?.correctAnswer === answer) {
       setCompletedIds((previous) => previous.includes(questId) ? previous : [...previous, questId]);
+      setMissedIds((previous) => previous.filter((id) => id !== questId));
+    } else {
+      setMissedIds((previous) => previous.includes(questId) ? previous : [...previous, questId]);
     }
+  };
+
+  const explainChoice = (quest: Quest, choice: string) => {
+    if (choice === quest.correctAnswer) {
+      return `Correct: ${quest.correctAnswer} is the principle that best answers this question.`;
+    }
+
+    return `This misses the ${quest.concept} concept because it does not describe the behavior being tested. The correct idea is "${quest.correctAnswer}".`;
   };
 
   return (
@@ -104,6 +125,9 @@ function QuestsContent() {
           <option>Intermediate</option>
           <option>Advanced</option>
         </select>
+        <button className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
+          Review misses <strong>{missedIds.length}</strong>
+        </button>
         <div className="quest-summary"><strong>{completedIds.length}</strong> cleared <span>•</span> <strong>{quests.length - completedIds.length}</strong> remaining</div>
       </section>
 
@@ -156,10 +180,17 @@ function QuestsContent() {
                   </div>
 
                   {submitted[quest.id] && (
-                    <div className={`result ${isCorrect ? 'success' : 'error'}`}>
-                      <strong>{isCorrect ? 'Correct!' : 'Not quite.'}</strong>
-                      <span>{quest.explanation}</span>
-                    </div>
+                    <>
+                      <div className={`result ${isCorrect ? 'success' : 'error'}`}>
+                        <strong>{isCorrect ? 'Correct!' : 'Not quite. Study the distinction:'}</strong>
+                        <span>{quest.explanation}</span>
+                      </div>
+                      <div className="choice-explanations">
+                        {quest.choices.filter((choice) => choice !== quest.correctAnswer).map((choice) => (
+                          <p key={choice}><strong>{choice}</strong><span>{explainChoice(quest, choice)}</span></p>
+                        ))}
+                      </div>
+                    </>
                   )}
                 </article>
               );
