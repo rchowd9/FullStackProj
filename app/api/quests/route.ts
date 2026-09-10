@@ -376,6 +376,19 @@ const quests = [
   explanation: 'Lamport clocks provide logical ordering in distributed systems where physical clocks may drift.'
 }, 
 
+{
+  id: 'net-bgp-convergence',
+  title: 'BGP Breakdown',
+  difficulty: 'Advanced',
+  xp: 590,
+  category: 'Computer Networking',
+  concept: 'Routing Protocols',
+  prompt: 'Why is BGP convergence notoriously slow in large-scale networks?',
+  choices: ['It uses link-state flooding', 'It relies on path-vector updates and avoids periodic refreshes', 'It recalculates all shortest paths constantly', 'It encrypts all routing tables'],
+  correctAnswer: 'It relies on path-vector updates and avoids periodic refreshes',
+  explanation: 'BGP’s path-vector design and incremental updates cause slow convergence, especially under instability.'
+},
+
 ];
 
 export async function GET() {
