@@ -428,6 +428,19 @@ const quests = [
   explanation: 'LSP requires subclasses to behave consistently with base-class expectations; unexpected exceptions break substitutability.'
 },
 
+{
+  id: 'oop-metaprogramming',
+  title: 'Meta Madness',
+  difficulty: 'Advanced',
+  xp: 570,
+  category: 'OOP',
+  concept: 'Reflection',
+  prompt: 'Why is runtime reflection considered dangerous in large OOP systems?',
+  choices: ['It prevents polymorphism', 'It bypasses type safety and can break encapsulation', 'It disables inheritance', 'It forces static linking'],
+  correctAnswer: 'It bypasses type safety and can break encapsulation',
+  explanation: 'Reflection allows modifying or accessing private members, increasing risk of runtime errors and security issues.'
+},
+
 ];
 
 export async function GET() {
