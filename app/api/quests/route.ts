@@ -377,6 +377,19 @@ const quests = [
 }, 
 
 {
+  id: 'net-tcp-congestion',
+  title: 'Congestion Chaos',
+  difficulty: 'Advanced',
+  xp: 560,
+  category: 'Computer Networking',
+  concept: 'TCP Internals',
+  prompt: 'Which TCP congestion control phase is responsible for probing the network capacity by increasing the congestion window exponentially?',
+  choices: ['Slow Start', 'Congestion Avoidance', 'Fast Recovery', 'Fast Retransmit'],
+  correctAnswer: 'Slow Start',
+  explanation: 'Slow Start exponentially increases cwnd until a threshold is reached, allowing TCP to probe available bandwidth.'
+},
+
+{
   id: 'net-bgp-convergence',
   title: 'BGP Breakdown',
   difficulty: 'Advanced',
