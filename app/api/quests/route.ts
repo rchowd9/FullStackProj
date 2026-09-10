@@ -402,6 +402,19 @@ const quests = [
   explanation: 'BGP’s path-vector design and incremental updates cause slow convergence, especially under instability.'
 },
 
+{
+  id: 'net-dns-cache-poison',
+  title: 'DNS Danger',
+  difficulty: 'Advanced',
+  xp: 600,
+  category: 'Computer Networking',
+  concept: 'Security',
+  prompt: 'What makes DNS cache poisoning particularly dangerous in distributed systems?',
+  choices: ['DNS uses encrypted records', 'Poisoned entries propagate across resolvers and redirect massive traffic', 'DNS servers never replicate data', 'TTL values prevent caching'],
+  correctAnswer: 'Poisoned entries propagate across resolvers and redirect massive traffic',
+  explanation: 'Cache poisoning can spread incorrect mappings across DNS infrastructure, enabling large-scale redirection attacks.'
+},
+
 ];
 
 export async function GET() {
