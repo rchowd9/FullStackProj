@@ -40,7 +40,7 @@ function QuestsContent() {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
     if (savedProgress) {
       try {
-        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown };
+        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown; missedIds?: unknown };
         if (Array.isArray(parsed.completedIds)) {
           setCompletedIds(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
         }
