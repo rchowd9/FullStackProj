@@ -415,6 +415,19 @@ const quests = [
   explanation: 'Cache poisoning can spread incorrect mappings across DNS infrastructure, enabling large-scale redirection attacks.'
 },
 
+{
+  id: 'oop-lsp-violation',
+  title: 'Substitution Snare',
+  difficulty: 'Advanced',
+  xp: 580,
+  category: 'OOP',
+  concept: 'SOLID Principles',
+  prompt: 'Which scenario violates the Liskov Substitution Principle (LSP)?',
+  choices: ['A subclass requiring fewer preconditions', 'A subclass throwing unexpected exceptions for valid base-class inputs', 'A subclass extending functionality safely', 'A subclass overriding methods with compatible behavior'],
+  correctAnswer: 'A subclass throwing unexpected exceptions for valid base-class inputs',
+  explanation: 'LSP requires subclasses to behave consistently with base-class expectations; unexpected exceptions break substitutability.'
+},
+
 ];
 
 export async function GET() {
