@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 type LeaderboardEntry = {
@@ -123,6 +124,19 @@ const concepts = [
   'Debugging',
 ];
 
+const masteryMap = [
+  { label: 'Algorithms', value: 86, tone: 'cyan' },
+  { label: 'Databases', value: 72, tone: 'violet' },
+  { label: 'Systems', value: 63, tone: 'gold' },
+  { label: 'Security', value: 58, tone: 'lime' },
+];
+
+const habitBoard = [
+  { label: 'Practice streak', value: 7, total: 7, note: '7-day run' },
+  { label: 'Daily challenges', value: 4, total: 5, note: '1 left today' },
+  { label: 'Concept review', value: 9, total: 10, note: 'Nearly mastered' },
+];
+
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
@@ -220,6 +234,77 @@ export default function HomePage() {
         {concepts.map((concept) => (
           <span key={concept} className="chip">{concept}</span>
         ))}
+      </section>
+
+      <section className="feature-grid" aria-label="Progress and habit features">
+        <motion.article
+          className="feature-panel"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+        >
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">SKILL MAP</p>
+              <h3>Mastery radar</h3>
+            </div>
+            <span className="panel-badge">+12% this week</span>
+          </div>
+
+          <div className="mastery-list">
+            {masteryMap.map((skill) => (
+              <div key={skill.label} className="mastery-row">
+                <div className="mastery-meta">
+                  <span>{skill.label}</span>
+                  <strong>{skill.value}%</strong>
+                </div>
+                <div className="progress-bar">
+                  <motion.span
+                    className={`progress-fill ${skill.tone}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${skill.value}%` }}
+                    transition={{ duration: 0.7, ease: 'easeOut' }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.article>
+
+        <motion.article
+          className="feature-panel"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.08, ease: 'easeOut' }}
+        >
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">STREAK ENGINE</p>
+              <h3>Weekly momentum</h3>
+            </div>
+            <span className="panel-badge panel-badge-alt">Goal: 5/5</span>
+          </div>
+
+          <div className="habit-list">
+            {habitBoard.map((habit) => (
+              <div key={habit.label} className="habit-row">
+                <div className="habit-topline">
+                  <span>{habit.label}</span>
+                  <strong>{habit.value}/{habit.total}</strong>
+                </div>
+                <div className="progress-bar compact">
+                  <motion.span
+                    className="progress-fill lime"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(habit.value / habit.total) * 100}%` }}
+                    transition={{ duration: 0.7, ease: 'easeOut' }}
+                  />
+                </div>
+                <small>{habit.note}</small>
+              </div>
+            ))}
+          </div>
+        </motion.article>
       </section>
 
       <section id="missions" className="missions">

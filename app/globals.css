@@ -230,6 +230,121 @@ a {
   font-size: 0.92rem;
 }
 
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 50px;
+}
+
+.feature-panel {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.panel-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  color: var(--secondary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.panel-badge-alt {
+  background: rgba(184, 243, 74, 0.12);
+  border-color: rgba(184, 243, 74, 0.2);
+  color: var(--lime);
+}
+
+.mastery-list,
+.habit-list {
+  display: grid;
+  gap: 18px;
+}
+
+.mastery-row,
+.habit-row {
+  display: grid;
+  gap: 8px;
+}
+
+.mastery-meta,
+.habit-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.mastery-meta strong,
+.habit-topline strong {
+  color: var(--text);
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.14);
+}
+
+.progress-bar.compact {
+  height: 10px;
+}
+
+.progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  display: block;
+  background: linear-gradient(90deg, var(--secondary), #8b5cf6);
+}
+
+.progress-fill.cyan {
+  background: linear-gradient(90deg, #22d3ee, #38bdf8);
+}
+
+.progress-fill.violet {
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+}
+
+.progress-fill.gold {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.progress-fill.lime {
+  background: linear-gradient(90deg, #b8f34a, #84cc16);
+}
+
+.habit-row small {
+  color: var(--muted);
+}
+
 .missions, .quest-page {
   margin-top: 72px;
 }

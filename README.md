@@ -10,7 +10,9 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 - Searchable and filterable quest board
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Redis-backed leaderboard with an in-memory development fallback
+- Mastery radar and weekly momentum tracker for learning progress
 - Responsive interface for desktop and mobile
+- Framer Motion animations for polished UI transitions
 
 ## Local development
 
@@ -18,6 +20,9 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 npm install
 npm run dev
 ```
+
+Additional framework installed:
+- Framer Motion for small animated UI interactions and onboarding polish
 
 ## Deploy on Vercel
 
