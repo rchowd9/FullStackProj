@@ -456,6 +456,197 @@ const quests = [
 
 ];
 
+const choiceExplanations: Record<string, Record<string, string>> = {
+  'ai-agent-goal': {
+    'To store data only': 'Wrong because storage is one possible tool, not an agent\'s goal. Agents use context and available tools to take actions toward an objective.',
+    'To replace all software engineers': 'Wrong because an agent is defined by goal-directed behavior, not by replacing a profession. It can assist people while still operating within a specific task.',
+    'To avoid using models entirely': 'Wrong because agents commonly rely on models to interpret inputs and choose actions. Avoiding models does not describe an agent\'s purpose.'
+  },
+  'ai-search': {
+    'One-shot lookup': 'Wrong because a lookup retrieves an answer in one step and does not describe breaking a problem into intermediate reasoning steps.',
+    'Manual spreadsheet entry': 'Wrong because manual data entry is a human workflow, not a reasoning strategy used by an AI system.',
+    'Hard-coded HTML': 'Wrong because HTML defines document structure and does not provide multi-step planning or reasoning.'
+  },
+  'ai-rl-policy': {
+    'A set of labels': 'Wrong because labels describe data or categories; a reinforcement learning policy must guide the agent\'s behavior.',
+    'A database schema': 'Wrong because a schema describes stored data, while a policy decides what action to take from a state.',
+    'A loss function': 'Wrong because a loss function measures error during learning; it is not the state-to-action rule used to act.'
+  },
+  'ml-supervised': {
+    'Unsupervised learning': 'Wrong because unsupervised learning works without target labels and instead looks for structure in unlabeled data.',
+    'Data mining only': 'Wrong because data mining is a broad set of discovery techniques, not the specific learning setup defined by labeled examples.',
+    'Rule-based scripting': 'Wrong because hand-written rules do not learn a mapping from labeled input-output examples.'
+  },
+  'ml-overfitting': {
+    'Underfitting': 'Wrong because underfitting means the model is too simple to perform well even on training data, which is the opposite pattern.',
+    'Data leakage': 'Wrong because leakage is an evaluation-data problem that can make results misleading; it is not the name for memorizing training examples.',
+    'Feature scaling': 'Wrong because scaling changes feature ranges to help optimization. It does not explain poor performance on unseen data after strong training performance.'
+  },
+  'ml-regularization': {
+    'To increase model size': 'Wrong because regularization discourages unnecessary complexity rather than expanding the model.',
+    'To remove all features': 'Wrong because regularization may shrink some weights, but it does not require deleting every feature.',
+    'To guarantee perfect accuracy': 'Wrong because regularization manages generalization tradeoffs; no technique guarantees perfect predictions.'
+  },
+  'mining-association': {
+    'To generate executable code': 'Wrong because association rules describe relationships in data; they do not compile or generate application code.',
+    'To compress images': 'Wrong because image compression reduces file size, while association mining looks for items that occur together.',
+    'To compare CPU speeds': 'Wrong because hardware benchmarking is unrelated to discovering co-occurrence patterns in records.'
+  },
+  'mining-dimensions': {
+    'It creates more labels automatically': 'Wrong because dimensionality reduction transforms features; it does not create supervised target labels.',
+    'It turns all data into binary form': 'Wrong because reducing dimensions selects or combines features and does not require binary encoding.',
+    'It guarantees perfect predictions': 'Wrong because fewer, cleaner features can help analysis, but prediction accuracy is never guaranteed.'
+  },
+  'dbms-normalization': {
+    'To speed up all queries equally': 'Wrong because normalization can add joins and does not make every query faster.',
+    'To hide all table names': 'Wrong because access control and permissions protect schema details; normalization organizes the data itself.',
+    'To convert SQL into JSON': 'Wrong because serialization changes representation, while normalization reduces repeated data and update anomalies.'
+  },
+  'dbms-index': {
+    'To rewrite SQL queries': 'Wrong because indexes support the database query engine; they do not rewrite the SQL a developer sends.',
+    'To store backups permanently': 'Wrong because backups preserve recoverable copies, while indexes are lookup structures that can be rebuilt.',
+    'To encrypt table rows': 'Wrong because encryption protects confidentiality; an index is designed to locate matching rows efficiently.'
+  },
+  'os-scheduling': {
+    'How many users can log in': 'Wrong because login capacity is an authentication and resource policy concern, not the CPU scheduler\'s immediate decision.',
+    'Whether a database is normalized': 'Wrong because normalization is a database design choice and has nothing to do with selecting the next runnable process.',
+    'How to compress a file': 'Wrong because compression is an application or system service; scheduling decides which process receives CPU time.'
+  },
+  'os-memory': {
+    'It makes files smaller automatically': 'Wrong because file compression changes file representation, while virtual memory manages addresses and pages for running programs.',
+    'It prevents all CPU interrupts': 'Wrong because interrupts are part of CPU and device coordination; virtual memory does not eliminate them.',
+    'It replaces the file system': 'Wrong because the file system manages persistent files, while virtual memory manages a process\'s logical memory space.'
+  },
+  'design-scalability': {
+    'A way to reduce storage cost only': 'Wrong because storage efficiency can help, but scalability is about handling growth in demand across system resources.',
+    'The process of writing SQL queries': 'Wrong because SQL is a data-access language; scalability concerns how the whole system grows under load.',
+    'A method to prevent code compilation': 'Wrong because compilation is a build concern and has no relationship to serving more users or requests.'
+  },
+  'design-caching': {
+    'To remove the need for databases': 'Wrong because caches usually complement databases and can be repopulated; they are not the system\'s durable source of truth.',
+    'To guarantee security': 'Wrong because caching is primarily a performance technique and can even introduce security concerns if data is shared incorrectly.',
+    'To replace all load balancers': 'Wrong because caches store reusable results, while load balancers distribute requests across service instances.'
+  },
+  'design-loadbalancing': {
+    'To store backups': 'Wrong because backup systems preserve data for recovery; a load balancer routes live requests.',
+    'To compress logs': 'Wrong because log compression reduces storage usage and does not distribute application traffic.',
+    'To remove caching': 'Wrong because caching and load balancing solve different performance problems and are commonly used together.'
+  },
+  'crypto-symmetric': {
+    'Different keys for encryption and decryption': 'Wrong because that describes asymmetric encryption. Symmetric encryption reuses one shared secret key.',
+    'No keys used': 'Wrong because encryption requires a secret key to transform and recover protected data.',
+    'Only hashes are generated': 'Wrong because hashing creates a one-way digest, while symmetric encryption supports reversible encryption and decryption.'
+  },
+  'crypto-hash': {
+    'To encrypt data in reverse': 'Wrong because a hash is not reversible encryption; it produces a digest that is designed to be difficult to invert.',
+    'To store all user passwords in plain text': 'Wrong because password systems should store salted password hashes, never the original plain-text passwords.',
+    'To create an index for a CPU': 'Wrong because a hash function maps data to a digest for integrity or lookup uses; it does not create a CPU index.'
+  },
+  'crypto-rsa': {
+    'It uses hashing only': 'Wrong because RSA uses public-key operations based on a key pair; hashing alone does not provide its encryption or signature behavior.',
+    'It stores keys in plain text': 'Wrong because key storage is an operational security issue, not what makes an algorithm public-key.',
+    'It requires no math': 'Wrong because RSA depends on number theory and modular arithmetic, especially operations involving large prime factors.'
+  },
+  'cyber-authentication': {
+    'To encrypt all files': 'Wrong because encryption protects data confidentiality, while authentication establishes who a user is.',
+    'To delete unused accounts': 'Wrong because account lifecycle management is separate from verifying a user\'s identity at sign-in.',
+    'To monitor CPU usage': 'Wrong because CPU monitoring is observability, not an identity and access control function.'
+  },
+  'cyber-phishing': {
+    'SQL injection': 'Wrong because SQL injection targets an application\'s database queries, rather than persuading a person to surrender information.',
+    'DDoS': 'Wrong because a DDoS overwhelms a service with traffic; it does not primarily use deceptive messages to steal credentials.',
+    'Man-in-the-middle': 'Wrong because that attack intercepts communication between parties, while phishing impersonates a trusted source to trick the victim.'
+  },
+  'cyber-zero-trust': {
+    'Always trust internal users': 'Wrong because zero trust rejects location-based assumptions and verifies internal users just as it verifies external users.',
+    'Encrypt only external traffic': 'Wrong because encryption scope is not the zero-trust principle; verification and least privilege apply regardless of network location.',
+    'Allow anonymous access': 'Wrong because zero trust requires strong identity checks rather than treating unknown users as trusted.'
+  },
+  'arch-cpu-components': {
+    'Control Unit': 'Wrong because the control unit directs instruction execution; it does not perform the arithmetic or logical calculation itself.',
+    'Cache': 'Wrong because cache stores frequently needed data and instructions close to the CPU; it is not the calculation unit.',
+    'Registers': 'Wrong because registers hold small, fast pieces of data, while the ALU performs operations on those values.'
+  },
+  'arch-cache': {
+    'To store backups': 'Wrong because backups are durable recovery copies, while CPU caches hold temporary copies for faster access.',
+    'To replace RAM': 'Wrong because cache is a smaller, faster layer that works alongside RAM rather than replacing its capacity.',
+    'To encrypt memory': 'Wrong because encryption protects confidentiality; cache primarily reduces the time needed to reach frequently used data.'
+  },
+  'arch-risc-vs-cisc': {
+    'CISC avoids using instructions': 'Wrong because CISC does use instructions; its distinction is that those instructions may be more complex and feature-rich.',
+    'RISC encrypts all instructions': 'Wrong because RISC describes instruction-set design, not an encryption requirement.',
+    'CISC eliminates memory': 'Wrong because both architectures use memory; instruction complexity does not remove the memory hierarchy.'
+  },
+  'se-testing-pyramid': {
+    'They run extremely fast': 'Wrong because end-to-end tests usually involve real services and I/O, which makes them slower than unit tests.',
+    'They eliminate the need for unit tests': 'Wrong because broad tests do not replace the fast, focused feedback and isolation provided by unit tests.',
+    'They guarantee perfect coverage': 'Wrong because an end-to-end path covers only selected workflows and cannot guarantee every behavior is exercised.'
+  },
+  'se-design-singleton': {
+    'It increases performance': 'Wrong because a shared instance does not inherently improve performance and can introduce contention or hidden dependencies.',
+    'It guarantees thread safety': 'Wrong because singleton construction and shared mutable state still require explicit synchronization.',
+    'It simplifies dependency injection': 'Wrong because global access hides dependencies, making injection, replacement, and testing more difficult.'
+  },
+  'se-event-sourcing': {
+    'It removes the need for databases': 'Wrong because event sourcing is a persistence model and still requires storage for the event log and often projections.',
+    'It eliminates concurrency issues': 'Wrong because events still need ordering and conflict handling; recording history does not remove concurrency.',
+    'It guarantees constant-time queries': 'Wrong because reconstructing state or querying projections has costs that depend on the event and read model design.'
+  },
+  'ds-cap-theorem': {
+    'To guarantee strict consistency': 'Wrong because an AP choice accepts eventual consistency during a partition in order to keep serving requests.',
+    'To reduce server count': 'Wrong because CAP concerns consistency, availability, and partitions, not the number of servers used.',
+    'To eliminate replication': 'Wrong because distributed availability generally relies on replication; AP does not remove it.'
+  },
+  'ds-2pc-limitations': {
+    'It scales infinitely': 'Wrong because coordination and participant messaging add overhead, so 2PC does not scale without limit.',
+    'It eliminates all network latency': 'Wrong because 2PC requires multiple network rounds and is therefore affected by network latency.',
+    'It guarantees perfect fault tolerance': 'Wrong because a failed coordinator can leave participants waiting, which is the protocol\'s classic blocking limitation.'
+  },
+  'ds-lamport-clocks': {
+    'Encrypting timestamps': 'Wrong because Lamport clocks assign logical counters; they do not provide confidentiality for timestamp data.',
+    'Reducing CPU usage': 'Wrong because logical clocks help reason about event order and are not primarily an optimization for computation.',
+    'Guaranteeing global consistency': 'Wrong because Lamport clocks capture a partial ordering, not a globally consistent state or total knowledge.'
+  },
+  'net-tcp-congestion': {
+    'Congestion Avoidance': 'Wrong because congestion avoidance increases cwnd more cautiously, typically linearly, after the initial exponential probing phase.',
+    'Fast Recovery': 'Wrong because fast recovery responds to detected packet loss; it is not the phase that performs exponential startup growth.',
+    'Fast Retransmit': 'Wrong because fast retransmit resends a suspected lost segment after duplicate acknowledgments, rather than probing capacity.'
+  },
+  'net-bgp-convergence': {
+    'It uses link-state flooding': 'Wrong because BGP is a path-vector protocol; link-state flooding describes a different routing approach.',
+    'It recalculates all shortest paths constantly': 'Wrong because BGP exchanges path-vector updates incrementally and is not constantly running a link-state shortest-path calculation.',
+    'It encrypts all routing tables': 'Wrong because encryption is unrelated to the update and path-selection behavior that affects convergence speed.'
+  },
+  'net-dns-cache-poison': {
+    'DNS uses encrypted records': 'Wrong because ordinary DNS records are not inherently protected by encryption, and encryption would not itself describe poisoning impact.',
+    'DNS servers never replicate data': 'Wrong because resolver caches and replicated infrastructure are precisely why a false mapping can spread widely.',
+    'TTL values prevent caching': 'Wrong because TTL values control cache lifetime; they do not prevent caching or guarantee that a poisoned entry is harmless.'
+  },
+  'oop-lsp-violation': {
+    'A subclass requiring fewer preconditions': 'Wrong because accepting at least the inputs the base type accepts preserves substitutability.',
+    'A subclass extending functionality safely': 'Wrong because compatible extensions do not violate LSP when existing base-class expectations still hold.',
+    'A subclass overriding methods with compatible behavior': 'Wrong because compatible overrides preserve the contract clients rely on and are consistent with LSP.'
+  },
+  'oop-metaprogramming': {
+    'It prevents polymorphism': 'Wrong because reflection can inspect or alter runtime types; it does not inherently prevent polymorphic dispatch.',
+    'It disables inheritance': 'Wrong because inheritance still exists, but reflection can bypass the boundaries that make inherited code predictable.',
+    'It forces static linking': 'Wrong because reflection is a runtime mechanism and is not defined by how code is linked.'
+  },
+  'oop-object-lifecycle': {
+    'Objects never reference each other': 'Wrong because objects commonly reference one another, and those relationships are part of the lifecycle challenge.',
+    'Constructors always free memory': 'Wrong because constructors initialize objects; freeing memory is a separate responsibility handled by destruction or explicit release.',
+    'Destructors run automatically at compile time': 'Wrong because destruction happens during execution, and manual-memory languages require deliberate lifetime management.'
+  }
+};
+
 export async function GET() {
-  return NextResponse.json({ quests });
+  return NextResponse.json({
+    quests: quests.map((quest) => ({
+      ...quest,
+      choiceExplanations: {
+        ...choiceExplanations[quest.id],
+        [quest.correctAnswer]: quest.explanation,
+      },
+    })),
+  });
 }
