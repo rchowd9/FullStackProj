@@ -96,63 +96,25 @@ function QuestsContent() {
 
   const explainChoice = (quest: Quest, choice: string) => {
     if (choice === quest.correctAnswer) {
-      return `Correct: ${quest.correctAnswer} is the principle that best answers this question.`;
+      return `Correct: ${quest.correctAnswer} is the best answer for this question.`;
     }
 
     if (quest.id === 'oop-lsp-violation') {
       if (choice === 'A subclass requiring fewer preconditions') {
-        return 'This is the opposite of the LSP issue. A subclass should not impose stronger constraints than the base type; it must accept the same valid inputs without adding new requirements.';
+        return 'This option is wrong because it creates a stronger contract than the base class: the subclass would reject inputs the parent allows. LSP requires the subclass to accept the same valid inputs without adding new restrictions.';
       }
 
       if (choice === 'A subclass extending functionality safely') {
-        return 'Adding behavior is fine only when it remains compatible with the base class contract. This choice describes valid extension, not an LSP violation.';
+        return 'This option is wrong because safe extension is only valid when the subclass keeps the base contract intact. The LSP violation here is when subclass behavior changes in a way that breaks valid expectations from the base type.';
       }
 
       if (choice === 'A subclass overriding methods with compatible behavior') {
-        return 'Compatible overriding is part of good polymorphism. The real LSP violation is when a subclass breaks expected behavior for valid base-class inputs.';
+        return 'This option is wrong because compatible overriding is part of sound polymorphism. LSP breaks when a subclass makes valid base-class calls fail or behave differently in unacceptable ways.';
       }
     }
 
-    const conceptExplanations: Record<string, string> = {
-      Agents: 'This misses the Agents concept because it treats the system as a passive data store instead of a goal-driven component that acts on information to accomplish tasks.',
-      Reasoning: 'This misses the Reasoning concept because it assumes a one-step lookup instead of multi-step inference or planning before making a decision.',
-      'Reinforcement Learning': 'This misses the Reinforcement Learning concept because a policy is the mapping from states to actions, not labels, schemas, or loss functions.',
-      'Supervised Learning': 'This misses Supervised Learning because it relies on labeled examples to learn the mapping from inputs to outputs, not unlabeled discovery or hard-coded rules.',
-      'Model Evaluation': 'This misses Model Evaluation because it is about how well a model generalizes to new data, not about feature scaling or label leakage.',
-      Regularization: 'This misses Regularization because the point is controlling complexity to avoid overfitting, not increasing model size or removing features entirely.',
-      'Association Rules': 'This misses Association Rules because the goal is discovering relationships among data patterns, not generating code or comparing hardware metrics.',
-      'Dimensionality Reduction': 'This misses Dimensionality Reduction because it simplifies high-dimensional data by reducing noise and preserving key structure, not creating labels or guaranteeing perfect predictions.',
-      Normalization: 'This misses Normalization because its purpose is to reduce redundancy and improve integrity, not to change query speed or convert data formats.',
-      Indexing: 'This misses Indexing because indexes improve lookup performance for common queries, not rewriting SQL or encrypting rows.',
-      'Process Scheduling': 'This misses Process Scheduling because it is about choosing which process runs next, not user authentication or file compression.',
-      'Memory Management': 'This misses Memory Management because virtual memory expands the effective address space and handles paging, not compression or file system replacement.',
-      Scalability: 'This misses Scalability because it is about handling growth without major redesign, not just reducing storage cost or writing SQL.',
-      Caching: 'This misses Caching because caches reduce repeated expensive work and latency, not replacing the database or guaranteeing security guarantees.',
-      'Load Balancing': 'This misses Load Balancing because its job is to distribute traffic across servers so no single node becomes overloaded.',
-      'Symmetric Encryption': 'This misses Symmetric Encryption because it uses one shared key for both encrypting and decrypting data.',
-      'Hash Functions': 'This misses Hash Functions because they produce a fixed-size digest for integrity and verification rather than reversible encryption.',
-      'Public Key Cryptography': 'This misses Public Key Cryptography because RSA relies on a pair of keys, one public and one private, to support secure communication.',
-      Authentication: 'This misses Authentication because it is about validating identity, not encrypting files or monitoring system load.',
-      Threats: 'This misses the Threats concept because phishing is a deception attack that tricks users into revealing information, not a different class of infrastructure disruption.',
-      'Access Control': 'This misses Access Control because zero trust means never assuming trust and always verifying identity and context.',
-      CPU: 'This misses the CPU concept because the ALU is the component that performs arithmetic and logical operations.',
-      'Memory Hierarchy': 'This misses Memory Hierarchy because caches reduce latency by keeping the most-used data near the processor.',
-      'Instruction Sets': 'This misses Instruction Sets because RISC emphasizes a smaller set of simpler instructions designed for faster execution.',
-      Testing: 'This misses Testing because end-to-end tests are often brittle and slower than smaller, more focused tests, which is the testing risk being described.',
-      'Design Patterns': 'This misses Design Patterns because Singleton introduces hidden global state and tight coupling rather than clean dependency flow.',
-      Architecture: 'This misses the Architecture concept because event sourcing preserves a complete history of state transitions, which supports auditing and reconstruction.',
-      'CAP Theorem': 'This misses CAP Theorem because the issue is choosing availability during a network partition rather than strict consistency.',
-      'Distributed Transactions': 'This misses Distributed Transactions because two-phase commit can block indefinitely when the coordinator fails.',
-      'Clock Synchronization': 'This misses Clock Synchronization because Lamport clocks provide event ordering without needing perfect physical time.',
-      'TCP Internals': 'This misses TCP Internals because Slow Start is the phase that probes network capacity by increasing the congestion window exponentially.',
-      'Routing Protocols': 'This misses Routing Protocols because BGP convergence is slow when path-vector updates and delayed refreshes dominate the network response.',
-      Security: 'This misses the Security concept because DNS cache poisoning spreads bad mappings across resolvers and can redirect traffic at scale.',
-      'SOLID Principles': 'This misses the SOLID Principles concept because the key problem is substitutability: a subclass must honor the base contract and not break valid inputs.',
-      Reflection: 'This misses Reflection because runtime reflection can bypass type safety and encapsulation, breaking assumptions in large systems.',
-      'Memory & Lifecycle': 'This misses Memory & Lifecycle because manual memory management problems often arise from reference cycles and leaks rather than from constructors alone.'
-    };
-
-    return `This misses the ${quest.concept} concept because ${conceptExplanations[quest.concept] ?? `it does not match the behavior described by "${quest.correctAnswer}".`}`;
+    const normalizedExplanation = quest.explanation.endsWith('.') ? quest.explanation : `${quest.explanation}.`;
+    return `This is not the right answer because it treats ${quest.concept} as "${choice}", but the actual idea is "${quest.correctAnswer}". ${normalizedExplanation}`;
   };
 
   return (
