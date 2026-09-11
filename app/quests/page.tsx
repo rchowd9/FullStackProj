@@ -100,7 +100,7 @@ function QuestsContent() {
     }
 
     const normalizedExplanation = quest.explanation.endsWith('.') ? quest.explanation : `${quest.explanation}.`;
-    return `This is not the correct answer because "${choice}" describes a different idea than "${quest.correctAnswer}". ${normalizedExplanation}`;
+    return `This choice is wrong for "${quest.title}" because "${choice}" describes a different interpretation of ${quest.concept} than "${quest.correctAnswer}". ${normalizedExplanation}`;
   };
 
   return (
