@@ -99,6 +99,20 @@ function QuestsContent() {
       return `Correct: ${quest.correctAnswer} is the principle that best answers this question.`;
     }
 
+    if (quest.id === 'oop-lsp-violation') {
+      if (choice === 'A subclass requiring fewer preconditions') {
+        return 'This is the opposite of the LSP issue. A subclass should not impose stronger constraints than the base type; it must accept the same valid inputs without adding new requirements.';
+      }
+
+      if (choice === 'A subclass extending functionality safely') {
+        return 'Adding behavior is fine only when it remains compatible with the base class contract. This choice describes valid extension, not an LSP violation.';
+      }
+
+      if (choice === 'A subclass overriding methods with compatible behavior') {
+        return 'Compatible overriding is part of good polymorphism. The real LSP violation is when a subclass breaks expected behavior for valid base-class inputs.';
+      }
+    }
+
     return `This misses the ${quest.concept} concept because it does not describe the behavior being tested. The correct idea is "${quest.correctAnswer}".`;
   };
 
