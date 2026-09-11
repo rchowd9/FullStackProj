@@ -100,7 +100,20 @@ function QuestsContent() {
     }
 
     const normalizedExplanation = quest.explanation.endsWith('.') ? quest.explanation : `${quest.explanation}.`;
-    return `This choice is wrong for "${quest.title}" because "${choice}" describes a different interpretation of ${quest.concept} than "${quest.correctAnswer}". ${normalizedExplanation}`;
+    const lowerChoice = choice.toLowerCase();
+    const lowerAnswer = quest.correctAnswer.toLowerCase();
+    const concept = quest.concept;
+    const prompt = quest.title;
+    const patternIndex = (prompt.length + lowerChoice.length + lowerAnswer.length) % 4;
+
+    const templates = [
+      `This distractor mixes up ${concept} with a related idea: "${choice}" is not the defining behavior behind ${prompt}. The key distinction is that ${quest.correctAnswer} matches the actual rule, while this option focuses on a different concept. ${normalizedExplanation}`,
+      `This answer is incorrect because it confuses ${concept} with a nearby but different idea. "${choice}" may sound plausible, but ${quest.correctAnswer} is the actual principle being tested here. ${normalizedExplanation}`,
+      `This option is not the right model for ${prompt}. It describes a different mechanism than ${quest.correctAnswer}, which is what ${concept} is really about. ${normalizedExplanation}`,
+      `The mistake in this choice is that it treats ${concept} as if it meant "${choice}" instead of "${quest.correctAnswer}". The distinction matters here because ${normalizedExplanation}`
+    ];
+
+    return templates[patternIndex];
   };
 
   return (
