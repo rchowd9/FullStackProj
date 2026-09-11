@@ -99,22 +99,8 @@ function QuestsContent() {
       return `Correct: ${quest.correctAnswer} is the best answer for this question.`;
     }
 
-    if (quest.id === 'oop-lsp-violation') {
-      if (choice === 'A subclass requiring fewer preconditions') {
-        return 'This option is wrong because it creates a stronger contract than the base class: the subclass would reject inputs the parent allows. LSP requires the subclass to accept the same valid inputs without adding new restrictions.';
-      }
-
-      if (choice === 'A subclass extending functionality safely') {
-        return 'This option is wrong because safe extension is only valid when the subclass keeps the base contract intact. The LSP violation here is when subclass behavior changes in a way that breaks valid expectations from the base type.';
-      }
-
-      if (choice === 'A subclass overriding methods with compatible behavior') {
-        return 'This option is wrong because compatible overriding is part of sound polymorphism. LSP breaks when a subclass makes valid base-class calls fail or behave differently in unacceptable ways.';
-      }
-    }
-
     const normalizedExplanation = quest.explanation.endsWith('.') ? quest.explanation : `${quest.explanation}.`;
-    return `This is not the right answer because it treats ${quest.concept} as "${choice}", but the actual idea is "${quest.correctAnswer}". ${normalizedExplanation}`;
+    return `This is not the correct answer because "${choice}" describes a different idea than "${quest.correctAnswer}". ${normalizedExplanation}`;
   };
 
   return (
