@@ -13,6 +13,9 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 - Mastery radar and weekly momentum tracker for learning progress
 - Responsive interface for desktop and mobile
 - Framer Motion animations for polished UI transitions
+- Deterministic daily run that rotates three challenges by UTC date
+- Shareable progress snapshot using the Web Share API with clipboard fallback
+- Hono-powered Vercel Edge API health route at `/api/status`
 
 ## Local development
 
@@ -23,6 +26,7 @@ npm run dev
 
 Additional framework installed:
 - Framer Motion for small animated UI interactions and onboarding polish
+- Hono for a lightweight Edge API boundary that runs on Vercel
 
 ## Deploy on Vercel
 

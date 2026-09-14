@@ -205,12 +205,17 @@ a {
 .level-progress { height: 6px; margin-top: 24px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,0.08); }
 .level-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--secondary), var(--lime)); }
 .progress-caption { display: block; margin-top: 9px; color: var(--muted); font-size: 0.72rem; }
-.command-bar { display: grid; grid-template-columns: 1.5fr 1fr 1fr auto; gap: 20px; align-items: center; margin-top: 42px; padding: 17px 20px; border: 1px solid var(--border); border-radius: 16px; background: rgba(184, 243, 74, 0.045); }
+.share-progress { width: 100%; margin-top: 18px; padding: 10px 12px; border: 1px solid rgba(184, 243, 74, 0.3); border-radius: 10px; background: rgba(184, 243, 74, 0.08); color: var(--lime); font-size: 0.78rem; font-weight: 800; cursor: pointer; text-align: left; }
+.share-progress span { float: right; font-size: 1rem; }
+.share-progress:hover { background: rgba(184, 243, 74, 0.15); }
+.share-status { display: block; margin-top: 8px; color: var(--muted); font-size: 0.72rem; }
+.command-bar { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr) auto; gap: 20px; align-items: center; margin-top: 42px; padding: 17px 20px; border: 1px solid var(--border); border-radius: 16px; background: rgba(184, 243, 74, 0.045); }
 .command-label { display: flex; align-items: center; gap: 10px; color: var(--lime); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; }
 .command-label strong { color: var(--muted); font-size: 0.76rem; font-weight: 500; letter-spacing: 0; }
 .command-stat { display: flex; flex-direction: column; gap: 4px; border-left: 1px solid var(--border); padding-left: 20px; }
 .command-stat span, .command-stat small { color: var(--muted); font-size: 0.72rem; }
 .command-stat strong { font-size: 0.95rem; }
+.service-status { color: var(--lime); text-transform: capitalize; }
 .command-action { color: var(--lime); text-decoration: none; font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
 .command-action span { margin-left: 5px; font-size: 1.2rem; }
 
