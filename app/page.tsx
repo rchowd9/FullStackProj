@@ -141,6 +141,7 @@ export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
   const [shareStatus, setShareStatus] = useState('');
+  const [apiStatus, setApiStatus] = useState('checking');
 
   const shareProgress = async () => {
     const shareUrl = `${window.location.origin}/?player=Byte%20Knight&cleared=${completedQuests.length}`;
@@ -183,6 +184,11 @@ export default function HomePage() {
       .then((res) => res.json())
       .then((data) => setLeaderboard(data.leaderboard ?? []))
       .catch(() => setLeaderboard([]));
+
+    fetch('/api/status')
+      .then((res) => res.json())
+      .then((data) => setApiStatus(data.status === 'online' ? 'edge online' : 'degraded'))
+      .catch(() => setApiStatus('unavailable'));
   }, []);
 
   return (
@@ -250,6 +256,7 @@ export default function HomePage() {
       <section className="command-bar" aria-label="Your learning progress">
         <div className="command-label"><span className="pulse-dot" /> DAILY RUN <strong>{new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' }).format(new Date())}</strong></div>
         <div className="command-stat"><span>Cycle progress</span><strong>{completedQuests.length}/12 quests</strong></div>
+        <div className="command-stat"><span>API layer</span><strong className="service-status">{apiStatus}</strong></div>
         <div className="command-stat"><span>Next reward</span><strong>+500 XP <small>at 12 quests</small></strong></div>
         <Link href="/quests" className="command-action">Resume run <span>→</span></Link>
       </section>
