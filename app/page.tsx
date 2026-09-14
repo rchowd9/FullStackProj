@@ -140,6 +140,28 @@ const habitBoard = [
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
+  const [shareStatus, setShareStatus] = useState('');
+
+  const shareProgress = async () => {
+    const shareUrl = `${window.location.origin}/?player=Byte%20Knight&cleared=${completedQuests.length}`;
+    const shareData = {
+      title: 'Byte Knight\'s Code Quest progress',
+      text: `${completedQuests.length} quests cleared in Code Quest Academy.`,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setShareStatus('Progress shared');
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus('Snapshot link copied');
+      }
+    } catch {
+      setShareStatus('Sharing cancelled');
+    }
+  };
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -219,12 +241,14 @@ export default function HomePage() {
             </ul>
             <div className="level-progress"><span style={{ width: `${Math.min(100, 42 + completedQuests.length * 8)}%` }} /></div>
             <small className="progress-caption">{completedQuests.length} quests cleared this cycle</small>
+            <button className="share-progress" onClick={shareProgress}>Share progress <span>↗</span></button>
+            {shareStatus && <small className="share-status" role="status">{shareStatus}</small>}
           </div>
         </div>
       </section>
 
       <section className="command-bar" aria-label="Your learning progress">
-        <div className="command-label"><span className="pulse-dot" /> DAILY RUN <strong>Tuesday, September 9</strong></div>
+        <div className="command-label"><span className="pulse-dot" /> DAILY RUN <strong>{new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric' }).format(new Date())}</strong></div>
         <div className="command-stat"><span>Cycle progress</span><strong>{completedQuests.length}/12 quests</strong></div>
         <div className="command-stat"><span>Next reward</span><strong>+500 XP <small>at 12 quests</small></strong></div>
         <Link href="/quests" className="command-action">Resume run <span>→</span></Link>
@@ -348,7 +372,7 @@ export default function HomePage() {
           <p>Architect a caching strategy before latency melts your service. Three scenarios. One clean design.</p>
           <div className="daily-rewards"><span>+350 XP</span><span>Rare badge</span><span>Ends in 08:42:16</span></div>
         </div>
-        <Link href="/quests?category=System%20Design" className="primary button-link">Take the challenge</Link>
+        <Link href="/quests?mode=daily" className="primary button-link">Take the challenge</Link>
       </section>
 
       <section className="leaderboard-panel">

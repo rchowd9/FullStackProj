@@ -17,6 +17,18 @@ type Quest = {
   choiceExplanations: Record<string, string>;
 };
 
+function getDailyQuestIds(quests: Quest[]) {
+  const dayKey = new Date().toISOString().slice(0, 10);
+  const seeded = quests
+    .map((quest) => ({
+      id: quest.id,
+      score: Array.from(`${dayKey}:${quest.id}`).reduce((total, character) => total + character.charCodeAt(0), 0),
+    }))
+    .sort((left, right) => left.score - right.score);
+
+  return seeded.slice(0, 3).map((quest) => quest.id);
+}
+
 export default function QuestsPage() {
   return (
     <Suspense fallback={<main className="page-shell quest-page"><p>Loading quests...</p></main>}>
@@ -66,13 +78,16 @@ function QuestsContent() {
   }, [completedIds, missedIds, progressLoaded]);
 
   const selectedCategory = searchParams.get('category');
+  const dailyMode = searchParams.get('mode') === 'daily';
+  const dailyQuestIds = getDailyQuestIds(quests);
   const visibleQuests = quests.filter((quest) => {
     const matchesCategory = !selectedCategory || quest.category === selectedCategory;
+    const matchesDailyRun = !dailyMode || dailyQuestIds.includes(quest.id);
     const matchesDifficulty = difficulty === 'All levels' || quest.difficulty === difficulty;
     const matchesReview = !reviewMisses || missedIds.includes(quest.id);
     const searchTerm = search.trim().toLowerCase();
     const matchesSearch = !searchTerm || `${quest.title} ${quest.concept} ${quest.prompt}`.toLowerCase().includes(searchTerm);
-    return matchesCategory && matchesDifficulty && matchesReview && matchesSearch;
+    return matchesCategory && matchesDailyRun && matchesDifficulty && matchesReview && matchesSearch;
   });
 
   const groupedQuests = Array.from(
@@ -103,9 +118,11 @@ function QuestsContent() {
     <main className="page-shell quest-page">
       <section className="quest-header">
         <p className="eyebrow">MISSION CONTROL</p>
-        <h1>{selectedCategory ? `${selectedCategory} Quest Board` : 'Quest Board'}</h1>
+        <h1>{dailyMode ? 'Daily Run' : selectedCategory ? `${selectedCategory} Quest Board` : 'Quest Board'}</h1>
         <p className="subtitle">
-          {selectedCategory
+          {dailyMode
+            ? 'Three rotating challenges. Clear today\'s run before the UTC reset.'
+            : selectedCategory
             ? `Focus on ${selectedCategory} challenges and earn XP.`
             : 'Answer challenges to earn XP and unlock new topics.'}
         </p>
@@ -125,7 +142,7 @@ function QuestsContent() {
         <button className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
           Review misses <strong>{missedIds.length}</strong>
         </button>
-        <div className="quest-summary"><strong>{completedIds.length}</strong> cleared <span>•</span> <strong>{quests.length - completedIds.length}</strong> remaining</div>
+        <div className="quest-summary"><strong>{dailyMode ? visibleQuests.filter((quest) => completedIds.includes(quest.id)).length : completedIds.length}</strong> cleared <span>•</span> <strong>{visibleQuests.filter((quest) => !completedIds.includes(quest.id)).length}</strong> remaining</div>
       </section>
 
       <div className="quest-list">
