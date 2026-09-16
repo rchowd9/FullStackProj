@@ -235,44 +235,6 @@ a {
   font-size: 0.92rem;
 }
 
-.resume-feature-showcase {
-  margin-top: 56px;
-}
-
-.showcase-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-}
-
-.showcase-card {
-  background: rgba(15, 23, 42, 0.82);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 22px;
-  box-shadow: var(--shadow);
-}
-
-.showcase-card h3 {
-  margin: 0 0 10px;
-  font-size: 1.35rem;
-}
-
-.showcase-card p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.showcase-value {
-  margin: 0 0 12px !important;
-  color: var(--lime) !important;
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -550,8 +512,7 @@ a {
 @media (max-width: 900px) {
   .hero,
   .mission-grid,
-  .choices,
-  .showcase-grid {
+  .choices {
     grid-template-columns: 1fr;
   }
 
