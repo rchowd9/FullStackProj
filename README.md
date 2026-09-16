@@ -9,13 +9,19 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 - Progress cockpit with XP, streak, cycle goals, and daily challenge
 - Searchable and filterable quest board
 - Persistent local quest completion state shared across the home dashboard and quiz flow
+- Adaptive review queue for missed questions to reinforce weak concepts
+- Daily challenge engine that rotates three quests using a UTC-based deterministic selector
+- Shareable progress snapshot using the Web Share API with clipboard fallback
 - Redis-backed leaderboard with an in-memory development fallback
 - Mastery radar and weekly momentum tracker for learning progress
 - Responsive interface for desktop and mobile
 - Framer Motion animations for polished UI transitions
-- Deterministic daily run that rotates three challenges by UTC date
-- Shareable progress snapshot using the Web Share API with clipboard fallback
 - Hono-powered Vercel Edge API health route at `/api/status`
+
+## Resume-ready project highlights
+
+- Built a full-stack CS learning app with a searchable quest board, 3 rotating daily challenges, and persistent progress tracking across sessions so learners can resume and review missed questions without losing state.
+- Implemented a resilient Vercel Edge API and leaderboard flow with Upstash Redis plus an in-memory fallback, exposing 1 live health endpoint and maintaining a ranked list of up to 10 entries when remote storage is unavailable.
 
 ## Local development
 

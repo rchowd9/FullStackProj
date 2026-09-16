@@ -137,6 +137,24 @@ const habitBoard = [
   { label: 'Concept review', value: 9, total: 10, note: 'Nearly mastered' },
 ];
 
+const featureHighlights = [
+  {
+    title: 'Adaptive review queue',
+    value: 'Misses tracked',
+    description: 'Incorrect answers are persisted and surfaced in a focused review flow so learners can revisit weak concepts without losing progress.',
+  },
+  {
+    title: 'Daily challenge engine',
+    value: '3 rotating runs',
+    description: 'A UTC-based selector rotates three questions each day, giving the app a repeatable daily-run experience with fresh challenge sets.',
+  },
+  {
+    title: 'Shareable progress snapshot',
+    value: 'Web Share + fallback',
+    description: 'Progress can be shared through the native Web Share API or copied as a link, improving portability and user engagement.',
+  },
+];
+
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
@@ -265,6 +283,25 @@ export default function HomePage() {
         {concepts.map((concept) => (
           <span key={concept} className="chip">{concept}</span>
         ))}
+      </section>
+
+      <section className="resume-feature-showcase" aria-label="Portfolio feature highlights">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">PORTFOLIO HIGHLIGHTS</p>
+            <h2>Resume-worthy capabilities</h2>
+          </div>
+        </div>
+
+        <div className="showcase-grid">
+          {featureHighlights.map((feature) => (
+            <article key={feature.title} className="showcase-card">
+              <p className="showcase-value">{feature.value}</p>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="feature-grid" aria-label="Progress and habit features">
