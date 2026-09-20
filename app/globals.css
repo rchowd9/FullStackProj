@@ -499,6 +499,27 @@ a {
 .quest-summary { color: var(--muted); font-size: 0.8rem; text-align: right; }
 .quest-summary strong { color: var(--lime); }
 .quest-summary span { margin: 0 5px; color: var(--border); }
+.practice-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0 0 26px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 138, 76, 0.28);
+  border-radius: 18px;
+  background: rgba(255, 138, 76, 0.05);
+}
+
+.practice-summary > div {
+  display: grid;
+  gap: 6px;
+}
+
+.practice-summary strong {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
 .completed-label { color: var(--lime); font-size: 0.8rem; font-weight: 800; }
 
 .concept-tag {

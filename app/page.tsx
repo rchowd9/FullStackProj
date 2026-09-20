@@ -307,9 +307,33 @@ export default function HomePage() {
   const [signalIndex, setSignalIndex] = useState(0);
   const [interviewAnswers, setInterviewAnswers] = useState<Record<string, string>>({});
   const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
+  const [studyCoach, setStudyCoach] = useState({ focus: 'System Design', note: 'Keep momentum and complete a strong daily run.' });
 
   const currentSignal = signalStates[signalIndex];
   const readiness = Math.min(96, 58 + completedQuests.length * 7);
+
+  useEffect(() => {
+    const savedProgress = window.localStorage.getItem('code-quest:progress');
+    if (!savedProgress) {
+      setStudyCoach({ focus: 'System Design', note: 'You are ready for a higher-difficulty systems sprint.' });
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(savedProgress) as { completedIds?: string[]; missedIds?: string[] };
+      const missedCount = Array.isArray(parsed.missedIds) ? parsed.missedIds.length : 0;
+      const focus = missedCount > 0
+        ? 'Review queue'
+        : 'System Design';
+      const note = missedCount > 0
+        ? `You have ${missedCount} missed challenge${missedCount === 1 ? '' : 's'} to revisit before the next streak push.`
+        : 'Your momentum is strong. Maintain the streak and push into a harder systems challenge.';
+
+      setStudyCoach({ focus, note });
+    } catch {
+      setStudyCoach({ focus: 'System Design', note: 'Your momentum is strong. Maintain the streak and push into a harder systems challenge.' });
+    }
+  }, [completedQuests.length]);
 
   const handleInterviewEvaluation = (question: InterviewQuestion) => {
     const result = evaluateInterviewAnswer(question, interviewAnswers[question.id] ?? '');
@@ -452,6 +476,14 @@ export default function HomePage() {
         {concepts.map((concept) => (
           <span key={concept} className="chip">{concept}</span>
         ))}
+      </section>
+
+      <section className="study-coach" aria-label="Adaptive study coach">
+        <div>
+          <p className="eyebrow">ADAPTIVE STUDY COACH</p>
+          <h3>Current focus: {studyCoach.focus}</h3>
+        </div>
+        <p>{studyCoach.note}</p>
       </section>
 
       <section className="feature-grid" aria-label="Progress and habit features">

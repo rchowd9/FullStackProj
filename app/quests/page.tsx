@@ -48,6 +48,15 @@ function QuestsContent() {
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('All levels');
   const [reviewMisses, setReviewMisses] = useState(false);
+  const [sessionSeconds, setSessionSeconds] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setSessionSeconds((current) => current + 1);
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -143,7 +152,25 @@ function QuestsContent() {
         <button className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
           Review misses <strong>{missedIds.length}</strong>
         </button>
-        <div className="quest-summary"><strong>{dailyMode ? visibleQuests.filter((quest) => completedIds.includes(quest.id)).length : completedIds.length}</strong> cleared <span>•</span> <strong>{visibleQuests.filter((quest) => !completedIds.includes(quest.id)).length}</strong> remaining</div>
+        <div className="quest-summary">
+          <strong>{dailyMode ? visibleQuests.filter((quest) => completedIds.includes(quest.id)).length : completedIds.length}</strong> cleared <span>•</span>
+          <strong>{visibleQuests.filter((quest) => !completedIds.includes(quest.id)).length}</strong> remaining
+        </div>
+      </section>
+
+      <section className="practice-summary" aria-label="Practice session summary">
+        <div>
+          <p className="eyebrow">STUDY SESSION</p>
+          <strong>{Math.floor(sessionSeconds / 60)} min</strong>
+        </div>
+        <div>
+          <p className="eyebrow">TARGET</p>
+          <strong>{Math.max(0, 3 - completedIds.length)} quests to next checkpoint</strong>
+        </div>
+        <div>
+          <p className="eyebrow">XP GAINED</p>
+          <strong>{completedIds.length * 120} XP</strong>
+        </div>
       </section>
 
       <div className="quest-list">
