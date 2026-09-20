@@ -14,7 +14,7 @@ type Quest = {
   choices: string[];
   correctAnswer: string;
   explanation: string;
-  choiceExplanations: Record<string, string>;
+  choiceExplanations?: Record<string, string>;
 };
 
 function getDailyQuestIds(quests: Quest[]) {
@@ -79,12 +79,13 @@ function QuestsContent() {
 
   const selectedCategory = searchParams.get('category');
   const dailyMode = searchParams.get('mode') === 'daily';
+  const reviewMode = searchParams.get('mode') === 'review';
   const dailyQuestIds = getDailyQuestIds(quests);
   const visibleQuests = quests.filter((quest) => {
     const matchesCategory = !selectedCategory || quest.category === selectedCategory;
     const matchesDailyRun = !dailyMode || dailyQuestIds.includes(quest.id);
     const matchesDifficulty = difficulty === 'All levels' || quest.difficulty === difficulty;
-    const matchesReview = !reviewMisses || missedIds.includes(quest.id);
+    const matchesReview = (!reviewMisses && !reviewMode) || missedIds.includes(quest.id);
     const searchTerm = search.trim().toLowerCase();
     const matchesSearch = !searchTerm || `${quest.title} ${quest.concept} ${quest.prompt}`.toLowerCase().includes(searchTerm);
     return matchesCategory && matchesDailyRun && matchesDifficulty && matchesReview && matchesSearch;
@@ -111,14 +112,14 @@ function QuestsContent() {
   };
 
   const explainChoice = (quest: Quest, choice: string) => {
-    return quest.choiceExplanations[choice];
+    return quest.choiceExplanations?.[choice] ?? 'This option does not fit the concept being tested.';
   };
 
   return (
     <main className="page-shell quest-page">
       <section className="quest-header">
         <p className="eyebrow">MISSION CONTROL</p>
-        <h1>{dailyMode ? 'Daily Run' : selectedCategory ? `${selectedCategory} Quest Board` : 'Quest Board'}</h1>
+        <h1>{dailyMode ? 'Daily Run' : reviewMode ? 'Signal Review' : selectedCategory ? `${selectedCategory} Quest Board` : 'Quest Board'}</h1>
         <p className="subtitle">
           {dailyMode
             ? 'Three rotating challenges. Clear today\'s run before the UTC reset.'
