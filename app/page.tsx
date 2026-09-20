@@ -120,22 +120,154 @@ const missions = [
 
 ];
 
-const interviewWalkthroughs = [
-  { mission: 'AI', question: 'How would you make an AI agent safe when it can call tools?', answer: 'Constrain tools behind permissions, validate arguments, log every call, and require confirmation for irreversible actions.', steps: ['Define the agent goal and the tools it actually needs.', 'Give each tool the smallest possible permission scope.', 'Validate inputs and outputs, then add timeouts and rate limits.', 'Keep an audit trail and add human approval for high-impact actions.'] },
-  { mission: 'Machine Learning', question: 'How do you diagnose a model that performs well in training but poorly in production?', answer: 'Separate overfitting from data drift by comparing validation performance, production feature distributions, and label quality.', steps: ['Check the train-validation gap for overfitting.', 'Compare live features with the training distribution.', 'Verify that production labels still mean the same thing.', 'Choose retraining, regularization, or data fixes based on evidence.'] },
-  { mission: 'Data Mining', question: 'How would you decide whether an association rule is useful?', answer: 'Look beyond support: use confidence, lift, and a business test to determine whether the relationship is actionable.', steps: ['Measure support to avoid rules based on rare noise.', 'Measure confidence to see how often the consequence follows.', 'Use lift to compare the rule with the baseline frequency.', 'Run an experiment before turning the pattern into a product decision.'] },
-  { mission: 'Data Structures', question: 'When would you choose a hash map over a sorted array?', answer: 'Choose a hash map for fast average lookup by key; choose a sorted array when ordered traversal, compact memory, or binary search matters more.', steps: ['Name the dominant operation: lookup, insertion, deletion, or ordered iteration.', 'Compare average and worst-case time complexity.', 'Account for memory, cache locality, and whether stable ordering is required.', 'State the tradeoff and select the simplest structure that meets the workload.'] },
-  { mission: 'DBMS', question: 'An endpoint is slow after the table grows tenfold. What do you inspect first?', answer: 'Start with the query plan and access pattern, then add or adjust indexes only when the evidence supports it.', steps: ['Capture the real query and its latency distribution.', 'Inspect the execution plan for scans, bad joins, or poor cardinality estimates.', 'Add a targeted index that matches filters and sort order.', 'Measure again and watch write cost, storage, and cache behavior.'] },
-  { mission: 'Operating Systems', question: 'What happens during a context switch and why is it expensive?', answer: 'The kernel saves one process state and restores another; cache disruption and scheduler work add overhead beyond the register saves.', steps: ['Save registers, program counter, and scheduling state.', 'Choose the next runnable process.', 'Restore its state and switch address-space context if needed.', 'Explain that frequent switches reduce useful CPU work and locality.'] },
-  { mission: 'System Design', question: 'How would you design a URL shortener for high read traffic?', answer: 'Separate the write and read paths, use a durable key mapping, cache hot redirects, and measure collision and availability behavior.', steps: ['Define redirect latency, durability, and scale targets.', 'Generate collision-safe IDs and persist the mapping.', 'Cache hot links close to readers.', 'Add replication, rate limits, and observability before optimizing further.'] },
-  { mission: 'Cryptography', question: 'Why should passwords be hashed instead of encrypted?', answer: 'Passwords need one-way verification, not reversible recovery; a slow salted password hash limits offline guessing.', steps: ['Generate a unique salt for each password.', 'Use a password KDF such as Argon2, scrypt, or bcrypt.', 'Tune work factors for the current hardware.', 'Never log or store the original password or a fast unsalted hash.'] },
-  { mission: 'Computer Architecture', question: 'Why can a faster CPU still run a program more slowly?', answer: 'Performance depends on memory stalls, branch behavior, cache locality, parallelism, and the workload, not clock speed alone.', steps: ['Profile where cycles are spent.', 'Check cache misses, branch mispredictions, and memory bandwidth.', 'Compare instruction-level and thread-level parallelism.', 'Optimize the bottleneck rather than assuming frequency is the limiter.'] },
-  { mission: 'Cybersecurity', question: 'How would you prioritize vulnerabilities in a backlog?', answer: 'Rank them by exploitability, impact, exposure, and available mitigations, then verify fixes rather than chasing severity labels alone.', steps: ['Identify the affected asset and whether it is internet-facing.', 'Estimate realistic exploit likelihood and business impact.', 'Apply compensating controls while scheduling the permanent fix.', 'Retest and document residual risk after remediation.'] },
-  { mission: 'Software Engineering', question: 'What makes a code review useful?', answer: 'A useful review protects behavior and maintainability through focused, evidence-based feedback, not personal style preference.', steps: ['Confirm the change has tests for the behavior it adds.', 'Check failure paths, interfaces, and operational impact.', 'Ask focused questions tied to a concrete risk.', 'Keep unrelated refactors out so the review stays legible.'] },
-  { mission: 'Distributed Systems', question: 'How do you make a payment request safe to retry?', answer: 'Use an idempotency key recorded with the final result so repeated requests return the same outcome instead of charging twice.', steps: ['Require a client-generated unique key per logical payment.', 'Store the key, request fingerprint, and result durably.', 'Return the original result for a matching retry.', 'Reject reuse with different parameters and expire records carefully.'] },
-  { mission: 'Computer Networking', question: 'What would you investigate when an API is intermittently slow?', answer: 'Break latency into DNS, connection, TLS, server, queue, and downstream timings instead of treating the request as one black box.', steps: ['Add a trace ID and inspect latency percentiles.', 'Separate client, network, and server timing.', 'Check connection reuse, DNS, queue depth, and downstream calls.', 'Fix the largest contributor and verify under realistic load.'] },
-  { mission: 'OOP', question: 'When is composition better than inheritance?', answer: 'Composition is better when behavior should vary independently or when inheritance would create a brittle hierarchy.', steps: ['List the behaviors that need to change independently.', 'Model them as small collaborators with clear interfaces.', 'Inject those collaborators into the object that coordinates them.', 'Use inheritance only where the subtype truly preserves the base contract.'] },
+type InterviewQuestion = {
+  id: string;
+  mission: string;
+  question: string;
+  idealAnswer: string;
+  checklist: string[];
+  keywords: string[];
+};
+
+const interviewQuestions: InterviewQuestion[] = [
+  {
+    id: 'ai-agent-safety',
+    mission: 'AI',
+    question: 'How would you make an AI agent safe when it can call tools?',
+    idealAnswer: 'I would limit each tool to the minimum permissions it needs, validate all inputs and outputs, log actions with IDs, add timeouts and rate limits, and require human approval for destructive or irreversible operations. I would also sandbox execution and treat tool use as an auditable workflow rather than a free-form command loop.',
+    checklist: ['least privilege', 'input validation', 'human approval', 'audit trail', 'sandboxing'],
+    keywords: ['permission', 'validate', 'human approval', 'audit', 'sandbox', 'rate limit', 'tool'],
+  },
+  {
+    id: 'ml-production-drift',
+    mission: 'Machine Learning',
+    question: 'How do you diagnose a model that performs well in training but poorly in production?',
+    idealAnswer: 'I would check for overfitting and data drift by comparing training and production distributions, label quality, and feature pipelines. Then I would validate the model against real world traffic, inspect metrics by segment, and decide whether the fix is retraining, regularization, feature engineering, or a pipeline correction.',
+    checklist: ['overfitting', 'data drift', 'distribution', 'label quality', 'retraining'],
+    keywords: ['overfitting', 'data drift', 'production', 'distribution', 'label', 'retrain', 'validation'],
+  },
+  {
+    id: 'fullstack-nextjs-security',
+    mission: 'Full Stack',
+    question: 'How would you secure a Next.js app against XSS, CSRF, and SSRF?',
+    idealAnswer: 'I would use framework protections like escaping server-rendered content, avoiding dangerouslySetInnerHTML, enforcing strict CSP, and validating cookies with secure and HttpOnly flags. For forms, I would validate CSRF tokens and use same-site cookies. For server-side fetches, I would block untrusted URLs, allow-list destinations, validate redirect targets, and never trust user-supplied URLs in outbound requests.',
+    checklist: ['XSS', 'CSRF', 'SSRF', 'CSP', 'HttpOnly', 'allowlist'],
+    keywords: ['xss', 'csrf', 'ssrf', 'csp', 'httponly', 'allowlist', 'redirect'],
+  },
+  {
+    id: 'react-performance',
+    mission: 'Frontend',
+    question: 'How would you improve the performance of a slow React dashboard?',
+    idealAnswer: 'I would start by measuring with the React profiler and browser devtools to identify the actual bottleneck. Then I would memoize heavy computations, render fewer items with virtualization, defer non-critical work, split code by route, and only fetch the data needed for the current view. I would also avoid unnecessary state updates and keep the render path lean.',
+    checklist: ['profiling', 'memoization', 'virtualization', 'code splitting', 'data fetching'],
+    keywords: ['react profiler', 'memo', 'virtualize', 'code splitting', 'fetch', 'render', 'bottleneck'],
+  },
+  {
+    id: 'rest-vs-graphql',
+    mission: 'APIs',
+    question: 'When would you choose REST over GraphQL or vice versa?',
+    idealAnswer: 'I choose REST for straightforward resource-based APIs, caching, and mature ecosystem tooling. I choose GraphQL when clients need flexible queries, nested data relationships, or reduced over-fetching across multiple screens. The decision depends on client complexity, cache strategy, schema governance, and whether the team is comfortable operating a more complex query layer.',
+    checklist: ['REST', 'GraphQL', 'caching', 'over-fetching', 'schema'],
+    keywords: ['rest', 'graphql', 'cache', 'over-fetch', 'schema', 'client'],
+  },
+  {
+    id: 'rate-limiter',
+    mission: 'Distributed Systems',
+    question: 'How would you design a distributed rate limiter for a public API?',
+    idealAnswer: 'I would use a centralized counter or token bucket backed by Redis, with a per-identifier key and a fixed window or sliding window strategy depending on accuracy requirements. I would include fairness, burst handling, and per-plan quotas, and I would ensure the limiter is replicated, observable, and resistant to time skew by using a consistent clock source and testable quotas.',
+    checklist: ['redis', 'token bucket', 'sliding window', 'quota', 'fairness'],
+    keywords: ['redis', 'token bucket', 'window', 'quota', 'distributed', 'rate limit', 'burst'],
+  },
+  {
+    id: 'chat-scaling',
+    mission: 'System Design',
+    question: 'How would you design a real-time chat system that scales to millions of users?',
+    idealAnswer: 'I would separate concerns into user presence, message storage, delivery, and push notifications. I would use durable storage for messages, a fan-out or stream-based delivery pattern, WebSockets for active sessions, and background workers for asynchronous notification. I would shard by user or room, add connection load balancing, and measure latency, backlog, and reconnect behavior under peak traffic.',
+    checklist: ['websocket', 'message storage', 'fan-out', 'sharding', 'presence'],
+    keywords: ['websocket', 'shard', 'fan-out', 'latency', 'presence', 'message', 'backlog'],
+  },
+  {
+    id: 'database-indexing',
+    mission: 'DBMS',
+    question: 'An endpoint gets slow after a table grows tenfold. What do you inspect first?',
+    idealAnswer: 'I would inspect the query plan and the access pattern first, because a missing index, bad join order, or an unbounded scan often explains the slowdown. After confirming the true bottleneck, I would add the most selective index that matches the filters and sort order, and then test both latency and write amplification before making a wider schema change.',
+    checklist: ['query plan', 'index', 'join', 'scan', 'latency'],
+    keywords: ['query plan', 'index', 'join', 'scan', 'latency', 'cardinality'],
+  },
+  {
+    id: 'microservice-boundaries',
+    mission: 'Software Engineering',
+    question: 'How do you decide where to split a monolith into microservices?',
+    idealAnswer: 'I would split by business capability and data ownership, not by technical convenience. The team should isolate domains with independent scaling and deployment needs, clear API contracts, and simpler failure isolation. If data or transactions are tightly coupled, it is often better to keep the components together until the domain boundaries are stable and the operational benefits outweigh the complexity.',
+    checklist: ['business capability', 'ownership', 'bounded context', 'failure isolation', 'deployment'],
+    keywords: ['domain', 'bounded context', 'ownership', 'deploy', 'failure isolation', 'transaction'],
+  },
+  {
+    id: 'security-prioritization',
+    mission: 'Cybersecurity',
+    question: 'How would you prioritize vulnerabilities in a backlog?',
+    idealAnswer: 'I would prioritize by exploitability, impact, exposure, and the presence of compensating controls, then verify fixes with a repeatable test. A low severity issue on an internet-facing service that is trivial to exploit may deserve earlier action than a high severity issue in an isolated environment. Risk scoring should always include business context and evidence, not just a CVSS label.',
+    checklist: ['exploitability', 'impact', 'exposure', 'mitigations', 'verification'],
+    keywords: ['exploitability', 'impact', 'exposure', 'mitigation', 'risk', 'verify'],
+  },
+  {
+    id: 'hashing-vs-encryption',
+    mission: 'Cryptography',
+    question: 'Why should passwords be hashed instead of encrypted?',
+    idealAnswer: 'Passwords must be verified one-way, not recovered, so a salted password hashing function such as Argon2, bcrypt, or scrypt is appropriate. Encryption is reversible and designed for secrets that the system must read later. A password hash should be slow, salted, and tuned to make brute force and offline guessing expensive while preserving the ability to compare credentials safely.',
+    checklist: ['one-way', 'salt', 'slow hash', 'argon2', 'verify'],
+    keywords: ['hash', 'salt', 'argon2', 'bcrypt', 'one-way', 'verify'],
+  },
+  {
+    id: 'cache-design',
+    mission: 'System Design',
+    question: 'How would you design a scalable caching strategy for a high-traffic API?',
+    idealAnswer: 'I would start by identifying what is expensive to compute or read and where the cache is most valuable. I would use a layered approach: in-memory caches for hot reads, CDN caching for static or semi-static responses, and a stale-while-revalidate strategy to balance freshness with latency. I would also include invalidation rules, cache key design, and observability around hit rate and latency so the policy is driven by evidence rather than guesswork.',
+    checklist: ['hot reads', 'cdn', 'stale while revalidate', 'invalidation', 'hit rate'],
+    keywords: ['cache', 'cdn', 'stale', 'invalidation', 'hit rate', 'latency'],
+  },
+  {
+    id: 'oop-composition',
+    mission: 'OOP',
+    question: 'When is composition better than inheritance?',
+    idealAnswer: 'Composition is better when behavior changes independently or when inheritance would create a rigid hierarchy that does not model the real domain. Small collaborating objects with clear interfaces make the system more flexible, easier to test, and less likely to inherit accidental behavior. Inheritance is best reserved for true subtype relationships where the base contract is stable and meaningful.',
+    checklist: ['independent behavior', 'interfaces', 'flexible', 'testability', 'subtype'],
+    keywords: ['composition', 'inheritance', 'interface', 'flexible', 'behaviour', 'subtype'],
+  },
 ];
+
+const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+
+const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) => {
+  const trimmed = response.trim();
+
+  if (!trimmed) {
+    return {
+      score: 0,
+      label: 'No answer yet',
+      feedback: 'Write a concrete response and mention the key decision points before evaluating it.',
+      answer: question.idealAnswer,
+    };
+  }
+
+  const normalizedResponse = normalizeText(trimmed);
+  const matchedKeywords = question.keywords.filter((keyword) => normalizedResponse.includes(normalizeText(keyword)));
+  const keywordCoverage = Math.round((matchedKeywords.length / question.keywords.length) * 100);
+  const hasStructure = /(first|next|then|finally|because|for example|in summary|if|when)/i.test(trimmed);
+  const score = Math.min(100, keywordCoverage + (hasStructure ? 10 : 0) + (trimmed.length > 160 ? 5 : 0));
+
+  const label = score >= 85 ? 'Strong answer' : score >= 65 ? 'Solid answer' : 'Needs more depth';
+  const feedback = matchedKeywords.length === question.keywords.length
+    ? 'You covered the key pillars of a strong answer. Your response is clear and decision-oriented.'
+    : `You touched ${matchedKeywords.length}/${question.keywords.length} important points. Add ${question.checklist.filter((item) => !matchedKeywords.some((keyword) => normalizeText(item).includes(normalizeText(keyword)))).slice(0, 2).join(' and ')} to make the answer more complete.`;
+
+  return {
+    score: Math.round(score),
+    label,
+    feedback,
+    answer: question.idealAnswer,
+  };
+};
 
 const concepts = [
   'Variables',
@@ -173,9 +305,16 @@ export default function HomePage() {
   const [shareStatus, setShareStatus] = useState('');
   const [apiStatus, setApiStatus] = useState('checking');
   const [signalIndex, setSignalIndex] = useState(0);
+  const [interviewAnswers, setInterviewAnswers] = useState<Record<string, string>>({});
+  const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
 
   const currentSignal = signalStates[signalIndex];
   const readiness = Math.min(96, 58 + completedQuests.length * 7);
+
+  const handleInterviewEvaluation = (question: InterviewQuestion) => {
+    const result = evaluateInterviewAnswer(question, interviewAnswers[question.id] ?? '');
+    setInterviewResults((prev) => ({ ...prev, [question.id]: result }));
+  };
 
   const shareProgress = async () => {
     const shareUrl = `${window.location.origin}/?player=Byte%20Knight&cleared=${completedQuests.length}`;
@@ -423,28 +562,76 @@ export default function HomePage() {
         <div className="section-heading">
           <div>
             <p className="eyebrow">INTERVIEW LAB</p>
-            <h2>Practice the answer, not just the choice</h2>
+            <h2>Answer the question, then grade your response</h2>
           </div>
-          <span className="panel-badge panel-badge-alt">{interviewWalkthroughs.length} mission drills</span>
+          <span className="panel-badge panel-badge-alt">{interviewQuestions.length} skill drills</span>
         </div>
-        <p className="interview-intro">Pick any mission and rehearse a strong answer. Every walkthrough starts with the decision, then shows the reasoning an interviewer is listening for.</p>
+        <p className="interview-intro">Write your own answer for each interview prompt, then compare it to the strongest answer and use the feedback to tighten your reasoning.</p>
         <div className="interview-grid">
-          {interviewWalkthroughs.map((interview, index) => (
-            <details key={interview.mission} className="interview-card" open={index === 3}>
-              <summary>
-                <span className="interview-number">0{index + 1}</span>
-                <span className="interview-heading"><small>{interview.mission}</small><strong>{interview.question}</strong></span>
-                <span className="interview-chevron">+</span>
-              </summary>
-              <div className="walkthrough">
-                <p><strong>Strong answer</strong>{interview.answer}</p>
-                <div className="walkthrough-steps">
-                  {interview.steps.map((step, stepIndex) => <div key={step}><span>{stepIndex + 1}</span><p>{step}</p></div>)}
+          {interviewQuestions.map((interview, index) => {
+            const result = interviewResults[interview.id];
+            const answer = interviewAnswers[interview.id] ?? '';
+
+            return (
+              <article key={interview.id} className="interview-question-card">
+                <div className="interview-question-header">
+                  <span className="interview-number">0{index + 1}</span>
+                  <div className="interview-heading">
+                    <small>{interview.mission}</small>
+                    <strong>{interview.question}</strong>
+                  </div>
                 </div>
-                <Link href={`/quests?category=${encodeURIComponent(interview.mission)}`} className="text-link">Train this mission →</Link>
-              </div>
-            </details>
-          ))}
+
+                <textarea
+                  className="interview-response"
+                  value={answer}
+                  onChange={(event) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: event.target.value }))}
+                  placeholder="Type your answer here..."
+                  rows={5}
+                />
+
+                <div className="interview-actions">
+                  <button type="button" className="interview-action-button" onClick={() => handleInterviewEvaluation(interview)}>
+                    Evaluate answer
+                  </button>
+                  <button
+                    type="button"
+                    className="interview-action-button secondary"
+                    onClick={() => {
+                      setInterviewAnswers((prev) => ({ ...prev, [interview.id]: '' }));
+                      setInterviewResults((prev) => {
+                        const next = { ...prev };
+                        delete next[interview.id];
+                        return next;
+                      });
+                    }}
+                  >
+                    Clear
+                  </button>
+                </div>
+
+                {result && (
+                  <div className={`interview-result ${result.score >= 80 ? 'success' : result.score >= 60 ? 'warning' : 'error'}`}>
+                    <div className="interview-score-row">
+                      <strong>{result.score}%</strong>
+                      <span>{result.label}</span>
+                    </div>
+                    <p>{result.feedback}</p>
+                    <div className="optimal-answer">
+                      <strong>Most optimal answer</strong>
+                      <p>{result.answer}</p>
+                    </div>
+                  </div>
+                )}
+
+                <ul className="interview-checklist">
+                  {interview.checklist.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            );
+          })}
         </div>
       </section>
 
