@@ -557,6 +557,33 @@ export default function HomePage() {
         </motion.article>
       </section>
 
+      <section className="achievement-panel" aria-label="Achievements and milestone rewards">
+        <div className="panel-header">
+          <div>
+            <p className="eyebrow">ACHIEVEMENTS</p>
+            <h3>Milestone vault</h3>
+          </div>
+          <span className="panel-badge panel-badge-alt">{Math.min(4, completedQuests.length + 1)} unlocked</span>
+        </div>
+
+        <div className="achievement-list">
+          {[
+            { title: 'First Win', unlocked: completedQuests.length >= 1, detail: 'Clear your first quest' },
+            { title: 'Momentum Builder', unlocked: completedQuests.length >= 3, detail: 'Complete 3 consecutive challenge sets' },
+            { title: 'Systems Scout', unlocked: completedQuests.length >= 6, detail: 'Earn a systems-focused streak' },
+            { title: 'Interview Ready', unlocked: completedQuests.length >= 9, detail: 'Finish 9 missions and review the lab' },
+          ].map((achievement) => (
+            <div key={achievement.title} className={`achievement-item ${achievement.unlocked ? 'active' : ''}`}>
+              <span className="achievement-icon">{achievement.unlocked ? '✓' : '★'}</span>
+              <div>
+                <strong>{achievement.title}</strong>
+                <small>{achievement.detail}</small>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section id="missions" className="missions">
         <div className="section-heading">
           <div>

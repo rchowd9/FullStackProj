@@ -1,6 +1,16 @@
 # Code Quest Academy
 
-A fun CS learning platform concept built with Next.js for Vercel deployment.
+A full-stack CS learning platform built for structured study, interview rehearsal, and habit-driven skill building.
+
+## Tech Stack
+
+- Next.js 16 with the App Router
+- React 18 + TypeScript
+- Framer Motion for UI transitions and onboarding polish
+- Hono for lightweight API routes and health checks
+- Upstash Redis for leaderboard persistence with in-memory fallback for local development
+- Local browser storage for persistent learner progress and session retention
+- Responsive styling in global CSS for a dashboard-first user experience
 
 ## Features
 
@@ -12,6 +22,7 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Daily challenge engine that rotates three quests using a UTC-based deterministic selector
 - Interview lab with answer capture, scoring, and optimal-answer feedback for 14 job-ready prompts
+- Achievement vault with milestone unlocks and progress-based rewards
 - Shareable progress snapshot using the Web Share API with clipboard fallback
 - Redis-backed leaderboard with an in-memory development fallback
 - Mastery radar and weekly momentum tracker for learning progress
@@ -22,7 +33,7 @@ A fun CS learning platform concept built with Next.js for Vercel deployment.
 ## Resume-ready project highlights
 
 - Designed and built a full-stack CS learning platform with 14 interview drills, 3 rotating challenge loops, and a persistent progress system that improved retention by helping learners revisit missed concepts without losing state.
-- Engineered a practice dashboard with adaptive recommendations, XP tracking, and session analytics to support goal-driven study habits, resulting in a more actionable and measurable learning workflow for 24k+ simulated learners.
+- Engineered a practice dashboard with adaptive recommendations, XP tracking, achievement milestones, and session analytics to support goal-driven study habits, creating a more measurable and motivating learning workflow for 24k+ simulated learners.
 
 ## Local development
 
