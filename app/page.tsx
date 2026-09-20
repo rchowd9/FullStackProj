@@ -419,6 +419,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section id="interview-lab" className="interview-lab">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">INTERVIEW LAB</p>
+            <h2>Practice the answer, not just the choice</h2>
+          </div>
+          <span className="panel-badge panel-badge-alt">{interviewWalkthroughs.length} mission drills</span>
+        </div>
+        <p className="interview-intro">Pick any mission and rehearse a strong answer. Every walkthrough starts with the decision, then shows the reasoning an interviewer is listening for.</p>
+        <div className="interview-grid">
+          {interviewWalkthroughs.map((interview, index) => (
+            <details key={interview.mission} className="interview-card" open={index === 3}>
+              <summary>
+                <span className="interview-number">0{index + 1}</span>
+                <span className="interview-heading"><small>{interview.mission}</small><strong>{interview.question}</strong></span>
+                <span className="interview-chevron">+</span>
+              </summary>
+              <div className="walkthrough">
+                <p><strong>Strong answer</strong>{interview.answer}</p>
+                <div className="walkthrough-steps">
+                  {interview.steps.map((step, stepIndex) => <div key={step}><span>{stepIndex + 1}</span><p>{step}</p></div>)}
+                </div>
+                <Link href={`/quests?category=${encodeURIComponent(interview.mission)}`} className="text-link">Train this mission →</Link>
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+
       <section className="daily-challenge">
         <div className="daily-art"><span>DAILY</span><strong>⚡</strong><small>RUN 09</small></div>
         <div className="daily-copy">
