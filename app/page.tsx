@@ -137,11 +137,21 @@ const habitBoard = [
   { label: 'Concept review', value: 9, total: 10, note: 'Nearly mastered' },
 ];
 
+const signalStates = [
+  { label: 'Pattern detected', title: 'You are ready for a systems jump.', detail: 'Your database and algorithm signals are strong enough to attempt a distributed-systems scenario.', action: 'Open systems lab', href: '/quests?category=Distributed%20Systems' },
+  { label: 'Weak signal', title: 'Turn one miss into momentum.', detail: 'Reviewing one tricky concept now gives your recall a better chance than starting another easy quest.', action: 'Review missed quests', href: '/quests?mode=review' },
+  { label: 'High voltage', title: 'Your streak has launch energy.', detail: 'A three-question daily run is the fastest route to the next reward checkpoint today.', action: 'Start daily run', href: '/quests?mode=daily' },
+];
+
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
   const [shareStatus, setShareStatus] = useState('');
   const [apiStatus, setApiStatus] = useState('checking');
+  const [signalIndex, setSignalIndex] = useState(0);
+
+  const currentSignal = signalStates[signalIndex];
+  const readiness = Math.min(96, 58 + completedQuests.length * 7);
 
   const shareProgress = async () => {
     const shareUrl = `${window.location.origin}/?player=Byte%20Knight&cleared=${completedQuests.length}`;
@@ -259,6 +269,20 @@ export default function HomePage() {
         <div className="command-stat"><span>API layer</span><strong className="service-status">{apiStatus}</strong></div>
         <div className="command-stat"><span>Next reward</span><strong>+500 XP <small>at 12 quests</small></strong></div>
         <Link href="/quests" className="command-action">Resume run <span>→</span></Link>
+      </section>
+
+      <section className="signal-console" aria-label="Adaptive learning signal">
+        <div className="signal-orbit" aria-hidden="true"><span>{readiness}%</span><small>READY</small></div>
+        <div className="signal-copy">
+          <p className="eyebrow">SIGNAL SCAN / PERSONALIZED</p>
+          <p className="signal-label">{currentSignal.label}</p>
+          <h2>{currentSignal.title}</h2>
+          <p>{currentSignal.detail}</p>
+          <Link href={currentSignal.href} className="signal-action">{currentSignal.action} <span>↗</span></Link>
+        </div>
+        <button className="scan-button" onClick={() => setSignalIndex((index) => (index + 1) % signalStates.length)} aria-label="Scan for another learning signal">
+          <span>↻</span> Scan again
+        </button>
       </section>
 
       <section className="learning-strip">
