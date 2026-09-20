@@ -34,6 +34,13 @@ const missions = [
     description: 'Uncover hidden relationships and patterns in large, noisy datasets.',
   },
   {
+    title: 'Structure Station',
+    category: 'Data Structures',
+    difficulty: 'Intermediate',
+    xp: 360,
+    description: 'Choose the right structure under pressure: queues, trees, graphs, and the costs behind each choice.',
+  },
+  {
     title: 'DBMS Dossier',
     category: 'DBMS',
     difficulty: 'Beginner',
@@ -111,6 +118,23 @@ const missions = [
   }, 
 
 
+];
+
+const interviewWalkthroughs = [
+  { mission: 'AI', question: 'How would you make an AI agent safe when it can call tools?', answer: 'Constrain tools behind permissions, validate arguments, log every call, and require confirmation for irreversible actions.', steps: ['Define the agent goal and the tools it actually needs.', 'Give each tool the smallest possible permission scope.', 'Validate inputs and outputs, then add timeouts and rate limits.', 'Keep an audit trail and add human approval for high-impact actions.'] },
+  { mission: 'Machine Learning', question: 'How do you diagnose a model that performs well in training but poorly in production?', answer: 'Separate overfitting from data drift by comparing validation performance, production feature distributions, and label quality.', steps: ['Check the train-validation gap for overfitting.', 'Compare live features with the training distribution.', 'Verify that production labels still mean the same thing.', 'Choose retraining, regularization, or data fixes based on evidence.'] },
+  { mission: 'Data Mining', question: 'How would you decide whether an association rule is useful?', answer: 'Look beyond support: use confidence, lift, and a business test to determine whether the relationship is actionable.', steps: ['Measure support to avoid rules based on rare noise.', 'Measure confidence to see how often the consequence follows.', 'Use lift to compare the rule with the baseline frequency.', 'Run an experiment before turning the pattern into a product decision.'] },
+  { mission: 'Data Structures', question: 'When would you choose a hash map over a sorted array?', answer: 'Choose a hash map for fast average lookup by key; choose a sorted array when ordered traversal, compact memory, or binary search matters more.', steps: ['Name the dominant operation: lookup, insertion, deletion, or ordered iteration.', 'Compare average and worst-case time complexity.', 'Account for memory, cache locality, and whether stable ordering is required.', 'State the tradeoff and select the simplest structure that meets the workload.'] },
+  { mission: 'DBMS', question: 'An endpoint is slow after the table grows tenfold. What do you inspect first?', answer: 'Start with the query plan and access pattern, then add or adjust indexes only when the evidence supports it.', steps: ['Capture the real query and its latency distribution.', 'Inspect the execution plan for scans, bad joins, or poor cardinality estimates.', 'Add a targeted index that matches filters and sort order.', 'Measure again and watch write cost, storage, and cache behavior.'] },
+  { mission: 'Operating Systems', question: 'What happens during a context switch and why is it expensive?', answer: 'The kernel saves one process state and restores another; cache disruption and scheduler work add overhead beyond the register saves.', steps: ['Save registers, program counter, and scheduling state.', 'Choose the next runnable process.', 'Restore its state and switch address-space context if needed.', 'Explain that frequent switches reduce useful CPU work and locality.'] },
+  { mission: 'System Design', question: 'How would you design a URL shortener for high read traffic?', answer: 'Separate the write and read paths, use a durable key mapping, cache hot redirects, and measure collision and availability behavior.', steps: ['Define redirect latency, durability, and scale targets.', 'Generate collision-safe IDs and persist the mapping.', 'Cache hot links close to readers.', 'Add replication, rate limits, and observability before optimizing further.'] },
+  { mission: 'Cryptography', question: 'Why should passwords be hashed instead of encrypted?', answer: 'Passwords need one-way verification, not reversible recovery; a slow salted password hash limits offline guessing.', steps: ['Generate a unique salt for each password.', 'Use a password KDF such as Argon2, scrypt, or bcrypt.', 'Tune work factors for the current hardware.', 'Never log or store the original password or a fast unsalted hash.'] },
+  { mission: 'Computer Architecture', question: 'Why can a faster CPU still run a program more slowly?', answer: 'Performance depends on memory stalls, branch behavior, cache locality, parallelism, and the workload, not clock speed alone.', steps: ['Profile where cycles are spent.', 'Check cache misses, branch mispredictions, and memory bandwidth.', 'Compare instruction-level and thread-level parallelism.', 'Optimize the bottleneck rather than assuming frequency is the limiter.'] },
+  { mission: 'Cybersecurity', question: 'How would you prioritize vulnerabilities in a backlog?', answer: 'Rank them by exploitability, impact, exposure, and available mitigations, then verify fixes rather than chasing severity labels alone.', steps: ['Identify the affected asset and whether it is internet-facing.', 'Estimate realistic exploit likelihood and business impact.', 'Apply compensating controls while scheduling the permanent fix.', 'Retest and document residual risk after remediation.'] },
+  { mission: 'Software Engineering', question: 'What makes a code review useful?', answer: 'A useful review protects behavior and maintainability through focused, evidence-based feedback, not personal style preference.', steps: ['Confirm the change has tests for the behavior it adds.', 'Check failure paths, interfaces, and operational impact.', 'Ask focused questions tied to a concrete risk.', 'Keep unrelated refactors out so the review stays legible.'] },
+  { mission: 'Distributed Systems', question: 'How do you make a payment request safe to retry?', answer: 'Use an idempotency key recorded with the final result so repeated requests return the same outcome instead of charging twice.', steps: ['Require a client-generated unique key per logical payment.', 'Store the key, request fingerprint, and result durably.', 'Return the original result for a matching retry.', 'Reject reuse with different parameters and expire records carefully.'] },
+  { mission: 'Computer Networking', question: 'What would you investigate when an API is intermittently slow?', answer: 'Break latency into DNS, connection, TLS, server, queue, and downstream timings instead of treating the request as one black box.', steps: ['Add a trace ID and inspect latency percentiles.', 'Separate client, network, and server timing.', 'Check connection reuse, DNS, queue depth, and downstream calls.', 'Fix the largest contributor and verify under realistic load.'] },
+  { mission: 'OOP', question: 'When is composition better than inheritance?', answer: 'Composition is better when behavior should vary independently or when inheritance would create a brittle hierarchy.', steps: ['List the behaviors that need to change independently.', 'Model them as small collaborators with clear interfaces.', 'Inject those collaborators into the object that coordinates them.', 'Use inheritance only where the subtype truly preserves the base contract.'] },
 ];
 
 const concepts = [
