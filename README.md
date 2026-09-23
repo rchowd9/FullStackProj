@@ -29,6 +29,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Responsive interface for desktop and mobile
 - Framer Motion animations for polished UI transitions
 - Hono-powered edge API health route at `/api/status`
+- PostgreSQL-ready schema and starter seed data in `db/schema.sql` and `db/seed.sql`
 
 ## Resume-ready project highlights
 
@@ -56,3 +57,7 @@ Additional framework installed:
 ## Progress storage
 
 Quest completion is stored in the browser under `code-quest:progress`, so the prototype works without authentication or a database. Leaderboard submissions use Upstash Redis when `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, and fall back to process memory for local development.
+
+## Database starter files
+
+The files in `db/` describe an optional PostgreSQL persistence layer for quests, learner progress, and leaderboard entries. They are not required to run the local-first prototype: apply `db/schema.sql` first and then `db/seed.sql` when moving persistence into a relational database.
