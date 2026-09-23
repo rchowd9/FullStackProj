@@ -569,6 +569,23 @@ a {
   color: var(--text);
 }
 
+.session-reset {
+  align-self: end;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 138, 76, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 138, 76, 0.08);
+  color: var(--orange);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.session-reset:hover,
+.leaderboard-save:hover {
+  background: rgba(255, 138, 76, 0.16);
+}
+
 .completed-label { color: var(--lime); font-size: 0.8rem; font-weight: 800; }
 
 .concept-tag {
@@ -661,6 +678,27 @@ a {
 
 .leaderboard-panel {
   margin-top: 72px;
+}
+
+.leaderboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.leaderboard-actions small {
+  color: var(--muted);
+}
+
+.leaderboard-save {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(184, 243, 74, 0.3);
+  border-radius: 10px;
+  background: rgba(184, 243, 74, 0.08);
+  color: var(--lime);
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .leaderboard-list {

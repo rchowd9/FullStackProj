@@ -305,6 +305,7 @@ export default function HomePage() {
   const [shareStatus, setShareStatus] = useState('');
   const [apiStatus, setApiStatus] = useState('checking');
   const [signalIndex, setSignalIndex] = useState(0);
+  const [leaderboardStatus, setLeaderboardStatus] = useState('');
   const [interviewAnswers, setInterviewAnswers] = useState<Record<string, string>>({});
   const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
   const [studyCoach, setStudyCoach] = useState({ focus: 'System Design', note: 'Keep momentum and complete a strong daily run.' });
@@ -358,6 +359,31 @@ export default function HomePage() {
       }
     } catch {
       setShareStatus('Sharing cancelled');
+    }
+  };
+
+  const saveLeaderboardScore = async () => {
+    setLeaderboardStatus('Saving...');
+
+    try {
+      const response = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Byte Knight',
+          xp: 12_450 + completedQuests.length * 120,
+          streak: 9,
+          badge: completedQuests.length >= 9 ? 'Interview Ready' : 'Logic Legend',
+        }),
+      });
+
+      if (!response.ok) throw new Error('Unable to save score');
+
+      const data = await response.json();
+      setLeaderboard(data.leaderboard ?? []);
+      setLeaderboardStatus('Score saved');
+    } catch {
+      setLeaderboardStatus('Could not save score');
     }
   };
 
@@ -707,8 +733,14 @@ export default function HomePage() {
 
       <section className="leaderboard-panel">
         <div className="section-heading">
-          <p className="eyebrow">HALL OF FAME</p>
-          <h2>Global leaderboard</h2>
+          <div>
+            <p className="eyebrow">HALL OF FAME</p>
+            <h2>Global leaderboard</h2>
+          </div>
+          <div className="leaderboard-actions">
+            <button type="button" className="leaderboard-save" onClick={saveLeaderboardScore}>Save my score</button>
+            {leaderboardStatus && <small role="status">{leaderboardStatus}</small>}
+          </div>
         </div>
 
         <div className="leaderboard-list">

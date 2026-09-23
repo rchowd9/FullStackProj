@@ -120,6 +120,12 @@ function QuestsContent() {
     }
   };
 
+  const resetSession = () => {
+    setSelectedAnswers({});
+    setSubmitted({});
+    setSessionSeconds(0);
+  };
+
   const explainChoice = (quest: Quest, choice: string) => {
     return quest.choiceExplanations?.[choice] ?? 'This option does not fit the concept being tested.';
   };
@@ -171,6 +177,7 @@ function QuestsContent() {
           <p className="eyebrow">XP GAINED</p>
           <strong>{completedIds.length * 120} XP</strong>
         </div>
+        <button type="button" className="session-reset" onClick={resetSession}>Reset session</button>
       </section>
 
       <div className="quest-list">
