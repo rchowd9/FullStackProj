@@ -770,6 +770,7 @@ export async function GET() {
     quests: quests.map((quest) => ({
       ...quest,
       choiceExplanations: {
+        ...quest.choiceExplanations,
         ...choiceExplanations[quest.id],
         [quest.correctAnswer]: quest.explanation,
       },
