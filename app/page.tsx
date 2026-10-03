@@ -811,7 +811,7 @@ export default function HomePage() {
           </div>
           <span className="panel-badge panel-badge-alt">{interviewQuestions.length} skill drills</span>
         </div>
-        <p className="interview-intro">Write your own answer for each interview prompt, then compare it to the strongest answer and use the feedback to tighten your reasoning.</p>
+        <p className="interview-intro">Practice interview explanations and language-specific coding challenges. Compare your response with a reference answer; coding submissions are checked with a text-based rubric, not executed.</p>
         <div className="interview-grid">
           {interviewQuestions.map((interview, index) => {
             const result = interviewResults[interview.id];
@@ -822,17 +822,38 @@ export default function HomePage() {
                 <div className="interview-question-header">
                   <span className="interview-number">0{index + 1}</span>
                   <div className="interview-heading">
-                    <small>{interview.mission}</small>
+                    <small>{interview.language ? `${interview.language} · CODING CHALLENGE` : interview.mission}</small>
                     <strong>{interview.question}</strong>
                   </div>
                 </div>
 
+                {interview.starterCode && interview.examples && (
+                  <div className="interview-coding-prompt">
+                    <div className="interview-starter">
+                      <strong>Starter code</strong>
+                      <pre><code>{interview.starterCode}</code></pre>
+                    </div>
+                    <div className="interview-examples">
+                      <strong>Sample cases</strong>
+                      {interview.examples.map((example) => (
+                        <div key={example.input}>
+                          <code>{example.input}</code>
+                          <span aria-hidden="true">→</span>
+                          <code>{example.output}</code>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <textarea
-                  className="interview-response"
+                  className={`interview-response${interview.language ? ' interview-code-response' : ''}`}
                   value={answer}
                   onChange={(event) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: event.target.value }))}
-                  placeholder="Type your answer here..."
-                  rows={5}
+                  placeholder={interview.language ? `Write your ${interview.language} solution here...` : 'Type your answer here...'}
+                  aria-label={`${interview.language ?? interview.mission} interview response`}
+                  spellCheck={!interview.language}
+                  rows={interview.language ? 10 : 5}
                 />
 
                 <div className="interview-actions">
@@ -863,8 +884,10 @@ export default function HomePage() {
                     </div>
                     <p>{result.feedback}</p>
                     <div className="optimal-answer">
-                      <strong>Most optimal answer</strong>
-                      <p>{result.answer}</p>
+                      <strong>{interview.language ? 'Reference solution' : 'Most optimal answer'}</strong>
+                      {interview.language
+                        ? <pre className="interview-reference-code"><code>{result.answer}</code></pre>
+                        : <p>{result.answer}</p>}
                     </div>
                   </div>
                 )}

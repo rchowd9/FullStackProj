@@ -506,8 +506,16 @@ a {
 .interview-heading { display: grid; gap: 5px; }
 .interview-heading small { color: var(--orange); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
 .interview-heading strong { color: var(--text); font-size: 0.94rem; line-height: 1.35; }
+.interview-coding-prompt { display: grid; gap: 10px; }
+.interview-starter, .interview-examples { display: grid; gap: 8px; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(7, 19, 26, 0.58); }
+.interview-starter > strong, .interview-examples > strong { color: var(--secondary); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.interview-starter pre { max-height: 180px; overflow: auto; margin: 0; color: var(--text); font: 0.78rem/1.55 Consolas, 'Courier New', monospace; tab-size: 4; }
+.interview-examples > div { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: start; }
+.interview-examples code { min-width: 0; color: var(--muted); font: 0.72rem/1.5 Consolas, 'Courier New', monospace; overflow-wrap: anywhere; }
+.interview-examples span { color: var(--lime); }
 .interview-response { width: 100%; min-height: 112px; resize: vertical; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; background: rgba(15, 23, 42, 0.7); color: var(--text); font: inherit; }
 .interview-response:focus { outline: 2px solid rgba(88, 214, 197, 0.3); border-color: rgba(88, 214, 197, 0.5); }
+.interview-code-response { min-height: 220px; font: 0.82rem/1.6 Consolas, 'Courier New', monospace; tab-size: 4; }
 .interview-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 .interview-action-button { border: 0; border-radius: 12px; background: linear-gradient(135deg, var(--secondary), var(--accent)); color: #0b1120; font-weight: 800; padding: 11px 16px; cursor: pointer; }
 .interview-action-button.secondary { background: rgba(148, 163, 184, 0.12); color: var(--text); border: 1px solid var(--border); }
@@ -522,6 +530,7 @@ a {
 .optimal-answer { display: grid; gap: 7px; padding-top: 8px; border-top: 1px solid rgba(148, 163, 184, 0.18); }
 .optimal-answer strong { color: var(--text); font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase; }
 .optimal-answer p { color: var(--text); }
+.interview-reference-code { max-height: 360px; overflow: auto; margin: 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: rgba(7, 19, 26, 0.72); color: var(--text); font: 0.78rem/1.6 Consolas, 'Courier New', monospace; tab-size: 4; }
 .interview-checklist { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .interview-checklist li { padding: 6px 10px; border-radius: 999px; background: rgba(88, 214, 197, 0.08); border: 1px solid rgba(88, 214, 197, 0.2); color: #dffaf4; font-size: 0.7rem; letter-spacing: 0.04em; text-transform: capitalize; }
 .daily-challenge { display: grid; grid-template-columns: 130px 1fr auto; gap: 24px; align-items: center; margin-top: 72px; padding: 20px; border: 1px solid rgba(255, 138, 76, 0.35); border-radius: 22px; background: linear-gradient(110deg, rgba(255, 138, 76, 0.13), rgba(15, 23, 42, 0.9) 54%); }
