@@ -127,6 +127,9 @@ type InterviewQuestion = {
   idealAnswer: string;
   checklist: string[];
   keywords: string[];
+  language?: string;
+  starterCode?: string;
+  examples?: { input: string; output: string }[];
 };
 
 const interviewQuestions: InterviewQuestion[] = [
@@ -282,6 +285,108 @@ const interviewQuestions: InterviewQuestion[] = [
     checklist: ['canary', 'feature flags', 'rollback', 'health checks', 'monitoring'],
     keywords: ['canary', 'feature flag', 'rollback', 'health check', 'monitor', 'deploy', 'blast radius'],
   },
+  {
+    id: 'python-first-unique',
+    mission: 'Python · Coding',
+    language: 'Python',
+    question: 'Write first_unique_index(text), returning the index of the first character that appears once, or -1 if none exists. Keep the solution O(n).',
+    idealAnswer: `def first_unique_index(text: str) -> int:
+    counts = {}
+    for char in text:
+        counts[char] = counts.get(char, 0) + 1
+
+    for index, char in enumerate(text):
+        if counts[char] == 1:
+            return index
+    return -1`,
+    starterCode: `def first_unique_index(text: str) -> int:
+    # Return the first unique character's index, or -1.
+    pass`,
+    examples: [
+      { input: '"swiss"', output: '1' },
+      { input: '"aabb"', output: '-1' },
+    ],
+    checklist: ['Count characters in one pass', 'Scan in original order', 'Handle no unique character', 'O(n) time'],
+    keywords: ['counts', 'get', 'enumerate', 'return -1', 'O(n)'],
+  },
+  {
+    id: 'javascript-debounce',
+    mission: 'JavaScript · Coding',
+    language: 'JavaScript',
+    question: 'Implement debounce(callback, delayMs). Return a function that delays invocation until calls stop for delayMs, uses only the latest arguments, and preserves the caller context.',
+    idealAnswer: `function debounce(callback, delayMs) {
+  let timer;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timer);
+    timer = setTimeout(() => callback.apply(context, args), delayMs);
+  };
+}`,
+    starterCode: `function debounce(callback, delayMs) {
+  // Return a function that invokes callback after calls pause.
+}`,
+    examples: [
+      { input: 'Call with "a" at 0 ms and "b" at 50 ms; delay is 100 ms.', output: 'Callback runs once around 150 ms with "b".' },
+      { input: 'Call once, then wait longer than delayMs.', output: 'Callback runs once with the original context and arguments.' },
+    ],
+    checklist: ['Keep the timer in a closure', 'Cancel the previous timer', 'Forward the latest arguments', 'Preserve this'],
+    keywords: ['closure', 'clearTimeout', 'setTimeout', 'args', 'this'],
+  },
+  {
+    id: 'java-merge-intervals',
+    mission: 'Java · Coding',
+    language: 'Java',
+    question: 'Implement mergeIntervals(int[][] intervals). Merge overlapping intervals, return them sorted by start, and handle an empty input. Target O(n log n) time.',
+    idealAnswer: `static int[][] mergeIntervals(int[][] intervals) {
+    if (intervals.length == 0) return new int[0][];
+    Arrays.sort(intervals, Comparator.comparingInt(interval -> interval[0]));
+
+    List<int[]> merged = new ArrayList<>();
+    for (int[] interval : intervals) {
+        if (merged.isEmpty() || merged.get(merged.size() - 1)[1] < interval[0]) {
+            merged.add(interval.clone());
+        } else {
+            int[] last = merged.get(merged.size() - 1);
+            last[1] = Math.max(last[1], interval[1]);
+        }
+    }
+    return merged.toArray(new int[merged.size()][]);
+}`,
+    starterCode: `static int[][] mergeIntervals(int[][] intervals) {
+    // Return sorted, merged intervals.
+}`,
+    examples: [
+      { input: '[[1,3], [2,6], [8,10], [15,18]]', output: '[[1,6], [8,10], [15,18]]' },
+      { input: '[]', output: '[]' },
+    ],
+    checklist: ['Sort by start', 'Merge when intervals overlap', 'Keep disjoint intervals', 'Handle empty input'],
+    keywords: ['Arrays.sort', 'interval', 'Math.max', 'toArray', 'empty'],
+  },
+  {
+    id: 'cpp-two-sum',
+    mission: 'C++ · Coding',
+    language: 'C++',
+    question: 'Implement twoSum(nums, target), returning the two distinct indices whose values sum to target. Assume exactly one solution and target O(n) time. Use std::vector and std::unordered_map.',
+    idealAnswer: `vector<int> twoSum(const vector<int>& nums, int target) {
+    unordered_map<int, int> seen;
+    for (int i = 0; i < static_cast<int>(nums.size()); ++i) {
+        int needed = target - nums[i];
+        auto match = seen.find(needed);
+        if (match != seen.end()) return {match->second, i};
+        seen[nums[i]] = i;
+    }
+    return {};
+}`,
+    starterCode: `vector<int> twoSum(const vector<int>& nums, int target) {
+    // Return the two matching indices.
+}`,
+    examples: [
+      { input: 'nums = [2, 7, 11, 15], target = 9', output: '[0, 1]' },
+      { input: 'nums = [3, 2, 4], target = 6', output: '[1, 2]' },
+    ],
+    checklist: ['Use a hash map for seen values', 'Look up target minus current value', 'Return distinct indices', 'O(n) time'],
+    keywords: ['unordered_map', 'find', 'target', 'return', 'O(n)'],
+  },
 ];
 
 const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -301,13 +406,20 @@ const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) 
   const normalizedResponse = normalizeText(trimmed);
   const matchedKeywords = question.keywords.filter((keyword) => normalizedResponse.includes(normalizeText(keyword)));
   const keywordCoverage = Math.round((matchedKeywords.length / question.keywords.length) * 100);
-  const hasStructure = /(first|next|then|finally|because|for example|in summary|if|when)/i.test(trimmed);
+  const hasStructure = question.language
+    ? /(?:\breturn\b|\bfunction\b|\bdef\b|\bfor\b|\bif\b|=>)/i.test(trimmed)
+    : /(first|next|then|finally|because|for example|in summary|if|when)/i.test(trimmed);
   const score = Math.min(100, keywordCoverage + (hasStructure ? 10 : 0) + (trimmed.length > 160 ? 5 : 0));
 
   const label = score >= 85 ? 'Strong answer' : score >= 65 ? 'Solid answer' : 'Needs more depth';
-  const feedback = matchedKeywords.length === question.keywords.length
-    ? 'You covered the key pillars of a strong answer. Your response is clear and decision-oriented.'
-    : `You touched ${matchedKeywords.length}/${question.keywords.length} important points. Add ${question.checklist.filter((item) => !matchedKeywords.some((keyword) => normalizeText(item).includes(normalizeText(keyword)))).slice(0, 2).join(' and ')} to make the answer more complete.`;
+  const missingPoints = question.checklist
+    .filter((item) => !matchedKeywords.some((keyword) => normalizeText(item).includes(normalizeText(keyword))))
+    .slice(0, 2);
+  const feedback = question.language
+    ? `Text-based rubric matched ${matchedKeywords.length}/${question.keywords.length} implementation signals${missingPoints.length ? `. Review: ${missingPoints.join(' and ')}` : ''}. Code is not executed; verify the sample cases yourself.`
+    : matchedKeywords.length === question.keywords.length
+      ? 'You covered the key pillars of a strong answer. Your response is clear and decision-oriented.'
+      : `You touched ${matchedKeywords.length}/${question.keywords.length} important points. Add ${missingPoints.join(' and ')} to make the answer more complete.`;
 
   return {
     score: Math.round(score),
