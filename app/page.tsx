@@ -411,12 +411,14 @@ const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) 
     : /(first|next|then|finally|because|for example|in summary|if|when)/i.test(trimmed);
   const score = Math.min(100, keywordCoverage + (hasStructure ? 10 : 0) + (trimmed.length > 160 ? 5 : 0));
 
-  const label = score >= 85 ? 'Strong answer' : score >= 65 ? 'Solid answer' : 'Needs more depth';
+  const label = question.language
+    ? score >= 85 ? 'Strong rubric match' : score >= 65 ? 'Good rubric match' : 'Review the implementation'
+    : score >= 85 ? 'Strong answer' : score >= 65 ? 'Solid answer' : 'Needs more depth';
   const missingPoints = question.checklist
     .filter((item) => !matchedKeywords.some((keyword) => normalizeText(item).includes(normalizeText(keyword))))
     .slice(0, 2);
   const feedback = question.language
-    ? `Text-based rubric matched ${matchedKeywords.length}/${question.keywords.length} implementation signals${missingPoints.length ? `. Review: ${missingPoints.join(' and ')}` : ''}. Code is not executed; verify the sample cases yourself.`
+    ? `Text-based rubric matched ${matchedKeywords.length}/${question.keywords.length} implementation signals. ${matchedKeywords.length === question.keywords.length ? 'All tracked signals are present.' : 'Compare your solution with the checklist and sample cases.'} Code is not executed; verify the sample cases yourself.`
     : matchedKeywords.length === question.keywords.length
       ? 'You covered the key pillars of a strong answer. Your response is clear and decision-oriented.'
       : `You touched ${matchedKeywords.length}/${question.keywords.length} important points. Add ${missingPoints.join(' and ')} to make the answer more complete.`;
