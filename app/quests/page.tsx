@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import QuestFeedback from '../components/QuestFeedback';
 
 type Quest = {
   id: string;
@@ -228,18 +229,17 @@ function QuestsContent() {
                     })}
                   </div>
 
-                  {submitted[quest.id] && (
-                    <>
-                      <div className={`result ${isCorrect ? 'success' : 'error'}`}>
-                        <strong>{isCorrect ? 'Correct!' : 'Not quite. Study the distinction:'}</strong>
-                        <span>{quest.explanation}</span>
-                      </div>
-                      <div className="choice-explanations">
-                        {quest.choices.map((choice) => (
-                          <p key={choice}><strong>{choice}</strong><span>{explainChoice(quest, choice)}</span></p>
-                        ))}
-                      </div>
-                    </>
+                  {submitted[quest.id] && selected !== undefined && (
+                    <QuestFeedback
+                      isCorrect={isCorrect}
+                      selectedAnswer={selected}
+                      correctAnswer={quest.correctAnswer}
+                      explanation={quest.explanation}
+                      choices={quest.choices.map((choice) => ({
+                        text: choice,
+                        explanation: explainChoice(quest, choice),
+                      }))}
+                    />
                   )}
                 </article>
               );
