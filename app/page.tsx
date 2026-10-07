@@ -128,6 +128,10 @@ type InterviewQuestion = {
   checklist: string[];
   keywords: string[];
   language?: string;
+  difficulty?: 'Easy' | 'Medium' | 'Hard';
+  acceptance?: string;
+  tags?: string[];
+  hint?: string;
   starterCode?: string;
   examples?: { input: string; output: string }[];
 };
