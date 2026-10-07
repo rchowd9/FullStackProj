@@ -293,6 +293,10 @@ const interviewQuestions: InterviewQuestion[] = [
     id: 'python-first-unique',
     mission: 'Python · Coding',
     language: 'Python',
+    difficulty: 'Easy',
+    acceptance: '98.9%',
+    tags: ['Hash Map', 'Strings'],
+    hint: 'Build a frequency map first, then scan the original string for the first character whose count is 1.',
     question: 'Write first_unique_index(text), returning the index of the first character that appears once, or -1 if none exists. Keep the solution O(n).',
     idealAnswer: `def first_unique_index(text: str) -> int:
     counts = {}
