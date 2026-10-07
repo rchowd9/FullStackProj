@@ -16,6 +16,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 
 - Gamified learning interface with a polished role-play dashboard and progress telemetry
 - CS concept cards and missions across 14+ topic areas and interview loops
+- LeetCode-style coding challenge cards with difficulty badges, tags, sample cases, hints, and saved-problem tracking
 - Adaptive study coach that recommends the next best focus based on missed challenges and momentum
 - Progress cockpit with XP, streak, cycle goals, daily challenge, and practice session tracking
 - Searchable and filterable quest board with dynamic review flows for weak concepts
