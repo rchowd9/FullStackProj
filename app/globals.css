@@ -811,6 +811,7 @@ a {
   .scan-button { grid-column: 2; justify-self: start; }
   .command-label { grid-column: 1 / -1; }
   .daily-challenge .button-link { justify-self: start; }
+  .feature-summary-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .leaderboard-panel {
@@ -887,6 +888,7 @@ a {
   .command-stat { border-left: 0; border-top: 1px solid var(--border); padding: 12px 0 0; }
   .daily-art { min-height: 90px; }
   .daily-rewards { flex-wrap: wrap; }
+  .feature-summary-strip { grid-template-columns: 1fr; }
   .quest-toolbar { grid-template-columns: 1fr; }
   .quest-summary { text-align: left; }
   .leaderboard-row {
