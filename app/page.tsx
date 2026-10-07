@@ -321,6 +321,10 @@ const interviewQuestions: InterviewQuestion[] = [
     id: 'javascript-debounce',
     mission: 'JavaScript · Coding',
     language: 'JavaScript',
+    difficulty: 'Medium',
+    acceptance: '93.4%',
+    tags: ['Closure', 'Timing'],
+    hint: 'Use a closure to keep the timeout between calls and clear it before scheduling the next invocation.',
     question: 'Implement debounce(callback, delayMs). Return a function that delays invocation until calls stop for delayMs, uses only the latest arguments, and preserves the caller context.',
     idealAnswer: `function debounce(callback, delayMs) {
   let timer;
@@ -344,6 +348,10 @@ const interviewQuestions: InterviewQuestion[] = [
     id: 'java-merge-intervals',
     mission: 'Java · Coding',
     language: 'Java',
+    difficulty: 'Medium',
+    acceptance: '89.1%',
+    tags: ['Sorting', 'Intervals'],
+    hint: 'Sort by the start time first, then compare the current interval with the last merged one.',
     question: 'Implement mergeIntervals(int[][] intervals). Merge overlapping intervals, return them sorted by start, and handle an empty input. Target O(n log n) time.',
     idealAnswer: `static int[][] mergeIntervals(int[][] intervals) {
     if (intervals.length == 0) return new int[0][];
