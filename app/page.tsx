@@ -870,6 +870,19 @@ export default function HomePage() {
 
             return (
               <article key={interview.id} className="interview-question-card">
+                <div className="leetcode-header">
+                  <div className="leetcode-title-group">
+                    <span className={`leetcode-badge ${interview.difficulty?.toLowerCase() ?? 'practice'}`}>{interview.difficulty ?? 'Practice'}</span>
+                    <strong>{interview.language ? `Problem ${index + 1}` : 'Concept prompt'}</strong>
+                  </div>
+                  <div className="leetcode-meta">
+                    <span className="acceptance-pill">{interview.acceptance ?? 'Top 90%'}</span>
+                    <button type="button" className="mini-toggle" onClick={() => toggleSavedChallenge(interview.id)}>
+                      {savedChallenges[interview.id] ? 'Saved' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+
                 <div className="interview-question-header">
                   <span className="interview-number">0{index + 1}</span>
                   <div className="interview-heading">
@@ -877,6 +890,23 @@ export default function HomePage() {
                     <strong>{interview.question}</strong>
                   </div>
                 </div>
+
+                {interview.tags && (
+                  <div className="tag-row">
+                    {interview.tags.map((tag) => (
+                      <span key={tag} className="tag-pill">{tag}</span>
+                    ))}
+                  </div>
+                )}
+
+                {interview.hint && (
+                  <div className={`hint-panel ${showHints[interview.id] ? 'open' : ''}`}>
+                    <button type="button" className="hint-toggle" onClick={() => toggleHint(interview.id)}>
+                      {showHints[interview.id] ? 'Hide hint' : 'Show hint'}
+                    </button>
+                    {showHints[interview.id] && <p>{interview.hint}</p>}
+                  </div>
+                )}
 
                 {interview.starterCode && interview.examples && (
                   <div className="interview-coding-prompt">
