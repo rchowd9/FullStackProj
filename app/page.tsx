@@ -382,6 +382,10 @@ const interviewQuestions: InterviewQuestion[] = [
     id: 'cpp-two-sum',
     mission: 'C++ · Coding',
     language: 'C++',
+    difficulty: 'Easy',
+    acceptance: '95.7%',
+    tags: ['Hash Map', 'Arrays'],
+    hint: 'Keep a map of seen values to indices and check whether the complement has already appeared.',
     question: 'Implement twoSum(nums, target), returning the two distinct indices whose values sum to target. Assume exactly one solution and target O(n) time. Use std::vector and std::unordered_map.',
     idealAnswer: `vector<int> twoSum(const vector<int>& nums, int target) {
     unordered_map<int, int> seen;
@@ -486,6 +490,8 @@ export default function HomePage() {
   const [leaderboardStatus, setLeaderboardStatus] = useState('');
   const [interviewAnswers, setInterviewAnswers] = useState<Record<string, string>>({});
   const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
+  const [showHints, setShowHints] = useState<Record<string, boolean>>({});
+  const [savedChallenges, setSavedChallenges] = useState<Record<string, boolean>>({});
   const [studyCoach, setStudyCoach] = useState({ focus: 'System Design', note: 'Keep momentum and complete a strong daily run.' });
 
   const currentSignal = signalStates[signalIndex];
@@ -517,6 +523,14 @@ export default function HomePage() {
   const handleInterviewEvaluation = (question: InterviewQuestion) => {
     const result = evaluateInterviewAnswer(question, interviewAnswers[question.id] ?? '');
     setInterviewResults((prev) => ({ ...prev, [question.id]: result }));
+  };
+
+  const toggleHint = (questionId: string) => {
+    setShowHints((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
+  };
+
+  const toggleSavedChallenge = (questionId: string) => {
+    setSavedChallenges((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
   };
 
   const shareProgress = async () => {
