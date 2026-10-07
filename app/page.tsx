@@ -835,6 +835,25 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="feature-summary-strip" aria-label="Coding practice features">
+        <div className="summary-pill">
+          <span className="summary-kicker">Focus mode</span>
+          <strong>25 min sprint</strong>
+        </div>
+        <div className="summary-pill">
+          <span className="summary-kicker">Saved</span>
+          <strong>{Object.values(savedChallenges).filter(Boolean).length} challenges</strong>
+        </div>
+        <div className="summary-pill">
+          <span className="summary-kicker">Hints</span>
+          <strong>{Object.values(showHints).filter(Boolean).length} unlocked</strong>
+        </div>
+        <div className="summary-pill highlight">
+          <span className="summary-kicker">Scoreboard</span>
+          <strong>Top 12%</strong>
+        </div>
+      </section>
+
       <section id="interview-lab" className="interview-lab">
         <div className="section-heading">
           <div>
