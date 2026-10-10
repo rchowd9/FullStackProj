@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import CodeEditor from './components/CodeEditor';
 
 type LeaderboardEntry = {
   name: string;
@@ -134,6 +135,13 @@ type InterviewQuestion = {
   hint?: string;
   starterCode?: string;
   examples?: { input: string; output: string }[];
+};
+
+type SubmissionHistoryItem = {
+  id: string;
+  submittedAt: string;
+  elapsedSeconds: number;
+  score: number;
 };
 
 const interviewQuestions: InterviewQuestion[] = [
@@ -521,6 +529,16 @@ const signalStates = [
   { label: 'High voltage', title: 'Your streak has launch energy.', detail: 'A three-question daily run is the fastest route to the next reward checkpoint today.', action: 'Start daily run', href: '/quests?mode=daily' },
 ];
 
+const challengeTopics = Array.from(new Set(
+  interviewQuestions.flatMap((question) => question.tags ?? [question.mission])
+)).sort();
+
+const formatDuration = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+  const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+  return `${minutes}:${seconds}`;
+};
+
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
@@ -532,10 +550,26 @@ export default function HomePage() {
   const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [savedChallenges, setSavedChallenges] = useState<Record<string, boolean>>({});
+  const [selectedDifficulty, setSelectedDifficulty] = useState('All difficulties');
+  const [selectedTopic, setSelectedTopic] = useState('All topics');
+  const [savedOnly, setSavedOnly] = useState(false);
+  const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
+  const [elapsedByChallenge, setElapsedByChallenge] = useState<Record<string, number>>({});
+  const [submissionHistory, setSubmissionHistory] = useState<SubmissionHistoryItem[]>([]);
+  const [codingPracticeLoaded, setCodingPracticeLoaded] = useState(false);
   const [studyCoach, setStudyCoach] = useState({ focus: 'System Design', note: 'Keep momentum and complete a strong daily run.' });
 
   const currentSignal = signalStates[signalIndex];
   const readiness = Math.min(96, 58 + completedQuests.length * 7);
+  const filteredInterviewQuestions = interviewQuestions
+    .map((question, index) => ({ question, index }))
+    .filter(({ question }) => {
+      const difficulty = question.difficulty ?? 'Practice';
+      const topics = question.tags ?? [question.mission];
+      return (selectedDifficulty === 'All difficulties' || difficulty === selectedDifficulty)
+        && (selectedTopic === 'All topics' || topics.includes(selectedTopic))
+        && (!savedOnly || Boolean(savedChallenges[question.id]));
+    });
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -571,6 +605,23 @@ export default function HomePage() {
 
   const toggleSavedChallenge = (questionId: string) => {
     setSavedChallenges((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
+  };
+
+  const submitChallengeForReview = (question: InterviewQuestion) => {
+    const result = evaluateInterviewAnswer(question, interviewAnswers[question.id] ?? '');
+    const elapsedSeconds = elapsedByChallenge[question.id] ?? 0;
+
+    setInterviewResults((prev) => ({ ...prev, [question.id]: result }));
+    setSubmissionHistory((previous) => [
+      {
+        id: question.id,
+        submittedAt: new Date().toISOString(),
+        elapsedSeconds,
+        score: result.score,
+      },
+      ...previous,
+    ].slice(0, 100));
+    setActiveTimerId((activeId) => activeId === question.id ? null : activeId);
   };
 
   const shareProgress = async () => {
@@ -633,6 +684,70 @@ export default function HomePage() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    const savedPractice = window.localStorage.getItem('code-quest:coding-practice');
+    if (savedPractice) {
+      try {
+        const parsed = JSON.parse(savedPractice) as {
+          savedChallenges?: unknown;
+          elapsedByChallenge?: unknown;
+          submissionHistory?: unknown;
+        };
+
+        if (parsed.savedChallenges && typeof parsed.savedChallenges === 'object' && !Array.isArray(parsed.savedChallenges)) {
+          setSavedChallenges(parsed.savedChallenges as Record<string, boolean>);
+        }
+        if (parsed.elapsedByChallenge && typeof parsed.elapsedByChallenge === 'object' && !Array.isArray(parsed.elapsedByChallenge)) {
+          const elapsed = Object.fromEntries(
+            Object.entries(parsed.elapsedByChallenge).filter((entry): entry is [string, number] =>
+              typeof entry[1] === 'number' && Number.isFinite(entry[1]) && entry[1] >= 0
+            )
+          );
+          setElapsedByChallenge(elapsed);
+        }
+        if (Array.isArray(parsed.submissionHistory)) {
+          setSubmissionHistory(parsed.submissionHistory.filter((item): item is SubmissionHistoryItem =>
+            typeof item === 'object'
+            && item !== null
+            && 'id' in item
+            && typeof item.id === 'string'
+            && 'submittedAt' in item
+            && typeof item.submittedAt === 'string'
+            && 'elapsedSeconds' in item
+            && typeof item.elapsedSeconds === 'number'
+            && 'score' in item
+            && typeof item.score === 'number'
+          ));
+        }
+      } catch {
+        window.localStorage.removeItem('code-quest:coding-practice');
+      }
+    }
+    setCodingPracticeLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (codingPracticeLoaded) {
+      window.localStorage.setItem('code-quest:coding-practice', JSON.stringify({
+        savedChallenges,
+        elapsedByChallenge,
+        submissionHistory,
+      }));
+    }
+  }, [codingPracticeLoaded, savedChallenges, elapsedByChallenge, submissionHistory]);
+
+  useEffect(() => {
+    if (!activeTimerId) return;
+
+    const interval = window.setInterval(() => {
+      setElapsedByChallenge((previous) => ({
+        ...previous,
+        [activeTimerId]: (previous[activeTimerId] ?? 0) + 1,
+      }));
+    }, 1000);
+    return () => window.clearInterval(interval);
+  }, [activeTimerId]);
 
   useEffect(() => {
     fetch('/api/leaderboard')
@@ -877,20 +992,16 @@ export default function HomePage() {
 
       <section className="feature-summary-strip" aria-label="Coding practice features">
         <div className="summary-pill">
-          <span className="summary-kicker">Focus mode</span>
-          <strong>25 min sprint</strong>
+          <span className="summary-kicker">Practice time</span>
+          <strong>{formatDuration(Object.values(elapsedByChallenge).reduce((total, seconds) => total + seconds, 0))}</strong>
         </div>
         <div className="summary-pill">
           <span className="summary-kicker">Saved</span>
           <strong>{Object.values(savedChallenges).filter(Boolean).length} challenges</strong>
         </div>
         <div className="summary-pill">
-          <span className="summary-kicker">Hints</span>
-          <strong>{Object.values(showHints).filter(Boolean).length} unlocked</strong>
-        </div>
-        <div className="summary-pill highlight">
-          <span className="summary-kicker">Scoreboard</span>
-          <strong>Top 12%</strong>
+          <span className="summary-kicker">Submissions</span>
+          <strong>{submissionHistory.length} attempts</strong>
         </div>
       </section>
 
@@ -902,11 +1013,36 @@ export default function HomePage() {
           </div>
           <span className="panel-badge panel-badge-alt">{interviewQuestions.length} skill drills</span>
         </div>
-        <p className="interview-intro">Practice interview explanations and language-specific coding challenges. Compare your response with a reference answer; coding submissions are checked with a text-based rubric, not executed.</p>
+        <p className="interview-intro">Practice interview explanations and solve coding challenges in a syntax-aware editor. Submissions are checked with a text-based rubric, not executed.</p>
+        <div className="problem-filters" aria-label="Filter coding problems">
+          <label>
+            <span>Difficulty</span>
+            <select value={selectedDifficulty} onChange={(event) => setSelectedDifficulty(event.target.value)}>
+              <option>All difficulties</option>
+              <option>Easy</option>
+              <option>Medium</option>
+              <option>Hard</option>
+              <option>Practice</option>
+            </select>
+          </label>
+          <label>
+            <span>Topic</span>
+            <select value={selectedTopic} onChange={(event) => setSelectedTopic(event.target.value)}>
+              <option>All topics</option>
+              {challengeTopics.map((topic) => <option key={topic}>{topic}</option>)}
+            </select>
+          </label>
+          <button type="button" className={`saved-filter ${savedOnly ? 'active' : ''}`} onClick={() => setSavedOnly((current) => !current)}>
+            {savedOnly ? 'Showing saved' : 'Saved only'} ({Object.values(savedChallenges).filter(Boolean).length})
+          </button>
+          <span className="filter-count">Showing {filteredInterviewQuestions.length} of {interviewQuestions.length} prompts</span>
+        </div>
         <div className="interview-grid">
-          {interviewQuestions.map((interview, index) => {
+          {filteredInterviewQuestions.map(({ question: interview, index }) => {
             const result = interviewResults[interview.id];
             const answer = interviewAnswers[interview.id] ?? '';
+            const questionSubmissions = submissionHistory.filter((submission) => submission.id === interview.id);
+            const isCodingChallenge = Boolean(interview.language);
 
             return (
               <article key={interview.id} className="interview-question-card">
@@ -967,20 +1103,55 @@ export default function HomePage() {
                   </div>
                 )}
 
-                <textarea
-                  className={`interview-response${interview.language ? ' interview-code-response' : ''}`}
-                  value={answer}
-                  onChange={(event) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: event.target.value }))}
-                  placeholder={interview.language ? `Write your ${interview.language} solution here...` : 'Type your answer here...'}
-                  aria-label={`${interview.language ?? interview.mission} interview response`}
-                  spellCheck={!interview.language}
-                  rows={interview.language ? 10 : 5}
-                />
+                {interview.language
+                  ? <CodeEditor
+                      language={interview.language}
+                      value={answer}
+                      onChange={(value) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: value }))}
+                    />
+                  : <textarea
+                      className="interview-response"
+                      value={answer}
+                      onChange={(event) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: event.target.value }))}
+                      placeholder="Type your answer here..."
+                      aria-label={`${interview.mission} interview response`}
+                      rows={5}
+                    />}
 
                 <div className="interview-actions">
-                  <button type="button" className="interview-action-button" onClick={() => handleInterviewEvaluation(interview)}>
-                    Evaluate answer
-                  </button>
+                  {isCodingChallenge ? (
+                    <>
+                      <button
+                        type="button"
+                        className="interview-action-button"
+                        onClick={() => submitChallengeForReview(interview)}
+                        disabled={!answer.trim()}
+                      >
+                        Submit for review
+                      </button>
+                      <div className="challenge-timer" role="group" aria-label={`${interview.language} challenge timer`}>
+                        <span aria-live="off">{formatDuration(elapsedByChallenge[interview.id] ?? 0)}</span>
+                        {activeTimerId === interview.id ? (
+                          <button type="button" onClick={() => setActiveTimerId(null)}>Pause</button>
+                        ) : (
+                          <button type="button" onClick={() => setActiveTimerId(interview.id)}>Start timer</button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveTimerId((activeId) => activeId === interview.id ? null : activeId);
+                            setElapsedByChallenge((previous) => ({ ...previous, [interview.id]: 0 }));
+                          }}
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <button type="button" className="interview-action-button" onClick={() => handleInterviewEvaluation(interview)}>
+                      Evaluate answer
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="interview-action-button secondary"
@@ -996,6 +1167,21 @@ export default function HomePage() {
                     Clear
                   </button>
                 </div>
+
+                {isCodingChallenge && questionSubmissions.length > 0 && (
+                  <details className="submission-history">
+                    <summary>Submission history ({questionSubmissions.length})</summary>
+                    <ol>
+                      {questionSubmissions.slice(0, 5).map((submission) => (
+                        <li key={`${submission.submittedAt}-${submission.score}`}>
+                          <span>{submission.submittedAt.slice(0, 16).replace('T', ' ')} UTC</span>
+                          <strong>{submission.score}% rubric</strong>
+                          <small>{formatDuration(submission.elapsedSeconds)} elapsed</small>
+                        </li>
+                      ))}
+                    </ol>
+                  </details>
+                )}
 
                 {result && (
                   <div className={`interview-result ${result.score >= 80 ? 'success' : result.score >= 60 ? 'warning' : 'error'}`}>
