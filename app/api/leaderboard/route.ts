@@ -41,6 +41,10 @@ function isLeaderboardEntry(value: unknown): value is LeaderboardEntry {
   );
 }
 
+function isIntegerInRange(value: unknown, min: number, max: number): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= min && value <= max;
+}
+
 async function readLeaderboard(): Promise<LeaderboardEntry[]> {
   try {
     if (redis) {
@@ -96,12 +100,8 @@ export async function POST(request: Request) {
   if (
     name.length === 0 ||
     name.length > MAX_NAME_LENGTH ||
-    !Number.isSafeInteger(xp) ||
-    (xp as number) < 0 ||
-    (xp as number) > MAX_XP ||
-    !Number.isSafeInteger(streak) ||
-    (streak as number) < 0 ||
-    (streak as number) > MAX_STREAK ||
+    !isIntegerInRange(xp, 0, MAX_XP) ||
+    !isIntegerInRange(streak, 0, MAX_STREAK) ||
     typeof badge !== 'string' ||
     badge.trim().length === 0 ||
     badge.trim().length > MAX_BADGE_LENGTH
@@ -111,8 +111,8 @@ export async function POST(request: Request) {
 
   const nextEntry: LeaderboardEntry = {
     name,
-    xp: xp as number,
-    streak: streak as number,
+    xp,
+    streak,
     badge: badge.trim(),
   };
   const leaderboard = await readLeaderboard();
