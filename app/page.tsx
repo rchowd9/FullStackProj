@@ -547,7 +547,13 @@ export default function HomePage() {
   const [apiStatus, setApiStatus] = useState('checking');
   const [signalIndex, setSignalIndex] = useState(0);
   const [leaderboardStatus, setLeaderboardStatus] = useState('');
-  const [interviewAnswers, setInterviewAnswers] = useState<Record<string, string>>({});
+  const [interviewAnswers, setInterviewAnswers] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      interviewQuestions
+        .filter((question) => question.language && question.starterCode)
+        .map((question) => [question.id, question.starterCode ?? ''])
+    )
+  );
   const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [savedChallenges, setSavedChallenges] = useState<Record<string, boolean>>({});
@@ -563,7 +569,13 @@ export default function HomePage() {
   const currentSignal = signalStates[signalIndex];
   const readiness = Math.min(96, 58 + completedQuests.length * 7);
   const filteredInterviewQuestions = interviewQuestions
-    .map((question, index) => ({ question, index }))
+    .map((question, index) => ({
+      question,
+      index,
+      codingNumber: question.language
+        ? interviewQuestions.slice(0, index).filter((previous) => Boolean(previous.language)).length + 1
+        : null,
+    }))
     .filter(({ question }) => {
       const difficulty = question.difficulty ?? 'Practice';
       const topics = question.tags ?? [question.mission];
@@ -1031,7 +1043,6 @@ export default function HomePage() {
               <option>All difficulties</option>
               <option>Easy</option>
               <option>Medium</option>
-              <option>Hard</option>
               <option>Practice</option>
             </select>
           </label>
@@ -1051,7 +1062,7 @@ export default function HomePage() {
           {filteredInterviewQuestions.length === 0 && (
             <p className="empty-problems">No prompts match these filters. Adjust the difficulty or topic, or save a challenge first.</p>
           )}
-          {filteredInterviewQuestions.map(({ question: interview, index }) => {
+          {filteredInterviewQuestions.map(({ question: interview, index, codingNumber }) => {
             const result = interviewResults[interview.id];
             const answer = interviewAnswers[interview.id] ?? '';
             const questionSubmissions = submissionHistory.filter((submission) => submission.id === interview.id);
@@ -1062,7 +1073,7 @@ export default function HomePage() {
                 <div className="leetcode-header">
                   <div className="leetcode-title-group">
                     <span className={`leetcode-badge ${interview.difficulty?.toLowerCase() ?? 'practice'}`}>{interview.difficulty ?? 'Practice'}</span>
-                    <strong>{interview.language ? `Problem ${index + 1}` : 'Concept prompt'}</strong>
+                    <strong>{interview.language ? `Problem ${codingNumber}` : 'Concept prompt'}</strong>
                   </div>
                   <div className="leetcode-meta">
                     <span className="acceptance-pill">{interview.acceptance ?? 'Top 90%'}</span>
