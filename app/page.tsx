@@ -1009,6 +1009,10 @@ export default function HomePage() {
           <span className="summary-kicker">Submissions</span>
           <strong>{submissionHistory.length} attempts</strong>
         </div>
+        <div className="summary-pill">
+          <span className="summary-kicker">Hints</span>
+          <strong>{Object.values(showHints).filter(Boolean).length} opened</strong>
+        </div>
       </section>
 
       <section id="interview-lab" className="interview-lab">
@@ -1181,8 +1185,8 @@ export default function HomePage() {
                   <details className="submission-history">
                     <summary>Submission history ({questionSubmissions.length})</summary>
                     <ol>
-                      {questionSubmissions.slice(0, 5).map((submission) => (
-                        <li key={`${submission.submittedAt}-${submission.score}`}>
+                      {questionSubmissions.slice(0, 5).map((submission, submissionIndex) => (
+                        <li key={`${submission.submittedAt}-${submissionIndex}`}>
                           <span>{submission.submittedAt.slice(0, 16).replace('T', ' ')} UTC</span>
                           <strong>{submission.score}% rubric</strong>
                           <small>{formatDuration(submission.elapsedSeconds)} elapsed</small>
