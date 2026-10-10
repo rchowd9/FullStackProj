@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { cpp } from '@codemirror/lang-cpp';
+import { indentUnit } from '@codemirror/language';
 import { java } from '@codemirror/lang-java';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
@@ -32,7 +33,7 @@ export default function CodeEditor({ language, value, onChange }: CodeEditorProp
       value={value}
       height="320px"
       theme="dark"
-      extensions={extensions}
+      extensions={[...extensions, indentUnit.of('    ')]}
       onChange={onChange}
       aria-label={`${language} code editor`}
       basicSetup={{
@@ -41,7 +42,6 @@ export default function CodeEditor({ language, value, onChange }: CodeEditorProp
         highlightActiveLine: true,
         autocompletion: true,
         indentOnInput: true,
-        tabSize: 4,
       }}
     />
   );

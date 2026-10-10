@@ -142,6 +142,7 @@ type SubmissionHistoryItem = {
   submittedAt: string;
   elapsedSeconds: number;
   score: number;
+  code: string;
 };
 
 const interviewQuestions: InterviewQuestion[] = [
@@ -618,6 +619,7 @@ export default function HomePage() {
         submittedAt: new Date().toISOString(),
         elapsedSeconds,
         score: result.score,
+        code: interviewAnswers[question.id] ?? '',
       },
       ...previous,
     ].slice(0, 100));
@@ -696,7 +698,9 @@ export default function HomePage() {
         };
 
         if (parsed.savedChallenges && typeof parsed.savedChallenges === 'object' && !Array.isArray(parsed.savedChallenges)) {
-          setSavedChallenges(parsed.savedChallenges as Record<string, boolean>);
+          setSavedChallenges(Object.fromEntries(
+            Object.entries(parsed.savedChallenges).filter((entry): entry is [string, boolean] => typeof entry[1] === 'boolean')
+          ));
         }
         if (parsed.elapsedByChallenge && typeof parsed.elapsedByChallenge === 'object' && !Array.isArray(parsed.elapsedByChallenge)) {
           const elapsed = Object.fromEntries(
@@ -718,6 +722,8 @@ export default function HomePage() {
             && typeof item.elapsedSeconds === 'number'
             && 'score' in item
             && typeof item.score === 'number'
+            && 'code' in item
+            && typeof item.code === 'string'
           ));
         }
       } catch {
@@ -1038,6 +1044,9 @@ export default function HomePage() {
           <span className="filter-count">Showing {filteredInterviewQuestions.length} of {interviewQuestions.length} prompts</span>
         </div>
         <div className="interview-grid">
+          {filteredInterviewQuestions.length === 0 && (
+            <p className="empty-problems">No prompts match these filters. Adjust the difficulty or topic, or save a challenge first.</p>
+          )}
           {filteredInterviewQuestions.map(({ question: interview, index }) => {
             const result = interviewResults[interview.id];
             const answer = interviewAnswers[interview.id] ?? '';
@@ -1177,6 +1186,7 @@ export default function HomePage() {
                           <span>{submission.submittedAt.slice(0, 16).replace('T', ' ')} UTC</span>
                           <strong>{submission.score}% rubric</strong>
                           <small>{formatDuration(submission.elapsedSeconds)} elapsed</small>
+                          <pre><code>{submission.code}</code></pre>
                         </li>
                       ))}
                     </ol>
