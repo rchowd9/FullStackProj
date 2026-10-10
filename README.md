@@ -22,7 +22,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Searchable and filterable quest board with dynamic review flows for weak concepts
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Daily challenge engine that rotates three quests using a UTC-based deterministic selector
-- Interview lab with answer capture, scoring, and optimal-answer feedback for 14 job-ready prompts
+- Interview lab with answer capture, scoring, and optimal-answer feedback for 27 job-ready prompts
 - Achievement vault with milestone unlocks and progress-based rewards
 - Shareable progress snapshot using the Web Share API with clipboard fallback
 - Redis-backed leaderboard with an in-memory development fallback
@@ -34,7 +34,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 
 ## Resume-ready project highlights
 
-- Designed and built a full-stack CS learning platform with 14 interview drills, 3 rotating challenge loops, and a persistent progress system that improved retention by helping learners revisit missed concepts without losing state.
+- Designed and built a full-stack CS learning platform with 27 interview drills, 3 rotating challenge loops, and a persistent progress system that improved retention by helping learners revisit missed concepts without losing state.
 - Engineered a practice dashboard with adaptive recommendations, XP tracking, achievement milestones, and session analytics to support goal-driven study habits, creating a more measurable and motivating learning workflow for 24k+ simulated learners.
 
 ## Local development

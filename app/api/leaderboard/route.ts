@@ -9,6 +9,10 @@ type LeaderboardEntry = {
 };
 
 const LEADERBOARD_KEY = 'code-quest:leaderboard';
+const MAX_NAME_LENGTH = 40;
+const MAX_BADGE_LENGTH = 60;
+const MAX_XP = 10_000_000;
+const MAX_STREAK = 36_500;
 const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
   { name: 'Byte Knight', xp: 12450, streak: 9, badge: 'Logic Legend' },
   { name: 'Pixel Sage', xp: 11680, streak: 7, badge: 'Bug Slayer' },
@@ -71,35 +75,59 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  let payload: unknown;
+
   try {
-    const payload = await request.json();
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Request body must be valid JSON' }, { status: 400 });
+  }
 
-    if (!payload || typeof payload !== 'object') {
-      return NextResponse.json({ error: 'Invalid leaderboard payload' }, { status: 400 });
-    }
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return NextResponse.json({ error: 'Invalid leaderboard payload' }, { status: 400 });
+  }
 
-    const name = typeof payload.name === 'string' ? payload.name.trim() : '';
-    const xp = typeof payload.xp === 'number' ? payload.xp : Number(payload.xp);
-    const streak = typeof payload.streak === 'number' ? payload.streak : Number(payload.streak);
-    const badge = typeof payload.badge === 'string' ? payload.badge.trim() : 'Rookie';
+  const entry = payload as Record<string, unknown>;
+  const name = typeof entry.name === 'string' ? entry.name.trim() : '';
+  const xp = entry.xp;
+  const streak = entry.streak;
+  const badge = entry.badge === undefined ? 'Rookie' : entry.badge;
 
-    if (!name || Number.isNaN(xp) || Number.isNaN(streak)) {
-      return NextResponse.json({ error: 'Missing or invalid leaderboard fields' }, { status: 400 });
-    }
+  if (
+    name.length === 0 ||
+    name.length > MAX_NAME_LENGTH ||
+    !Number.isSafeInteger(xp) ||
+    (xp as number) < 0 ||
+    (xp as number) > MAX_XP ||
+    !Number.isSafeInteger(streak) ||
+    (streak as number) < 0 ||
+    (streak as number) > MAX_STREAK ||
+    typeof badge !== 'string' ||
+    badge.trim().length === 0 ||
+    badge.trim().length > MAX_BADGE_LENGTH
+  ) {
+    return NextResponse.json({ error: 'Missing or invalid leaderboard fields' }, { status: 400 });
+  }
 
-    const nextEntry: LeaderboardEntry = { name, xp, streak, badge };
-    const leaderboard = await readLeaderboard();
-    const updated = [...leaderboard, nextEntry]
-      .sort((a, b) => b.xp - a.xp)
-      .slice(0, 10);
+  const nextEntry: LeaderboardEntry = {
+    name,
+    xp: xp as number,
+    streak: streak as number,
+    badge: badge.trim(),
+  };
+  const leaderboard = await readLeaderboard();
+  const updated = [
+    ...leaderboard.filter((current) => current.name.toLowerCase() !== name.toLowerCase()),
+    nextEntry,
+  ]
+    .sort((a, b) => b.xp - a.xp || b.streak - a.streak)
+    .slice(0, 10);
 
+  try {
     await writeLeaderboard(updated);
-
     return NextResponse.json({ leaderboard: updated, saved: true });
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Unable to save leaderboard score', details: String(error) },
-      { status: 500 }
-    );
+    console.error('Unable to save leaderboard score.', error);
+    return NextResponse.json({ error: 'Unable to save leaderboard score' }, { status: 500 });
   }
 }
