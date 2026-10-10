@@ -1084,7 +1084,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="interview-question-header">
-                  <span className="interview-number">0{index + 1}</span>
+                  <span className="interview-number">
+                    {String(isCodingChallenge ? codingNumber : index + 1).padStart(2, '0')}
+                  </span>
                   <div className="interview-heading">
                     <small>{interview.language ? `${interview.language} · CODING CHALLENGE` : interview.mission}</small>
                     <strong>{interview.question}</strong>
