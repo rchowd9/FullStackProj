@@ -49,6 +49,13 @@ const missions = [
     description: 'Manage schemas, relationships, and efficient storage with database fundamentals.',
   },
   {
+    title: 'SQL Query Lab',
+    category: 'SQL',
+    difficulty: 'Intermediate',
+    xp: 320,
+    description: 'Practice joins, aggregates, window functions, and query performance.',
+  },
+  {
     title: 'Kernel Quest',
     category: 'Operating Systems',
     difficulty: 'Intermediate',
@@ -131,6 +138,11 @@ type InterviewQuestion = {
   language?: string;
   difficulty?: 'Easy' | 'Medium' | 'Hard';
   acceptance?: string;
+  complexity?: {
+    time: string;
+    space: string;
+    notes: string;
+  };
   tags?: string[];
   hint?: string;
   starterCode?: string;
@@ -365,6 +377,11 @@ const interviewQuestions: InterviewQuestion[] = [
     ],
     checklist: ['Count characters in one pass', 'Scan in original order', 'Handle no unique character', 'O(n) time'],
     keywords: ['counts', 'get', 'enumerate', 'return -1', 'O(n)'],
+    complexity: {
+      time: 'O(n)',
+      space: 'O(k)',
+      notes: 'k is the number of distinct characters stored in the frequency map.',
+    },
   },
   {
     id: 'javascript-debounce',
@@ -392,6 +409,11 @@ const interviewQuestions: InterviewQuestion[] = [
     ],
     checklist: ['Keep the timer in a closure', 'Cancel the previous timer', 'Forward the latest arguments', 'Preserve this'],
     keywords: ['closure', 'clearTimeout', 'setTimeout', 'args', 'this'],
+    complexity: {
+      time: 'O(1) per call, excluding the callback',
+      space: 'O(1)',
+      notes: 'The closure retains one timer and the latest call arguments.',
+    },
   },
   {
     id: 'java-merge-intervals',
@@ -426,6 +448,11 @@ const interviewQuestions: InterviewQuestion[] = [
     ],
     checklist: ['Sort by start', 'Merge when intervals overlap', 'Keep disjoint intervals', 'Handle empty input'],
     keywords: ['Arrays.sort', 'interval', 'Math.max', 'toArray', 'empty'],
+    complexity: {
+      time: 'O(n log n)',
+      space: 'O(n)',
+      notes: 'Sorting dominates runtime; the merged output can contain all n intervals.',
+    },
   },
   {
     id: 'cpp-two-sum',
@@ -455,6 +482,120 @@ const interviewQuestions: InterviewQuestion[] = [
     ],
     checklist: ['Use a hash map for seen values', 'Look up target minus current value', 'Return distinct indices', 'O(n) time'],
     keywords: ['unordered_map', 'find', 'target', 'return', 'O(n)'],
+    complexity: {
+      time: 'O(n) expected',
+      space: 'O(n)',
+      notes: 'Hash-map lookups are expected O(1); worst-case behavior depends on collisions.',
+    },
+  },
+  {
+    id: 'sql-customer-spend',
+    mission: 'SQL · Coding',
+    language: 'SQL',
+    difficulty: 'Medium',
+    acceptance: '86.2%',
+    tags: ['SQL', 'Aggregation', 'Sorting'],
+    hint: 'Join each order to its customer, aggregate by customer, then order the aggregate and limit the result.',
+    question: 'Given customers(id, name) and orders(id, customer_id, total), write a PostgreSQL query returning the three customers with the highest lifetime spend. Include customer id, name, and total spend; break ties by customer id ascending.',
+    idealAnswer: `SELECT
+  c.id,
+  c.name,
+  SUM(o.total) AS lifetime_spend
+FROM customers AS c
+JOIN orders AS o ON o.customer_id = c.id
+GROUP BY c.id, c.name
+ORDER BY lifetime_spend DESC, c.id ASC
+LIMIT 3;`,
+    starterCode: `-- Return the top three customers by lifetime spend.
+SELECT
+FROM customers AS c
+JOIN orders AS o ON
+GROUP BY
+ORDER BY
+LIMIT 3;`,
+    examples: [
+      { input: 'customers: (1, Ada), (2, Linus); orders: (1, 1, 20), (2, 1, 5), (3, 2, 18)', output: '1 | Ada | 25; 2 | Linus | 18' },
+    ],
+    checklist: ['Join customers to orders', 'SUM order totals', 'Group by customer id and name', 'Sort by spend descending with a stable tie-break', 'Limit to three rows'],
+    keywords: ['join', 'sum', 'group by', 'order by', 'limit'],
+    complexity: {
+      time: 'O(m + n log n)',
+      space: 'O(g)',
+      notes: 'm orders and n grouped customers; a full scan and aggregate are followed by sorting groups. Actual plans and costs vary with indexes and the database engine.',
+    },
+  },
+  {
+    id: 'sql-above-department-average',
+    mission: 'SQL · Coding',
+    language: 'SQL',
+    difficulty: 'Hard',
+    acceptance: '72.8%',
+    tags: ['SQL', 'Window Functions', 'CTEs'],
+    hint: 'Compute the department average with a window function so each employee row remains available for comparison.',
+    question: 'Given employees(id, name, department_id, salary), write a PostgreSQL query returning each employee whose salary is above their department average. Include id, name, department_id, and salary.',
+    idealAnswer: `WITH employee_averages AS (
+  SELECT
+    id,
+    name,
+    department_id,
+    salary,
+    AVG(salary) OVER (PARTITION BY department_id) AS department_average
+  FROM employees
+)
+SELECT id, name, department_id, salary
+FROM employee_averages
+WHERE salary > department_average
+ORDER BY department_id, id;`,
+    starterCode: `-- Return employees earning above their department average.
+WITH employee_averages AS (
+  SELECT
+  FROM employees
+)
+SELECT
+FROM employee_averages
+WHERE
+ORDER BY department_id, id;`,
+    examples: [
+      { input: 'employees: (1, Ada, 10, 120), (2, Grace, 10, 100), (3, Linus, 20, 90)', output: '1 | Ada | 10 | 120' },
+    ],
+    checklist: ['Use AVG as a window aggregate', 'Partition the average by department', 'Keep employee rows in the CTE', 'Filter salary above the computed average'],
+    keywords: ['with', 'avg', 'over', 'partition by', 'where'],
+    complexity: {
+      time: 'O(n) expected; may be O(n log n) if rows must be sorted by department',
+      space: 'O(n) worst case for window processing',
+      notes: 'The query scans employees and the engine may sort or buffer partitions. Indexes and execution plans affect the actual cost.',
+    },
+  },
+  {
+    id: 'sql-unsold-products',
+    mission: 'SQL · Coding',
+    language: 'SQL',
+    difficulty: 'Medium',
+    acceptance: '81.5%',
+    tags: ['SQL', 'Joins', 'NULL'],
+    hint: 'Keep every product with a LEFT JOIN and filter to rows for which no order-item match exists.',
+    question: 'Given products(id, name) and order_items(product_id, quantity), write a PostgreSQL query returning products that have never appeared in an order item. Return product id and name, ordered by id.',
+    idealAnswer: `SELECT p.id, p.name
+FROM products AS p
+LEFT JOIN order_items AS oi ON oi.product_id = p.id
+WHERE oi.product_id IS NULL
+ORDER BY p.id;`,
+    starterCode: `-- Return products that have never been ordered.
+SELECT
+FROM products AS p
+LEFT JOIN order_items AS oi ON
+WHERE
+ORDER BY p.id;`,
+    examples: [
+      { input: 'products: (1, Keyboard), (2, Mouse); order_items: (1, 4)', output: '2 | Mouse' },
+    ],
+    checklist: ['Start from all products', 'LEFT JOIN order items by product id', 'Filter unmatched rows with IS NULL', 'Return product id and name'],
+    keywords: ['left join', 'product_id', 'is null', 'select', 'order by'],
+    complexity: {
+      time: 'O(p + i) expected with a hash join; index-dependent otherwise',
+      space: 'O(i) worst case for a hash join',
+      notes: 'p is products and i is order_items. The planner may choose a different join strategy based on indexes and table statistics.',
+    },
   },
 ];
 
@@ -476,7 +617,9 @@ const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) 
   const matchedKeywords = question.keywords.filter((keyword) => normalizedResponse.includes(normalizeText(keyword)));
   const keywordCoverage = Math.round((matchedKeywords.length / question.keywords.length) * 100);
   const hasStructure = question.language
-    ? /(?:\breturn\b|\bfunction\b|\bdef\b|\bfor\b|\bif\b|=>)/i.test(trimmed)
+    ? question.language === 'SQL'
+      ? /\b(?:select|from|with)\b/i.test(trimmed)
+      : /(?:\breturn\b|\bfunction\b|\bdef\b|\bfor\b|\bif\b|=>)/i.test(trimmed)
     : /(first|next|then|finally|because|for example|in summary|if|when)/i.test(trimmed);
   const score = Math.min(100, keywordCoverage + (hasStructure ? 10 : 0) + (trimmed.length > 160 ? 5 : 0));
 
@@ -1220,7 +1363,17 @@ export default function HomePage() {
                     <div className="optimal-answer">
                       <strong>{interview.language ? 'Reference solution' : 'Most optimal answer'}</strong>
                       {interview.language
-                        ? <pre className="interview-reference-code"><code>{result.answer}</code></pre>
+                        ? <>
+                            <pre className="interview-reference-code"><code>{result.answer}</code></pre>
+                            {interview.complexity && (
+                              <div className="complexity-summary" aria-label="Reference solution complexity">
+                                <strong>Complexity</strong>
+                                <span>Time: {interview.complexity.time}</span>
+                                <span>Space: {interview.complexity.space}</span>
+                                <small>{interview.complexity.notes}</small>
+                              </div>
+                            )}
+                          </>
                         : <p>{result.answer}</p>}
                     </div>
                   </div>

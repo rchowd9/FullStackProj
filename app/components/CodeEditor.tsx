@@ -7,6 +7,7 @@ import { indentUnit } from '@codemirror/language';
 import { java } from '@codemirror/lang-java';
 import { javascript } from '@codemirror/lang-javascript';
 import { python } from '@codemirror/lang-python';
+import { PostgreSQL, sql } from '@codemirror/lang-sql';
 
 type CodeEditorProps = {
   language: string;
@@ -23,6 +24,8 @@ export default function CodeEditor({ language, value, onChange }: CodeEditorProp
         return [java()];
       case 'C++':
         return [cpp()];
+      case 'SQL':
+        return [sql({ dialect: PostgreSQL })];
       default:
         return [javascript()];
     }
