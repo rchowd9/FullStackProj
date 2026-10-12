@@ -24,6 +24,26 @@ CREATE TABLE IF NOT EXISTS learner_progress (
   PRIMARY KEY (learner_id, quest_id)
 );
 
+CREATE TABLE IF NOT EXISTS coding_challenges (
+  id VARCHAR(120) PRIMARY KEY,
+  mission VARCHAR(120) NOT NULL,
+  title VARCHAR(160) NOT NULL,
+  language VARCHAR(30) NOT NULL CHECK (language IN ('Python', 'JavaScript', 'Java', 'C++', 'SQL')),
+  difficulty VARCHAR(30) NOT NULL CHECK (difficulty IN ('Easy', 'Medium', 'Hard')),
+  prompt TEXT NOT NULL,
+  starter_code TEXT NOT NULL,
+  reference_solution TEXT NOT NULL,
+  examples JSONB NOT NULL DEFAULT '[]'::jsonb,
+  checklist JSONB NOT NULL DEFAULT '[]'::jsonb,
+  keywords JSONB NOT NULL DEFAULT '[]'::jsonb,
+  tags JSONB NOT NULL DEFAULT '[]'::jsonb,
+  hint TEXT NOT NULL DEFAULT '',
+  acceptance VARCHAR(20),
+  time_complexity TEXT NOT NULL,
+  space_complexity TEXT NOT NULL,
+  complexity_notes TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS leaderboard_entries (
   id BIGSERIAL PRIMARY KEY,
   learner_name VARCHAR(120) NOT NULL,
@@ -35,6 +55,12 @@ CREATE TABLE IF NOT EXISTS leaderboard_entries (
 
 CREATE INDEX IF NOT EXISTS learner_progress_status_idx
   ON learner_progress (learner_id, status);
+
+CREATE INDEX IF NOT EXISTS quests_category_difficulty_idx
+  ON quests (category, difficulty);
+
+CREATE INDEX IF NOT EXISTS coding_challenges_mission_difficulty_idx
+  ON coding_challenges (mission, difficulty);
 
 CREATE INDEX IF NOT EXISTS leaderboard_xp_idx
   ON leaderboard_entries (xp DESC, created_at ASC);
