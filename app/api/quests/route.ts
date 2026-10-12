@@ -248,6 +248,66 @@ const quests = [
     explanation: 'Indexes let databases locate rows faster without scanning every record in a table.'
   },
   {
+    id: 'sql-join',
+    title: 'Join the Records',
+    difficulty: 'Beginner',
+    xp: 160,
+    category: 'SQL',
+    concept: 'INNER JOIN',
+    prompt: 'You need only orders that have a matching customer row. Which SQL operation expresses that relationship?',
+    choices: ['INNER JOIN on the customer key', 'CROSS JOIN without a condition', 'UNION of both tables', 'ORDER BY the customer name'],
+    correctAnswer: 'INNER JOIN on the customer key',
+    explanation: 'An INNER JOIN returns rows where the join condition matches in both tables.'
+  },
+  {
+    id: 'sql-group-having',
+    title: 'Aggregate Filter',
+    difficulty: 'Intermediate',
+    xp: 280,
+    category: 'SQL',
+    concept: 'GROUP BY and HAVING',
+    prompt: 'Which clause filters grouped results to departments with more than five employees?',
+    choices: ['WHERE COUNT(*) > 5', 'HAVING COUNT(*) > 5', 'ORDER BY COUNT(*) > 5', 'LIMIT COUNT(*) > 5'],
+    correctAnswer: 'HAVING COUNT(*) > 5',
+    explanation: 'HAVING filters groups after aggregation; WHERE filters individual rows before GROUP BY.'
+  },
+  {
+    id: 'sql-window-function',
+    title: 'Keep Each Row',
+    difficulty: 'Advanced',
+    xp: 460,
+    category: 'SQL',
+    concept: 'Window Functions',
+    prompt: 'You need each employee row alongside the average salary for that employee’s department. Which approach preserves individual rows?',
+    choices: ['AVG(salary) OVER (PARTITION BY department_id)', 'GROUP BY department_id only', 'DISTINCT salary', 'ORDER BY AVG(salary)'],
+    correctAnswer: 'AVG(salary) OVER (PARTITION BY department_id)',
+    explanation: 'A window aggregate computes a value across each department partition while retaining each employee row.'
+  },
+  {
+    id: 'sql-transaction',
+    title: 'Atomic Transfer',
+    difficulty: 'Intermediate',
+    xp: 320,
+    category: 'SQL',
+    concept: 'Transactions',
+    prompt: 'A bank transfer must debit one account and credit another, or neither change should persist. Which database feature should wrap both updates?',
+    choices: ['A transaction with COMMIT or ROLLBACK', 'A view', 'An index', 'A non-transactional sequence'],
+    correctAnswer: 'A transaction with COMMIT or ROLLBACK',
+    explanation: 'A transaction makes related writes atomic: commit both changes together or roll them back together.'
+  },
+  {
+    id: 'sql-index-tradeoff',
+    title: 'Index Tradeoff',
+    difficulty: 'Intermediate',
+    xp: 300,
+    category: 'SQL',
+    concept: 'Indexing',
+    prompt: 'What is a common tradeoff when adding an index to speed up reads on a frequently updated table?',
+    choices: ['Writes can become slower and storage use increases', 'Every query becomes constant time', 'The table no longer needs constraints', 'The index automatically encrypts the rows'],
+    correctAnswer: 'Writes can become slower and storage use increases',
+    explanation: 'Indexes take storage and must be maintained on inserts, updates, and deletes, so they trade write cost for selected read improvements.'
+  },
+  {
     id: 'os-scheduling',
     title: 'Scheduler Showdown',
     difficulty: 'Intermediate',
