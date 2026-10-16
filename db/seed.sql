@@ -39,7 +39,12 @@ INSERT INTO quests (
     '["INNER JOIN on the customer key", "CROSS JOIN without a condition", "UNION of both tables", "ORDER BY the customer name"]'::jsonb,
     'INNER JOIN on the customer key',
     'An INNER JOIN returns rows where the join condition matches in both tables.',
-    '{}'::jsonb
+    '{
+      "INNER JOIN on the customer key": "Correct. The join condition keeps only orders whose customer key matches a customer row.",
+      "CROSS JOIN without a condition": "A CROSS JOIN pairs every order with every customer, including unrelated rows.",
+      "UNION of both tables": "UNION combines compatible result rows; it does not match related records across tables.",
+      "ORDER BY the customer name": "ORDER BY sorts a result but does not determine which orders have a matching customer."
+    }'::jsonb
   ),
   (
     'sql-group-having',
@@ -52,7 +57,12 @@ INSERT INTO quests (
     '["WHERE COUNT(*) > 5", "HAVING COUNT(*) > 5", "ORDER BY COUNT(*) > 5", "LIMIT COUNT(*) > 5"]'::jsonb,
     'HAVING COUNT(*) > 5',
     'HAVING filters groups after aggregation; WHERE filters individual rows before GROUP BY.',
-    '{}'::jsonb
+    '{
+      "WHERE COUNT(*) > 5": "WHERE is evaluated before grouping, so it cannot filter the result of COUNT(*).",
+      "HAVING COUNT(*) > 5": "Correct. HAVING filters grouped rows using aggregate values such as COUNT(*).",
+      "ORDER BY COUNT(*) > 5": "ORDER BY sorts rows; it does not remove groups that fail a condition.",
+      "LIMIT COUNT(*) > 5": "LIMIT expects a row count, not a condition for filtering aggregate groups."
+    }'::jsonb
   ),
   (
     'sql-window-function',
@@ -65,7 +75,12 @@ INSERT INTO quests (
     '["AVG(salary) OVER (PARTITION BY department_id)", "GROUP BY department_id only", "DISTINCT salary", "ORDER BY AVG(salary)"]'::jsonb,
     'AVG(salary) OVER (PARTITION BY department_id)',
     'A window aggregate computes a value across each department partition while retaining each employee row.',
-    '{}'::jsonb
+    '{
+      "AVG(salary) OVER (PARTITION BY department_id)": "Correct. The window average adds each department average while preserving every employee row.",
+      "GROUP BY department_id only": "Grouping only by department collapses employee rows into one row per department.",
+      "DISTINCT salary": "DISTINCT removes duplicate salary values and does not calculate department averages.",
+      "ORDER BY AVG(salary)": "Ordering by an aggregate does not add that aggregate alongside each employee row."
+    }'::jsonb
   ),
   (
     'sql-transaction',
@@ -78,7 +93,12 @@ INSERT INTO quests (
     '["A transaction with COMMIT or ROLLBACK", "A view", "An index", "A non-transactional sequence"]'::jsonb,
     'A transaction with COMMIT or ROLLBACK',
     'A transaction makes related writes atomic: commit both changes together or roll them back together.',
-    '{}'::jsonb
+    '{
+      "A transaction with COMMIT or ROLLBACK": "Correct. A transaction commits both account updates together or rolls both back.",
+      "A view": "A view presents query results; it does not make multiple updates atomic.",
+      "An index": "An index can accelerate lookups but does not control whether related writes commit together.",
+      "A non-transactional sequence": "A sequence generates values and does not make account updates atomic."
+    }'::jsonb
   ),
   (
     'sql-index-tradeoff',
@@ -91,9 +111,76 @@ INSERT INTO quests (
     '["Writes can become slower and storage use increases", "Every query becomes constant time", "The table no longer needs constraints", "The index automatically encrypts the rows"]'::jsonb,
     'Writes can become slower and storage use increases',
     'Indexes take storage and must be maintained on inserts, updates, and deletes, so they trade write cost for selected read improvements.',
-    '{}'::jsonb
+    '{
+      "Writes can become slower and storage use increases": "Correct. Index entries consume disk space and must be maintained as indexed data changes.",
+      "Every query becomes constant time": "An index can speed up particular access patterns, but it does not change every query to constant time; some queries still scan or sort many rows.",
+      "The table no longer needs constraints": "Indexes do not replace integrity rules such as foreign keys, CHECK constraints, or required-column constraints.",
+      "The index automatically encrypts the rows": "An index is a lookup structure, not an encryption feature; it does not encrypt table data."
+    }'::jsonb
   )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE
+SET choice_explanations = EXCLUDED.choice_explanations;
+
+INSERT INTO quests (
+  id, title, difficulty, xp, category, concept, prompt, choices,
+  correct_answer, explanation, choice_explanations
+) VALUES
+  (
+    'sql-null-check',
+    'Find Missing Values',
+    'Beginner',
+    180,
+    'SQL',
+    'NULL Handling',
+    'Which condition correctly finds rows where a customer email has not been provided?',
+    '["email = NULL", "email IS NULL", "email == NULL", "email IN (NULL)"]'::jsonb,
+    'email IS NULL',
+    'NULL represents an unknown or missing value, so SQL uses IS NULL rather than ordinary equality comparisons.',
+    '{
+      "email = NULL": "Ordinary equality with NULL evaluates to unknown, not true; use IS NULL to test for missing values.",
+      "email IS NULL": "Correct. IS NULL explicitly tests whether a value is missing.",
+      "email == NULL": "SQL uses = for ordinary equality, and equality with NULL still does not test for missing values.",
+      "email IN (NULL)": "IN uses equality-style matching, which cannot match an unknown NULL value."
+    }'::jsonb
+  ),
+  (
+    'sql-foreign-key',
+    'Protect References',
+    'Intermediate',
+    300,
+    'SQL',
+    'Foreign Keys',
+    'An orders table stores customer_id. Which constraint prevents an order from referring to a customer that does not exist?',
+    '["A CHECK constraint on the order total", "A FOREIGN KEY from orders.customer_id to customers.id", "An ORDER BY on customer_id", "A non-unique index on orders.customer_id"]'::jsonb,
+    'A FOREIGN KEY from orders.customer_id to customers.id',
+    'A foreign key enforces referential integrity by requiring each non-null customer_id to match a referenced customer row.',
+    '{
+      "A CHECK constraint on the order total": "A CHECK constraint validates a row expression, such as a non-negative total; it does not verify a customer row exists.",
+      "A FOREIGN KEY from orders.customer_id to customers.id": "Correct. The foreign key requires each referenced customer to exist.",
+      "An ORDER BY on customer_id": "ORDER BY only sorts query output and does not constrain stored data.",
+      "A non-unique index on orders.customer_id": "An index can help lookups but does not enforce that the referenced customer exists."
+    }'::jsonb
+  ),
+  (
+    'sql-upsert',
+    'Insert or Update',
+    'Intermediate',
+    320,
+    'SQL',
+    'Conflict Handling',
+    'In PostgreSQL, which clause inserts a row unless its unique key already exists, in which case it updates the existing row?',
+    '["ON CONFLICT (...) DO UPDATE", "GROUP BY ... HAVING", "UNION ALL", "CREATE OR REPLACE VIEW"]'::jsonb,
+    'ON CONFLICT (...) DO UPDATE',
+    'PostgreSQL upserts use INSERT ... ON CONFLICT with a conflict target and a DO UPDATE action.',
+    '{
+      "ON CONFLICT (...) DO UPDATE": "Correct. PostgreSQL handles a uniqueness conflict by updating the existing row.",
+      "GROUP BY ... HAVING": "These clauses aggregate and filter query results; they do not handle insert conflicts.",
+      "UNION ALL": "UNION ALL combines query result sets and does not update a row that conflicts with a unique key.",
+      "CREATE OR REPLACE VIEW": "This defines a view and does not insert or update table rows."
+    }'::jsonb
+  )
+ON CONFLICT (id) DO UPDATE
+SET choice_explanations = EXCLUDED.choice_explanations;
 
 INSERT INTO coding_challenges (
   id, mission, title, language, difficulty, prompt, starter_code,
@@ -180,6 +267,32 @@ ORDER BY p.id;$$,
     'O(p + i) expected with a hash join; index-dependent otherwise',
     'O(i) worst case for a hash join',
     'p is products and i is order_items. The planner may choose a different join strategy based on indexes and table statistics.'
+  ),
+  (
+    'sql-monthly-revenue',
+    'SQL · Coding',
+    'Monthly Revenue',
+    'SQL',
+    'Medium',
+    'Given orders(id, created_at TIMESTAMPTZ, total NUMERIC), write a PostgreSQL query returning total revenue for each UTC calendar month in 2025. Include the month as a date and revenue, ordered chronologically.',
+    E'-- Return revenue by UTC calendar month for 2025.\nSELECT\nFROM orders\nWHERE\nGROUP BY\nORDER BY;',
+    $$SELECT
+  date_trunc('month', created_at AT TIME ZONE 'UTC')::date AS month,
+  SUM(total) AS revenue
+FROM orders
+WHERE created_at >= TIMESTAMPTZ '2025-01-01 00:00:00+00'
+  AND created_at < TIMESTAMPTZ '2026-01-01 00:00:00+00'
+GROUP BY date_trunc('month', created_at AT TIME ZONE 'UTC')::date
+ORDER BY month;$$,
+    '[{"input":"orders: (2025-01-04T00:00:00Z, 20), (2025-01-29T12:00:00Z, 5), (2025-02-01T00:00:00Z, 18)","output":"2025-01-01 | 25; 2025-02-01 | 18"}]'::jsonb,
+    '["Filter timestamps to the half-open 2025 UTC range","Convert timestamps to UTC before grouping","Group and sum totals by month","Order results by month"]'::jsonb,
+    '["date_trunc","at time zone","sum","group by","order by"]'::jsonb,
+    '["SQL","Aggregation","Dates"]'::jsonb,
+    'Filter with inclusive start and exclusive end timestamps, then group by the UTC month and sum each group.',
+    '70.4%',
+    'O(n + g log g) expected',
+    'O(g)',
+    'n is the number of qualifying orders and g is the number of months returned. The database may use an index for the timestamp range; actual plans and costs depend on data and statistics.'
   )
 ON CONFLICT (id) DO NOTHING;
 
