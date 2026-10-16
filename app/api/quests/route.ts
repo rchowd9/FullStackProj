@@ -308,6 +308,42 @@ const quests = [
     explanation: 'Indexes take storage and must be maintained on inserts, updates, and deletes, so they trade write cost for selected read improvements.'
   },
   {
+    id: 'sql-null-check',
+    title: 'Find Missing Values',
+    difficulty: 'Beginner',
+    xp: 180,
+    category: 'SQL',
+    concept: 'NULL Handling',
+    prompt: 'Which condition correctly finds rows where a customer email has not been provided?',
+    choices: ['email = NULL', 'email IS NULL', 'email == NULL', 'email IN (NULL)'],
+    correctAnswer: 'email IS NULL',
+    explanation: 'NULL represents an unknown or missing value, so SQL uses IS NULL rather than ordinary equality comparisons.'
+  },
+  {
+    id: 'sql-foreign-key',
+    title: 'Protect References',
+    difficulty: 'Intermediate',
+    xp: 300,
+    category: 'SQL',
+    concept: 'Foreign Keys',
+    prompt: 'An orders table stores customer_id. Which constraint prevents an order from referring to a customer that does not exist?',
+    choices: ['A CHECK constraint on the order total', 'A FOREIGN KEY from orders.customer_id to customers.id', 'An ORDER BY on customer_id', 'A non-unique index on orders.customer_id'],
+    correctAnswer: 'A FOREIGN KEY from orders.customer_id to customers.id',
+    explanation: 'A foreign key enforces referential integrity by requiring each non-null customer_id to match a referenced customer row.'
+  },
+  {
+    id: 'sql-upsert',
+    title: 'Insert or Update',
+    difficulty: 'Intermediate',
+    xp: 320,
+    category: 'SQL',
+    concept: 'Conflict Handling',
+    prompt: 'In PostgreSQL, which clause inserts a row unless its unique key already exists, in which case it updates the existing row?',
+    choices: ['ON CONFLICT (...) DO UPDATE', 'GROUP BY ... HAVING', 'UNION ALL', 'CREATE OR REPLACE VIEW'],
+    correctAnswer: 'ON CONFLICT (...) DO UPDATE',
+    explanation: 'PostgreSQL upserts use INSERT ... ON CONFLICT with a conflict target and a DO UPDATE action.'
+  },
+  {
     id: 'os-scheduling',
     title: 'Scheduler Showdown',
     difficulty: 'Intermediate',
@@ -692,6 +728,46 @@ const choiceExplanations: Record<string, Record<string, string>> = {
     'To rewrite SQL queries': 'Wrong because indexes support the database query engine; they do not rewrite the SQL a developer sends.',
     'To store backups permanently': 'Wrong because backups preserve recoverable copies, while indexes are lookup structures that can be rebuilt.',
     'To encrypt table rows': 'Wrong because encryption protects confidentiality; an index is designed to locate matching rows efficiently.'
+  },
+  'sql-join': {
+    'CROSS JOIN without a condition': 'A CROSS JOIN pairs every order with every customer, including unrelated rows.',
+    'UNION of both tables': 'UNION combines compatible result rows; it does not match related records across tables.',
+    'ORDER BY the customer name': 'ORDER BY sorts a result but does not determine which orders have a matching customer.'
+  },
+  'sql-group-having': {
+    'WHERE COUNT(*) > 5': 'WHERE is evaluated before grouping, so it cannot filter the result of COUNT(*).',
+    'ORDER BY COUNT(*) > 5': 'ORDER BY sorts rows; it does not remove groups that fail a condition.',
+    'LIMIT COUNT(*) > 5': 'LIMIT expects a row count, not a condition for filtering aggregate groups.'
+  },
+  'sql-window-function': {
+    'GROUP BY department_id only': 'Grouping only by department collapses employee rows into one row per department.',
+    'DISTINCT salary': 'DISTINCT removes duplicate salary values and does not calculate department averages.',
+    'ORDER BY AVG(salary)': 'Ordering by an aggregate does not add that aggregate alongside each employee row.'
+  },
+  'sql-transaction': {
+    'A view': 'A view presents query results; it does not make multiple updates atomic.',
+    'An index': 'An index can accelerate lookups but does not control whether related writes commit together.',
+    'A non-transactional sequence': 'A sequence generates values and does not make account updates atomic.'
+  },
+  'sql-index-tradeoff': {
+    'Every query becomes constant time': 'An index can speed up particular access patterns, but it does not change every query to constant time; some queries still scan or sort many rows.',
+    'The table no longer needs constraints': 'Indexes do not replace integrity rules such as foreign keys, CHECK constraints, or required-column constraints.',
+    'The index automatically encrypts the rows': 'An index is a lookup structure, not an encryption feature; it does not encrypt table data.'
+  },
+  'sql-null-check': {
+    'email = NULL': 'Ordinary equality with NULL evaluates to unknown, not true; use IS NULL to test for missing values.',
+    'email == NULL': 'SQL uses = for ordinary equality, and equality with NULL still does not test for missing values.',
+    'email IN (NULL)': 'IN uses equality-style matching, which cannot match an unknown NULL value.'
+  },
+  'sql-foreign-key': {
+    'A CHECK constraint on the order total': 'A CHECK constraint validates a row expression, such as a non-negative total; it does not verify a customer row exists.',
+    'An ORDER BY on customer_id': 'ORDER BY only sorts query output and does not constrain stored data.',
+    'A non-unique index on orders.customer_id': 'An index can help lookups but does not enforce that the referenced customer exists.'
+  },
+  'sql-upsert': {
+    'GROUP BY ... HAVING': 'These clauses aggregate and filter query results; they do not handle insert conflicts.',
+    'UNION ALL': 'UNION ALL combines query result sets and does not update a row that conflicts with a unique key.',
+    'CREATE OR REPLACE VIEW': 'This defines a view and does not insert or update table rows.'
   },
   'os-scheduling': {
     'How many users can log in': 'Wrong because login capacity is an authentication and resource policy concern, not the CPU scheduler\'s immediate decision.',
