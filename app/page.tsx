@@ -912,9 +912,12 @@ export default function HomePage() {
       return (selectedDifficulty === 'All difficulties' || difficulty === selectedDifficulty)
         && (selectedTopic === 'All topics' || topics.includes(selectedTopic))
         && (!savedOnly || Boolean(savedChallenges[question.id]))
-        && (!needsReviewOnly || !interviewResults[question.id])
+        && (!needsReviewOnly || !interviewResults[question.id] || !interviewAnswers[question.id]?.trim())
         && (!interviewSearch.trim() || searchText.includes(interviewSearch.trim().toLowerCase()));
     });
+  const reviewedInterviewCount = interviewQuestions.filter((question) =>
+    Boolean(interviewResults[question.id] && interviewAnswers[question.id]?.trim())
+  ).length;
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -1393,13 +1396,31 @@ export default function HomePage() {
           <span className="panel-badge panel-badge-alt">{interviewQuestions.length} skill drills</span>
         </div>
         <p className="interview-intro">Practice interview explanations and solve coding challenges in a syntax-aware editor. Submissions are checked with a text-based rubric, not executed.</p>
+        <div className="interview-progress" aria-live="polite">
+          <strong>{reviewedInterviewCount}/{interviewQuestions.length}</strong>
+          <span>prompts reviewed</span>
+          <span className="interview-progress-track" aria-hidden="true">
+            <span style={{ width: `${(reviewedInterviewCount / interviewQuestions.length) * 100}%` }} />
+          </span>
+          <small>Drafts save automatically on this device.</small>
+        </div>
         <div className="problem-filters" aria-label="Filter coding problems">
+          <label className="problem-search">
+            <span>Search prompts</span>
+            <input
+              type="search"
+              value={interviewSearch}
+              onChange={(event) => setInterviewSearch(event.target.value)}
+              placeholder="Try BFS, genetics, or graphs..."
+            />
+          </label>
           <label>
             <span>Difficulty</span>
             <select value={selectedDifficulty} onChange={(event) => setSelectedDifficulty(event.target.value)}>
               <option>All difficulties</option>
               <option>Easy</option>
               <option>Medium</option>
+              <option>Hard</option>
               <option>Practice</option>
             </select>
           </label>
@@ -1413,11 +1434,17 @@ export default function HomePage() {
           <button type="button" className={`saved-filter ${savedOnly ? 'active' : ''}`} onClick={() => setSavedOnly((current) => !current)}>
             {savedOnly ? 'Showing saved' : 'Saved only'} ({Object.values(savedChallenges).filter(Boolean).length})
           </button>
+          <button type="button" className={`saved-filter ${needsReviewOnly ? 'active' : ''}`} onClick={() => setNeedsReviewOnly((current) => !current)}>
+            {needsReviewOnly ? 'Needs review' : 'Not reviewed'} ({interviewQuestions.length - reviewedInterviewCount})
+          </button>
+          <button type="button" className="saved-filter random-prompt" onClick={focusRandomPrompt} disabled={filteredInterviewQuestions.length === 0}>
+            Pick random prompt
+          </button>
           <span className="filter-count">Showing {filteredInterviewQuestions.length} of {interviewQuestions.length} prompts</span>
         </div>
         <div className="interview-grid">
           {filteredInterviewQuestions.length === 0 && (
-            <p className="empty-problems">No prompts match these filters. Adjust the difficulty or topic, or save a challenge first.</p>
+            <p className="empty-problems">No prompts match these filters. Try another search, difficulty, or topic.</p>
           )}
           {filteredInterviewQuestions.map(({ question: interview, index, codingNumber }) => {
             const result = interviewResults[interview.id];
@@ -1426,7 +1453,7 @@ export default function HomePage() {
             const isCodingChallenge = Boolean(interview.language);
 
             return (
-              <article key={interview.id} className="interview-question-card">
+              <article id={`interview-${interview.id}`} key={interview.id} className="interview-question-card">
                 <div className="leetcode-header">
                   <div className="leetcode-title-group">
                     <span className={`leetcode-badge ${interview.difficulty?.toLowerCase() ?? 'practice'}`}>{interview.difficulty ?? 'Practice'}</span>
