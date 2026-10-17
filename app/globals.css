@@ -531,6 +531,11 @@ a {
 .mission-meta { display: flex; gap: 14px; margin: -3px 0 18px; color: #7180a5; font-size: 0.72rem; }
 .interview-lab { margin-top: 72px; }
 .interview-intro { max-width: 720px; margin: -8px 0 24px; color: var(--muted); line-height: 1.6; }
+.interview-progress { display: flex; align-items: center; gap: 10px; margin: 0 0 20px; color: var(--muted); font-size: 0.78rem; }
+.interview-progress > strong { color: var(--lime); font-size: 0.92rem; }
+.interview-progress-track { width: min(220px, 24vw); height: 6px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.09); }
+.interview-progress-track > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--secondary), var(--lime)); transition: width 0.2s ease; }
+.interview-progress small { margin-left: auto; }
 .problem-filters {
   display: flex;
   align-items: end;
@@ -552,6 +557,21 @@ a {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+.problem-search { flex: 1 1 230px; }
+.problem-search input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: 0;
+  background: #101a2c;
+  color: var(--text);
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.problem-search input:focus { border-color: rgba(88, 214, 197, 0.55); }
 
 .problem-filters select {
   min-width: 160px;
@@ -582,6 +602,8 @@ a {
   background: rgba(184, 243, 74, 0.1);
   color: var(--lime);
 }
+.saved-filter:disabled { opacity: 0.5; cursor: not-allowed; }
+.random-prompt { border-color: rgba(88, 214, 197, 0.3); color: var(--secondary); }
 
 .filter-count {
   margin-left: auto;

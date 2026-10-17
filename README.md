@@ -16,14 +16,14 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 
 - Gamified learning interface with a polished role-play dashboard and progress telemetry
 - CS concept cards and missions across 14+ topic areas and interview loops
-- LeetCode-style coding practice with an embedded syntax-aware editor for Python, JavaScript, Java, C++, and PostgreSQL; includes SQL query challenges, difficulty/topic filters, per-problem timers, hints, saved problems, and persistent submission history
+- LeetCode-style coding practice with an embedded syntax-aware editor for Python, JavaScript, Java, C++, and PostgreSQL; includes SQL and algorithm challenges such as BFS, Dijkstra, and genetic algorithms, searchable difficulty/topic filters, per-problem timers, hints, saved problems, persistent drafts, and submission history
 - Reference solutions show time and space complexity, with notes about assumptions such as database indexes and execution plans
 - Adaptive study coach that recommends the next best focus based on missed challenges and momentum
 - Progress cockpit with XP, streak, cycle goals, daily challenge, and practice session tracking
 - Searchable and filterable quest board with dynamic review flows for weak concepts
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Daily challenge engine that rotates three quests using a UTC-based deterministic selector
-- Interview lab with answer capture, scoring, and reference-answer feedback for 30 job-ready prompts
+- Interview lab with searchable prompts, auto-saved answer drafts, review progress, random practice, rubric scoring, and reference-answer feedback
 - Achievement vault with milestone unlocks and progress-based rewards
 - Shareable progress snapshot using the Web Share API with clipboard fallback
 - Redis-backed leaderboard with an in-memory development fallback
