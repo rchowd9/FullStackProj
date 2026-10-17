@@ -624,7 +624,7 @@ ORDER BY p.id;`,
     const node = queue[head];
     order.push(node);
 
-    for (const neighbor of graph[node]) {
+    for (const neighbor of graph[node] ?? []) {
       if (visited.has(neighbor)) continue;
       visited.add(neighbor);
       queue.push(neighbor);
@@ -742,7 +742,7 @@ ORDER BY p.id;`,
     if (current === null) break;
 
     visited.add(current);
-    for (const edge of graph[current]) {
+    for (const edge of graph[current] ?? []) {
       const candidate = distances[current] + edge.weight;
       if (distances[edge.to] === undefined || candidate < distances[edge.to]) {
         distances[edge.to] = candidate;
@@ -1411,7 +1411,7 @@ export default function HomePage() {
               type="search"
               value={interviewSearch}
               onChange={(event) => setInterviewSearch(event.target.value)}
-              placeholder="Try BFS, genetics, or graphs..."
+              placeholder="Try BFS, genetic algorithms, or graphs..."
             />
           </label>
           <label>
