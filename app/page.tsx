@@ -149,6 +149,13 @@ type InterviewQuestion = {
   examples?: { input: string; output: string }[];
 };
 
+type InterviewResult = {
+  score: number;
+  label: string;
+  feedback: string;
+  answer: string;
+};
+
 type SubmissionHistoryItem = {
   id: string;
   submittedAt: string;
@@ -597,9 +604,186 @@ ORDER BY p.id;`,
       notes: 'p is products and i is order_items. The planner may choose a different join strategy based on indexes and table statistics.',
     },
   },
+  {
+    id: 'javascript-breadth-first-search',
+    mission: 'JavaScript · Coding',
+    language: 'JavaScript',
+    difficulty: 'Medium',
+    acceptance: '84.6%',
+    tags: ['Graphs', 'BFS', 'Queues'],
+    hint: 'Mark a node visited when you enqueue it, not when you dequeue it, so each node enters the queue only once.',
+    question: 'Implement breadthFirstSearch(graph, start) for an adjacency-list graph. Return nodes in BFS order, visiting each reachable node once and preserving each neighbor list’s order. Return an empty array if start is not in the graph.',
+    idealAnswer: `function breadthFirstSearch(graph, start) {
+  if (!Object.hasOwn(graph, start)) return [];
+
+  const visited = new Set([start]);
+  const queue = [start];
+  const order = [];
+
+  for (let head = 0; head < queue.length; head += 1) {
+    const node = queue[head];
+    order.push(node);
+
+    for (const neighbor of graph[node]) {
+      if (visited.has(neighbor)) continue;
+      visited.add(neighbor);
+      queue.push(neighbor);
+    }
+  }
+
+  return order;
+}`,
+    starterCode: `function breadthFirstSearch(graph, start) {
+  // Return each reachable node once in breadth-first order.
+}`,
+    examples: [
+      { input: 'graph = { A: [B, C], B: [D], C: [D], D: [] }, start = A', output: '[A, B, C, D]' },
+      { input: 'graph = { A: [B], B: [] }, start = Z', output: '[]' },
+    ],
+    checklist: ['Use a FIFO queue', 'Track visited nodes', 'Mark nodes when enqueued', 'Preserve neighbor order', 'Return an empty list for a missing start'],
+    keywords: ['queue', 'visited', 'push', 'shift', 'neighbor', 'return', 'breadth'],
+    complexity: {
+      time: 'O(V + E)',
+      space: 'O(V)',
+      notes: 'V is the number of reachable vertices and E is the number of edges scanned from them. A head index avoids the repeated shifting cost of Array.shift().',
+    },
+  },
+  {
+    id: 'javascript-genetic-algorithm',
+    mission: 'JavaScript · Coding',
+    language: 'JavaScript',
+    difficulty: 'Hard',
+    acceptance: '61.3%',
+    tags: ['Genetic Algorithms', 'Optimization', 'Randomized'],
+    hint: 'Keep the best chromosome unchanged (elitism), choose parents with a small tournament, then apply one-point crossover and bit-flip mutation.',
+    question: 'Implement geneticAlgorithm(length, populationSize, generations, mutationRate) to approximately maximize the number of 1s in a fixed-length binary chromosome. Return the best chromosome as a string. Use tournament selection, one-point crossover, bit-flip mutation, and elitism. Assume length ≥ 1, populationSize ≥ 2, generations ≥ 0, and mutationRate is between 0 and 1.',
+    idealAnswer: `function geneticAlgorithm(length, populationSize, generations, mutationRate) {
+  const randomChromosome = () =>
+    Array.from({ length }, () => (Math.random() < 0.5 ? 0 : 1));
+  const fitness = (chromosome) =>
+    chromosome.reduce((total, bit) => total + bit, 0);
+  const tournamentSelect = (population) => {
+    let best = population[Math.floor(Math.random() * population.length)];
+    for (let pick = 1; pick < 3; pick += 1) {
+      const candidate = population[Math.floor(Math.random() * population.length)];
+      if (fitness(candidate) > fitness(best)) best = candidate;
+    }
+    return best;
+  };
+
+  let population = Array.from({ length: populationSize }, randomChromosome);
+
+  for (let generation = 0; generation < generations; generation += 1) {
+    const elite = population.reduce((best, chromosome) =>
+      fitness(chromosome) > fitness(best) ? chromosome : best
+    );
+    const nextPopulation = [elite.slice()];
+
+    while (nextPopulation.length < populationSize) {
+      const firstParent = tournamentSelect(population);
+      const secondParent = tournamentSelect(population);
+      const crossoverPoint = Math.floor(Math.random() * length);
+      const child = firstParent.map((bit, index) =>
+        index < crossoverPoint ? bit : secondParent[index]
+      );
+
+      for (let index = 0; index < length; index += 1) {
+        if (Math.random() < mutationRate) child[index] = 1 - child[index];
+      }
+      nextPopulation.push(child);
+    }
+
+    population = nextPopulation;
+  }
+
+  const best = population.reduce((currentBest, chromosome) =>
+    fitness(chromosome) > fitness(currentBest) ? chromosome : currentBest
+  );
+  return best.join('');
+}`,
+    starterCode: `function geneticAlgorithm(length, populationSize, generations, mutationRate) {
+  // Evolve binary chromosomes and return the best one as a string.
+}`,
+    examples: [
+      { input: 'geneticAlgorithm(4, 20, 50, 0.01)', output: 'A binary string such as "1111" (results vary because the search is stochastic).' },
+      { input: 'geneticAlgorithm(1, 10, 0, 0)', output: 'The best chromosome in the randomly initialized population.' },
+    ],
+    checklist: ['Initialize a population of binary chromosomes', 'Score chromosomes by number of 1s', 'Select parents with tournament selection', 'Use crossover and bit-flip mutation', 'Preserve the best chromosome with elitism'],
+    keywords: ['population', 'fitness', 'tournament', 'crossover', 'mutation', 'elite', 'generation', 'random'],
+    complexity: {
+      time: 'O(G × P × L)',
+      space: 'O(P × L)',
+      notes: 'G is generations, P is population size, and L is chromosome length. Runtime excludes the cost of any more expensive fitness function.',
+    },
+  },
+  {
+    id: 'javascript-dijkstra-shortest-path',
+    mission: 'JavaScript · Coding',
+    language: 'JavaScript',
+    difficulty: 'Hard',
+    acceptance: '68.1%',
+    tags: ['Graphs', 'Dijkstra', 'Shortest Path'],
+    hint: 'Repeatedly settle the unvisited node with the smallest tentative distance, then relax each outgoing edge. This simple version scans all nodes to find that minimum.',
+    question: 'Implement dijkstra(graph, start) for a weighted adjacency list such as { A: [{ to: "B", weight: 4 }] }. Return an object mapping every reachable node to its shortest distance from start, or an empty object if start is missing. Assume all weights are non-negative.',
+    idealAnswer: `function dijkstra(graph, start) {
+  if (!Object.hasOwn(graph, start)) return {};
+
+  const distances = { [start]: 0 };
+  const visited = new Set();
+
+  while (true) {
+    let current = null;
+    for (const node of Object.keys(distances)) {
+      if (!visited.has(node) &&
+          (current === null || distances[node] < distances[current])) {
+        current = node;
+      }
+    }
+    if (current === null) break;
+
+    visited.add(current);
+    for (const edge of graph[current]) {
+      const candidate = distances[current] + edge.weight;
+      if (distances[edge.to] === undefined || candidate < distances[edge.to]) {
+        distances[edge.to] = candidate;
+      }
+    }
+  }
+
+  return distances;
+}`,
+    starterCode: `function dijkstra(graph, start) {
+  // Return the shortest distance from start to each reachable node.
+}`,
+    examples: [
+      { input: 'graph = { A: [{to: B, weight: 4}, {to: C, weight: 1}], B: [], C: [{to: B, weight: 2}] }, start = A', output: '{ A: 0, B: 3, C: 1 }' },
+      { input: 'graph = { A: [] }, start = Z', output: '{}' },
+    ],
+    checklist: ['Initialize the start distance to zero', 'Choose the unvisited node with minimum distance', 'Relax outgoing edges', 'Ignore unreachable nodes', 'Require non-negative weights'],
+    keywords: ['distance', 'visited', 'minimum', 'relax', 'weight', 'shortest', 'non-negative'],
+    complexity: {
+      time: 'O(V² + E)',
+      space: 'O(V)',
+      notes: 'This approachable implementation scans tentative distances to select each node. A min-priority queue reduces the selection cost to O((V + E) log V) for sparse graphs.',
+    },
+  },
 ];
 
 const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+const interviewQuestionIds = new Set(interviewQuestions.map((question) => question.id));
+
+const isInterviewResult = (value: unknown): value is InterviewResult =>
+  typeof value === 'object'
+  && value !== null
+  && 'score' in value
+  && typeof value.score === 'number'
+  && Number.isFinite(value.score)
+  && 'label' in value
+  && typeof value.label === 'string'
+  && 'feedback' in value
+  && typeof value.feedback === 'string'
+  && 'answer' in value
+  && typeof value.answer === 'string';
 
 const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) => {
   const trimmed = response.trim();
@@ -697,11 +881,13 @@ export default function HomePage() {
         .map((question) => [question.id, question.starterCode ?? ''])
     )
   );
-  const [interviewResults, setInterviewResults] = useState<Record<string, { score: number; label: string; feedback: string; answer: string }>>({});
+  const [interviewResults, setInterviewResults] = useState<Record<string, InterviewResult>>({});
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [savedChallenges, setSavedChallenges] = useState<Record<string, boolean>>({});
   const [selectedDifficulty, setSelectedDifficulty] = useState('All difficulties');
   const [selectedTopic, setSelectedTopic] = useState('All topics');
+  const [interviewSearch, setInterviewSearch] = useState('');
+  const [needsReviewOnly, setNeedsReviewOnly] = useState(false);
   const [savedOnly, setSavedOnly] = useState(false);
   const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
   const [elapsedByChallenge, setElapsedByChallenge] = useState<Record<string, number>>({});
@@ -722,9 +908,12 @@ export default function HomePage() {
     .filter(({ question }) => {
       const difficulty = question.difficulty ?? 'Practice';
       const topics = question.tags ?? [question.mission];
+      const searchText = [question.question, question.mission, ...topics].join(' ').toLowerCase();
       return (selectedDifficulty === 'All difficulties' || difficulty === selectedDifficulty)
         && (selectedTopic === 'All topics' || topics.includes(selectedTopic))
-        && (!savedOnly || Boolean(savedChallenges[question.id]));
+        && (!savedOnly || Boolean(savedChallenges[question.id]))
+        && (!needsReviewOnly || !interviewResults[question.id])
+        && (!interviewSearch.trim() || searchText.includes(interviewSearch.trim().toLowerCase()));
     });
 
   useEffect(() => {
@@ -761,6 +950,13 @@ export default function HomePage() {
 
   const toggleSavedChallenge = (questionId: string) => {
     setSavedChallenges((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
+  };
+
+  const focusRandomPrompt = () => {
+    const prompt = filteredInterviewQuestions[Math.floor(Math.random() * filteredInterviewQuestions.length)];
+    if (prompt) {
+      document.getElementById(`interview-${prompt.question.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   const submitChallengeForReview = (question: InterviewQuestion) => {
@@ -850,6 +1046,8 @@ export default function HomePage() {
           savedChallenges?: unknown;
           elapsedByChallenge?: unknown;
           submissionHistory?: unknown;
+          interviewAnswers?: unknown;
+          interviewResults?: unknown;
         };
 
         if (parsed.savedChallenges && typeof parsed.savedChallenges === 'object' && !Array.isArray(parsed.savedChallenges)) {
@@ -881,6 +1079,20 @@ export default function HomePage() {
             && typeof item.code === 'string'
           ));
         }
+        if (parsed.interviewAnswers && typeof parsed.interviewAnswers === 'object' && !Array.isArray(parsed.interviewAnswers)) {
+          const answers: Record<string, string> = {};
+          for (const [id, value] of Object.entries(parsed.interviewAnswers)) {
+            if (interviewQuestionIds.has(id) && typeof value === 'string') answers[id] = value;
+          }
+          setInterviewAnswers((current) => ({ ...current, ...answers }));
+        }
+        if (parsed.interviewResults && typeof parsed.interviewResults === 'object' && !Array.isArray(parsed.interviewResults)) {
+          const results: Record<string, InterviewResult> = {};
+          for (const [id, value] of Object.entries(parsed.interviewResults)) {
+            if (interviewQuestionIds.has(id) && isInterviewResult(value)) results[id] = value;
+          }
+          setInterviewResults(results);
+        }
       } catch {
         window.localStorage.removeItem('code-quest:coding-practice');
       }
@@ -894,9 +1106,11 @@ export default function HomePage() {
         savedChallenges,
         elapsedByChallenge,
         submissionHistory,
+        interviewAnswers,
+        interviewResults,
       }));
     }
-  }, [codingPracticeLoaded, savedChallenges, elapsedByChallenge, submissionHistory]);
+  }, [codingPracticeLoaded, savedChallenges, elapsedByChallenge, submissionHistory, interviewAnswers, interviewResults]);
 
   useEffect(() => {
     if (!activeTimerId) return;
