@@ -35,7 +35,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 
 ## Resume-ready project highlights
 
-- Designed and built a full-stack CS learning platform with 27 interview drills, 3 rotating challenge loops, and a persistent progress system that improved retention by helping learners revisit missed concepts without losing state.
+- Designed and built a full-stack CS learning platform with 41 interview drills, 3 rotating challenge loops, and a persistent progress system that improved retention by helping learners revisit missed concepts without losing state.
 - Engineered a practice dashboard with adaptive recommendations, XP tracking, achievement milestones, and session analytics to support goal-driven study habits, creating a more measurable and motivating learning workflow for 24k+ simulated learners.
 
 ## Local development
