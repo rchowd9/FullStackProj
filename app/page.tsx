@@ -63,6 +63,13 @@ const missions = [
     description: 'Understand scheduling, memory, and process control inside the operating system.',
   },
   {
+    title: 'Mobile Launchpad',
+    category: 'Mobile Development',
+    difficulty: 'Intermediate',
+    xp: 340,
+    description: 'Build reliable native apps with Kotlin, coroutines, Swift, and SwiftUI.',
+  },
+  {
     title: 'System Forge',
     category: 'System Design',
     difficulty: 'Advanced',
