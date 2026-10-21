@@ -1304,7 +1304,10 @@ export default function HomePage() {
         if (parsed.selectedLanguages && typeof parsed.selectedLanguages === 'object' && !Array.isArray(parsed.selectedLanguages)) {
           const languages: Record<string, CodingLanguage> = {};
           for (const [id, value] of Object.entries(parsed.selectedLanguages)) {
-            if (codingQuestionIds.has(id) && isCodingLanguage(value)) languages[id] = value;
+            const question = interviewQuestions.find((candidate) => candidate.id === id);
+            if (question && isCodingLanguage(value) && getCodingLanguages(question).includes(value)) {
+              languages[id] = value;
+            }
           }
           setSelectedLanguages((current) => ({ ...current, ...languages }));
         }
