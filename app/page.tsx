@@ -142,7 +142,7 @@ type InterviewQuestion = {
   idealAnswer: string;
   checklist: string[];
   keywords: string[];
-  language?: string;
+  language?: CodingLanguage;
   difficulty?: 'Easy' | 'Medium' | 'Hard';
   acceptance?: string;
   complexity?: {
@@ -155,6 +155,9 @@ type InterviewQuestion = {
   starterCode?: string;
   examples?: { input: string; output: string }[];
 };
+
+const codingLanguages = ['Python', 'JavaScript', 'Java', 'C++', 'SQL'] as const;
+type CodingLanguage = (typeof codingLanguages)[number];
 
 type InterviewResult = {
   score: number;
@@ -834,6 +837,9 @@ ORDER BY p.id;`,
 
 const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 const interviewQuestionIds = new Set(interviewQuestions.map((question) => question.id));
+const codingQuestionIds = new Set(interviewQuestions.filter((question) => question.language).map((question) => question.id));
+const isCodingLanguage = (value: unknown): value is CodingLanguage =>
+  codingLanguages.some((language) => language === value);
 
 const isInterviewResult = (value: unknown): value is InterviewResult =>
   typeof value === 'object'
@@ -944,6 +950,12 @@ export default function HomePage() {
         .map((question) => [question.id, question.starterCode ?? ''])
     )
   );
+  const [selectedLanguages, setSelectedLanguages] = useState<Record<string, CodingLanguage>>(() =>
+    interviewQuestions.reduce<Record<string, CodingLanguage>>((languages, question) => {
+      if (question.language) languages[question.id] = question.language;
+      return languages;
+    }, {})
+  );
   const [interviewResults, setInterviewResults] = useState<Record<string, InterviewResult>>({});
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [savedChallenges, setSavedChallenges] = useState<Record<string, boolean>>({});
@@ -1016,6 +1028,10 @@ export default function HomePage() {
 
   const toggleSavedChallenge = (questionId: string) => {
     setSavedChallenges((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
+  };
+
+  const changeCodingLanguage = (questionId: string, language: CodingLanguage) => {
+    setSelectedLanguages((previous) => ({ ...previous, [questionId]: language }));
   };
 
   const focusRandomPrompt = () => {
@@ -1114,6 +1130,7 @@ export default function HomePage() {
           submissionHistory?: unknown;
           interviewAnswers?: unknown;
           interviewResults?: unknown;
+          selectedLanguages?: unknown;
         };
 
         if (parsed.savedChallenges && typeof parsed.savedChallenges === 'object' && !Array.isArray(parsed.savedChallenges)) {
@@ -1159,6 +1176,13 @@ export default function HomePage() {
           }
           setInterviewResults(results);
         }
+        if (parsed.selectedLanguages && typeof parsed.selectedLanguages === 'object' && !Array.isArray(parsed.selectedLanguages)) {
+          const languages: Record<string, CodingLanguage> = {};
+          for (const [id, value] of Object.entries(parsed.selectedLanguages)) {
+            if (codingQuestionIds.has(id) && isCodingLanguage(value)) languages[id] = value;
+          }
+          setSelectedLanguages((current) => ({ ...current, ...languages }));
+        }
       } catch {
         window.localStorage.removeItem('code-quest:coding-practice');
       }
@@ -1174,9 +1198,10 @@ export default function HomePage() {
         submissionHistory,
         interviewAnswers,
         interviewResults,
+        selectedLanguages,
       }));
     }
-  }, [codingPracticeLoaded, savedChallenges, elapsedByChallenge, submissionHistory, interviewAnswers, interviewResults]);
+  }, [codingPracticeLoaded, savedChallenges, elapsedByChallenge, submissionHistory, interviewAnswers, interviewResults, selectedLanguages]);
 
   useEffect(() => {
     if (!activeTimerId) return;
@@ -1512,6 +1537,7 @@ export default function HomePage() {
           {filteredInterviewQuestions.map(({ question: interview, index, codingNumber }) => {
             const result = interviewResults[interview.id];
             const answer = interviewAnswers[interview.id] ?? '';
+            const editorLanguage = selectedLanguages[interview.id] ?? interview.language ?? 'JavaScript';
             const questionSubmissions = submissionHistory.filter((submission) => submission.id === interview.id);
             const isCodingChallenge = Boolean(interview.language);
 
@@ -1535,7 +1561,7 @@ export default function HomePage() {
                     {String(isCodingChallenge ? codingNumber : index + 1).padStart(2, '0')}
                   </span>
                   <div className="interview-heading">
-                    <small>{interview.language ? `${interview.language} · CODING CHALLENGE` : interview.mission}</small>
+                    <small>{interview.language ? `${editorLanguage} · CODING CHALLENGE` : interview.mission}</small>
                     <strong>{interview.question}</strong>
                   </div>
                 </div>
@@ -1560,7 +1586,7 @@ export default function HomePage() {
                 {interview.starterCode && interview.examples && (
                   <div className="interview-coding-prompt">
                     <div className="interview-starter">
-                      <strong>Starter code</strong>
+                      <strong>Starter code · {interview.language}</strong>
                       <pre><code>{interview.starterCode}</code></pre>
                     </div>
                     <div className="interview-examples">
@@ -1577,11 +1603,28 @@ export default function HomePage() {
                 )}
 
                 {interview.language
-                  ? <CodeEditor
-                      language={interview.language}
-                      value={answer}
-                      onChange={(value) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: value }))}
-                    />
+                  ? <>
+                      <label className="interview-language-control">
+                        <span>Editor language</span>
+                        <select
+                          value={editorLanguage}
+                          onChange={(event) => {
+                            if (isCodingLanguage(event.target.value)) {
+                              changeCodingLanguage(interview.id, event.target.value);
+                            }
+                          }}
+                          aria-label={`Editor language for ${interview.question}`}
+                        >
+                          {codingLanguages.map((language) => <option key={language} value={language}>{language}</option>)}
+                        </select>
+                        <small>Changing languages updates syntax highlighting; it does not translate your code.</small>
+                      </label>
+                      <CodeEditor
+                        language={editorLanguage}
+                        value={answer}
+                        onChange={(value) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: value }))}
+                      />
+                    </>
                   : <textarea
                       className="interview-response"
                       value={answer}
@@ -1602,7 +1645,7 @@ export default function HomePage() {
                       >
                         Submit for review
                       </button>
-                      <div className="challenge-timer" role="group" aria-label={`${interview.language} challenge timer`}>
+                      <div className="challenge-timer" role="group" aria-label={`${editorLanguage} challenge timer`}>
                         <span aria-live="off">{formatDuration(elapsedByChallenge[interview.id] ?? 0)}</span>
                         {activeTimerId === interview.id ? (
                           <button type="button" onClick={() => setActiveTimerId(null)}>Pause</button>
