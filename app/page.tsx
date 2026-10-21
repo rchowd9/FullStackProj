@@ -1069,6 +1069,7 @@ export default function HomePage() {
       return languages;
     }, {})
   );
+  const [codingDrafts, setCodingDrafts] = useState<Record<string, Partial<Record<CodingLanguage, string>>>>({});
   const [interviewResults, setInterviewResults] = useState<Record<string, InterviewResult>>({});
   const [showHints, setShowHints] = useState<Record<string, boolean>>({});
   const [savedChallenges, setSavedChallenges] = useState<Record<string, boolean>>({});
@@ -1143,7 +1144,17 @@ export default function HomePage() {
     setSavedChallenges((prev) => ({ ...prev, [questionId]: !prev[questionId] }));
   };
 
-  const changeCodingLanguage = (questionId: string, language: CodingLanguage) => {
+  const changeCodingLanguage = (question: InterviewQuestion, language: CodingLanguage) => {
+    const questionId = question.id;
+    const currentLanguage = selectedLanguages[questionId] ?? question.language ?? language;
+    const currentAnswer = interviewAnswers[questionId] ?? getStarterCode(question, currentLanguage);
+    const nextAnswer = codingDrafts[questionId]?.[language] ?? getStarterCode(question, language);
+
+    setCodingDrafts((previous) => ({
+      ...previous,
+      [questionId]: { ...previous[questionId], [currentLanguage]: currentAnswer },
+    }));
+    setInterviewAnswers((previous) => ({ ...previous, [questionId]: nextAnswer }));
     setSelectedLanguages((previous) => ({ ...previous, [questionId]: language }));
   };
 
