@@ -844,7 +844,7 @@ const isCodingLanguage = (value: unknown): value is CodingLanguage =>
 
 const codingStarterVariants: Record<string, CodingStarterVariants> = {
   'python-first-unique': {
-    Python: interviewQuestions.find((question) => question.id === 'python-first-unique')?.starterCode,
+    Python: interviewQuestions.find((question) => question.id === 'python-first-unique')?.starterCode ?? '',
     JavaScript: `function firstUniqueIndex(text) {
   // Return the first unique character's index, or -1.
 }`,
@@ -859,7 +859,7 @@ const codingStarterVariants: Record<string, CodingStarterVariants> = {
     Python: `def debounce(callback, delay_ms):
     # Return a callable that invokes callback after calls pause.
     pass`,
-    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-debounce')?.starterCode,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-debounce')?.starterCode ?? '',
     Java: `static <T> Consumer<T> debounce(Consumer<T> callback, long delayMs) {
     // Return a debounced consumer that forwards the latest value.
 }`,
@@ -875,7 +875,7 @@ auto debounce(Callback callback, std::chrono::milliseconds delay) {
     JavaScript: `function mergeIntervals(intervals) {
   // Return sorted, merged intervals.
 }`,
-    Java: interviewQuestions.find((question) => question.id === 'java-merge-intervals')?.starterCode,
+    Java: interviewQuestions.find((question) => question.id === 'java-merge-intervals')?.starterCode ?? '',
     'C++': `std::vector<std::vector<int>> mergeIntervals(std::vector<std::vector<int>>& intervals) {
     // Return sorted, merged intervals.
 }`,
@@ -890,22 +890,22 @@ auto debounce(Callback callback, std::chrono::milliseconds delay) {
     Java: `static int[] twoSum(int[] nums, int target) {
     // Return the two matching indices.
 }`,
-    'C++': interviewQuestions.find((question) => question.id === 'cpp-two-sum')?.starterCode,
+    'C++': interviewQuestions.find((question) => question.id === 'cpp-two-sum')?.starterCode ?? '',
   },
   'sql-customer-spend': {
-    SQL: interviewQuestions.find((question) => question.id === 'sql-customer-spend')?.starterCode,
+    SQL: interviewQuestions.find((question) => question.id === 'sql-customer-spend')?.starterCode ?? '',
   },
   'sql-above-department-average': {
-    SQL: interviewQuestions.find((question) => question.id === 'sql-above-department-average')?.starterCode,
+    SQL: interviewQuestions.find((question) => question.id === 'sql-above-department-average')?.starterCode ?? '',
   },
   'sql-unsold-products': {
-    SQL: interviewQuestions.find((question) => question.id === 'sql-unsold-products')?.starterCode,
+    SQL: interviewQuestions.find((question) => question.id === 'sql-unsold-products')?.starterCode ?? '',
   },
   'javascript-breadth-first-search': {
     Python: `def breadth_first_search(graph: dict[str, list[str]], start: str) -> list[str]:
     # Return reachable nodes in breadth-first order.
     pass`,
-    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-breadth-first-search')?.starterCode,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-breadth-first-search')?.starterCode ?? '',
     Java: `static List<String> breadthFirstSearch(Map<String, List<String>> graph, String start) {
     // Return reachable nodes in breadth-first order.
 }`,
@@ -920,7 +920,7 @@ auto debounce(Callback callback, std::chrono::milliseconds delay) {
     Python: `def genetic_algorithm(length: int, population_size: int, generations: int, mutation_rate: float) -> str:
     # Evolve binary chromosomes and return the best one as a string.
     pass`,
-    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-genetic-algorithm')?.starterCode,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-genetic-algorithm')?.starterCode ?? '',
     Java: `static String geneticAlgorithm(int length, int populationSize, int generations, double mutationRate) {
     // Evolve binary chromosomes and return the best one as a string.
 }`,
@@ -932,7 +932,7 @@ auto debounce(Callback callback, std::chrono::milliseconds delay) {
     Python: `def dijkstra(graph: dict[str, list[tuple[str, int]]], start: str) -> dict[str, int]:
     # Return shortest distances from start to each reachable node.
     pass`,
-    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-dijkstra-shortest-path')?.starterCode,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-dijkstra-shortest-path')?.starterCode ?? '',
     Java: `static Map<String, Integer> dijkstra(
         Map<String, List<Edge>> graph,
         String start
