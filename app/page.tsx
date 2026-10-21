@@ -1770,7 +1770,13 @@ export default function HomePage() {
                       <CodeEditor
                         language={editorLanguage}
                         value={answer}
-                        onChange={(value) => setInterviewAnswers((prev) => ({ ...prev, [interview.id]: value }))}
+                        onChange={(value) => {
+                          setInterviewAnswers((previous) => ({ ...previous, [interview.id]: value }));
+                          setCodingDrafts((previous) => ({
+                            ...previous,
+                            [interview.id]: { ...previous[interview.id], [editorLanguage]: value },
+                          }));
+                        }}
                       />
                     </>
                   : <textarea
@@ -1821,6 +1827,12 @@ export default function HomePage() {
                     className="interview-action-button secondary"
                     onClick={() => {
                       setInterviewAnswers((prev) => ({ ...prev, [interview.id]: '' }));
+                      if (isCodingChallenge) {
+                        setCodingDrafts((previous) => ({
+                          ...previous,
+                          [interview.id]: { ...previous[interview.id], [editorLanguage]: '' },
+                        }));
+                      }
                       setInterviewResults((prev) => {
                         const next = { ...prev };
                         delete next[interview.id];
