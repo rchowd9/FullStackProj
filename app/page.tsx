@@ -158,6 +158,7 @@ type InterviewQuestion = {
 
 const codingLanguages = ['Python', 'JavaScript', 'Java', 'C++', 'SQL'] as const;
 type CodingLanguage = (typeof codingLanguages)[number];
+type CodingStarterVariants = Partial<Record<CodingLanguage, string>>;
 
 type InterviewResult = {
   score: number;
@@ -840,6 +841,118 @@ const interviewQuestionIds = new Set(interviewQuestions.map((question) => questi
 const codingQuestionIds = new Set(interviewQuestions.filter((question) => question.language).map((question) => question.id));
 const isCodingLanguage = (value: unknown): value is CodingLanguage =>
   codingLanguages.some((language) => language === value);
+
+const codingStarterVariants: Record<string, CodingStarterVariants> = {
+  'python-first-unique': {
+    Python: interviewQuestions.find((question) => question.id === 'python-first-unique')?.starterCode,
+    JavaScript: `function firstUniqueIndex(text) {
+  // Return the first unique character's index, or -1.
+}`,
+    Java: `static int firstUniqueIndex(String text) {
+    // Return the first unique character's index, or -1.
+}`,
+    'C++': `int firstUniqueIndex(const std::string& text) {
+    // Return the first unique character's index, or -1.
+}`,
+  },
+  'javascript-debounce': {
+    Python: `def debounce(callback, delay_ms):
+    # Return a callable that invokes callback after calls pause.
+    pass`,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-debounce')?.starterCode,
+    Java: `static <T> Consumer<T> debounce(Consumer<T> callback, long delayMs) {
+    // Return a debounced consumer that forwards the latest value.
+}`,
+    'C++': `template <typename Callback>
+auto debounce(Callback callback, std::chrono::milliseconds delay) {
+    // Return a callable that invokes callback after calls pause.
+}`,
+  },
+  'java-merge-intervals': {
+    Python: `def merge_intervals(intervals: list[list[int]]) -> list[list[int]]:
+    # Return sorted, merged intervals.
+    pass`,
+    JavaScript: `function mergeIntervals(intervals) {
+  // Return sorted, merged intervals.
+}`,
+    Java: interviewQuestions.find((question) => question.id === 'java-merge-intervals')?.starterCode,
+    'C++': `std::vector<std::vector<int>> mergeIntervals(std::vector<std::vector<int>>& intervals) {
+    // Return sorted, merged intervals.
+}`,
+  },
+  'cpp-two-sum': {
+    Python: `def two_sum(nums: list[int], target: int) -> list[int]:
+    # Return the two matching indices.
+    pass`,
+    JavaScript: `function twoSum(nums, target) {
+  // Return the two matching indices.
+}`,
+    Java: `static int[] twoSum(int[] nums, int target) {
+    // Return the two matching indices.
+}`,
+    'C++': interviewQuestions.find((question) => question.id === 'cpp-two-sum')?.starterCode,
+  },
+  'sql-customer-spend': {
+    SQL: interviewQuestions.find((question) => question.id === 'sql-customer-spend')?.starterCode,
+  },
+  'sql-above-department-average': {
+    SQL: interviewQuestions.find((question) => question.id === 'sql-above-department-average')?.starterCode,
+  },
+  'sql-unsold-products': {
+    SQL: interviewQuestions.find((question) => question.id === 'sql-unsold-products')?.starterCode,
+  },
+  'javascript-breadth-first-search': {
+    Python: `def breadth_first_search(graph: dict[str, list[str]], start: str) -> list[str]:
+    # Return reachable nodes in breadth-first order.
+    pass`,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-breadth-first-search')?.starterCode,
+    Java: `static List<String> breadthFirstSearch(Map<String, List<String>> graph, String start) {
+    // Return reachable nodes in breadth-first order.
+}`,
+    'C++': `std::vector<std::string> breadthFirstSearch(
+    const std::unordered_map<std::string, std::vector<std::string>>& graph,
+    const std::string& start
+) {
+    // Return reachable nodes in breadth-first order.
+}`,
+  },
+  'javascript-genetic-algorithm': {
+    Python: `def genetic_algorithm(length: int, population_size: int, generations: int, mutation_rate: float) -> str:
+    # Evolve binary chromosomes and return the best one as a string.
+    pass`,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-genetic-algorithm')?.starterCode,
+    Java: `static String geneticAlgorithm(int length, int populationSize, int generations, double mutationRate) {
+    // Evolve binary chromosomes and return the best one as a string.
+}`,
+    'C++': `std::string geneticAlgorithm(int length, int populationSize, int generations, double mutationRate) {
+    // Evolve binary chromosomes and return the best one as a string.
+}`,
+  },
+  'javascript-dijkstra-shortest-path': {
+    Python: `def dijkstra(graph: dict[str, list[tuple[str, int]]], start: str) -> dict[str, int]:
+    # Return shortest distances from start to each reachable node.
+    pass`,
+    JavaScript: interviewQuestions.find((question) => question.id === 'javascript-dijkstra-shortest-path')?.starterCode,
+    Java: `static Map<String, Integer> dijkstra(
+        Map<String, List<Edge>> graph,
+        String start
+) {
+    // Return shortest distances from start to each reachable node.
+}`,
+    'C++': `std::unordered_map<std::string, int> dijkstra(
+    const std::unordered_map<std::string, std::vector<std::pair<std::string, int>>>& graph,
+    const std::string& start
+) {
+    // Return shortest distances from start to each reachable node.
+}`,
+  },
+};
+
+const getCodingLanguages = (question: InterviewQuestion) =>
+  codingLanguages.filter((language) => Boolean(codingStarterVariants[question.id]?.[language]));
+
+const getStarterCode = (question: InterviewQuestion, language: CodingLanguage) =>
+  codingStarterVariants[question.id]?.[language] ?? question.starterCode ?? '';
 
 const isInterviewResult = (value: unknown): value is InterviewResult =>
   typeof value === 'object'
