@@ -983,6 +983,7 @@ a {
 .quest-card .concept-tag { margin-bottom: 12px; }
 .quest-card h2 { font-size: clamp(1.35rem, 2.5vw, 1.7rem); line-height: 1.25; }
 .quest-card .prompt { max-width: 900px; margin: 0; padding: 16px 18px; border-left: 2px solid var(--secondary); border-radius: 0 12px 12px 0; background: rgba(88, 214, 197, 0.045); line-height: 1.7; }
+.quest-code { overflow-x: auto; margin: 12px 0 0; padding: 16px 18px; border: 1px solid var(--border); border-radius: 12px; background: rgba(4, 12, 20, 0.72); color: #d9f4ed; font: 0.9rem/1.65 Consolas, 'Courier New', monospace; tab-size: 2; }
 .quest-empty-state { padding: 32px; border: 1px dashed var(--border); border-radius: 18px; color: var(--text); text-align: center; background: rgba(15, 23, 42, 0.5); }
 .quest-empty-state p { margin: 8px 0 0; color: var(--muted); }
 

@@ -12,6 +12,7 @@ type Quest = {
   category: string;
   concept: string;
   prompt: string;
+  code?: string;
   choices: string[];
   correctAnswer: string;
   explanation: string;
@@ -207,8 +208,11 @@ function QuestsContent() {
                   <p className="concept-tag">{quest.concept}</p>
                   <h2>{quest.title}</h2>
                   <p className="prompt">{quest.prompt}</p>
+                  {quest.code && (
+                    <pre className="quest-code"><code>{quest.code}</code></pre>
+                  )}
 
-                  <div className="choices" aria-label={`Answer choices for ${quest.title}`}>
+                  <div className="choices" role="group" aria-label={`Answer choices for ${quest.title}`}>
                     {quest.choices.map((choice, choiceIndex) => {
                       const active = selected === choice;
                       const right = choice === quest.correctAnswer;
