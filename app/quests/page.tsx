@@ -147,7 +147,7 @@ function QuestsContent() {
 
       <section className="quest-toolbar" aria-label="Quest filters">
         <label className="search-field">
-          <span>⌕</span>
+          <span aria-hidden="true">⌕</span>
           <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search concepts, missions..." />
         </label>
         <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)} aria-label="Filter by difficulty">
@@ -156,7 +156,7 @@ function QuestsContent() {
           <option>Intermediate</option>
           <option>Advanced</option>
         </select>
-        <button className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
+        <button type="button" className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
           Review misses <strong>{missedIds.length}</strong>
         </button>
         <div className="quest-summary">
@@ -185,17 +185,21 @@ function QuestsContent() {
         {groupedQuests.map((group) => (
           <div key={group.category} className="category-group">
             <div className="category-header">
-              <p className="eyebrow">CATEGORY</p>
-              <h2>{group.category}</h2>
+              <div>
+                <p className="eyebrow">CATEGORY</p>
+                <h2>{group.category}</h2>
+              </div>
+              <span className="category-count">{group.items.length} {group.items.length === 1 ? 'question' : 'questions'}</span>
             </div>
 
-            {group.items.map((quest) => {
+            {group.items.map((quest, index) => {
               const selected = selectedAnswers[quest.id];
               const isCorrect = selected === quest.correctAnswer;
 
               return (
                 <article key={quest.id} className="quest-card">
                   <div className="mission-topline">
+                    <span className="question-count">QUESTION {String(index + 1).padStart(2, '0')}</span>
                     <span className="difficulty">{quest.difficulty}</span>
                     <span className={completedIds.includes(quest.id) ? 'completed-label' : 'xp'}>{completedIds.includes(quest.id) ? '✓ CLEARED' : `+${quest.xp} XP`}</span>
                   </div>
@@ -204,8 +208,8 @@ function QuestsContent() {
                   <h2>{quest.title}</h2>
                   <p className="prompt">{quest.prompt}</p>
 
-                  <div className="choices">
-                    {quest.choices.map((choice) => {
+                  <div className="choices" aria-label={`Answer choices for ${quest.title}`}>
+                    {quest.choices.map((choice, choiceIndex) => {
                       const active = selected === choice;
                       const right = choice === quest.correctAnswer;
 
@@ -219,11 +223,14 @@ function QuestsContent() {
 
                       return (
                         <button
+                          type="button"
                           key={choice}
                           className={className}
+                          aria-pressed={active}
                           onClick={() => handleAnswer(quest.id, choice)}
                         >
-                          {choice}
+                          <span className="choice-marker" aria-hidden="true">{String.fromCharCode(65 + choiceIndex)}</span>
+                          <span>{choice}</span>
                         </button>
                       );
                     })}
@@ -246,6 +253,12 @@ function QuestsContent() {
             })}
           </div>
         ))}
+        {groupedQuests.length === 0 && (
+          <div className="quest-empty-state">
+            <strong>No questions match these filters.</strong>
+            <p>Try a different search, difficulty, or review setting.</p>
+          </div>
+        )}
       </div>
     </main>
   );

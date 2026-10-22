@@ -914,10 +914,13 @@ a {
 
 .quest-list {
   display: grid;
-  gap: 22px;
+  gap: 34px;
 }
 
-.quest-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) 170px auto auto; gap: 12px; align-items: center; margin: 34px 0 28px; }
+.quest-header { padding: 28px 30px; border: 1px solid var(--border); border-radius: 22px; background: linear-gradient(120deg, rgba(88, 214, 197, 0.08), rgba(17, 23, 45, 0.84) 55%, rgba(239, 111, 81, 0.08)); }
+.quest-header h1 { margin: 0; font-size: clamp(2.2rem, 5vw, 3.6rem); letter-spacing: -0.045em; }
+.quest-header .eyebrow { margin-bottom: 10px; }
+.quest-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) 170px auto auto; gap: 12px; align-items: center; margin: 24px 0 18px; padding: 14px; border: 1px solid var(--border); border-radius: 18px; background: rgba(15, 23, 42, 0.56); }
 .search-field { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 14px; border: 1px solid var(--border); border-radius: 12px; background: rgba(15, 23, 42, 0.72); color: var(--muted); }
 .search-field input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text); }
 .search-field input::placeholder { color: #7180a5; }
@@ -928,11 +931,16 @@ a {
 .quest-summary { color: var(--muted); font-size: 0.8rem; text-align: right; }
 .quest-summary strong { color: var(--lime); }
 .quest-summary span { margin: 0 5px; color: var(--border); }
+.category-group { display: grid; gap: 16px; }
+.category-header { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding: 0 2px 12px; border-bottom: 1px solid var(--border); }
+.category-header .eyebrow { margin: 0 0 5px; font-size: 0.64rem; }
+.category-header h2 { margin: 0; font-size: 1.45rem; }
+.category-count { color: var(--muted); font-size: 0.78rem; }
 .practice-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  margin: 0 0 26px;
+  margin: 0 0 30px;
   padding: 18px 20px;
   border: 1px solid rgba(255, 138, 76, 0.28);
   border-radius: 18px;
@@ -968,6 +976,16 @@ a {
 
 .completed-label { color: var(--lime); font-size: 0.8rem; font-weight: 800; }
 
+.quest-card { padding: 26px; background: linear-gradient(145deg, rgba(19, 29, 51, 0.96), rgba(12, 20, 34, 0.94)); box-shadow: 0 16px 34px rgba(3, 19, 27, 0.18); }
+.quest-card .mission-topline { justify-content: flex-start; gap: 10px; margin-bottom: 18px; }
+.quest-card .xp, .quest-card .completed-label { margin-left: auto; }
+.question-count { color: var(--muted); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; }
+.quest-card .concept-tag { margin-bottom: 12px; }
+.quest-card h2 { font-size: clamp(1.35rem, 2.5vw, 1.7rem); line-height: 1.25; }
+.quest-card .prompt { max-width: 900px; margin: 0; padding: 16px 18px; border-left: 2px solid var(--secondary); border-radius: 0 12px 12px 0; background: rgba(88, 214, 197, 0.045); line-height: 1.7; }
+.quest-empty-state { padding: 32px; border: 1px dashed var(--border); border-radius: 18px; color: var(--text); text-align: center; background: rgba(15, 23, 42, 0.5); }
+.quest-empty-state p { margin: 8px 0 0; color: var(--muted); }
+
 .concept-tag {
   display: inline-block;
   margin: 0 0 14px;
@@ -982,15 +1000,37 @@ a {
 .choices {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .choice {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text);
+  width: 100%;
+  min-height: 68px;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
   border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
   text-align: left;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.choice-marker {
+  display: inline-grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .choice.selected {
@@ -1003,10 +1043,14 @@ a {
   border-color: rgba(34, 197, 94, 0.6);
 }
 
+.choice.correct .choice-marker { border-color: rgba(34, 197, 94, 0.6); color: #86efac; }
+
 .choice.wrong {
   background: rgba(239, 68, 68, 0.12);
   border-color: rgba(239, 68, 68, 0.5);
 }
+
+.choice.wrong .choice-marker { border-color: rgba(239, 68, 68, 0.55); color: #fca5a5; }
 
 @media (max-width: 900px) {
   .hero,
@@ -1018,6 +1062,10 @@ a {
   .hero {
     gap: 40px;
   }
+  .quest-toolbar { grid-template-columns: minmax(0, 1fr) 170px; }
+  .quest-summary { text-align: left; }
+  .practice-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .session-reset { align-self: center; }
   .command-bar, .daily-challenge { grid-template-columns: 1fr 1fr; }
   .interview-grid { grid-template-columns: 1fr; }
   .filter-count { margin-left: 0; }
@@ -1105,6 +1153,11 @@ a {
   .daily-rewards { flex-wrap: wrap; }
   .feature-summary-strip { grid-template-columns: 1fr; }
   .quest-toolbar { grid-template-columns: 1fr; }
+  .quest-header { padding: 22px; }
+  .quest-card { padding: 20px; }
+  .practice-summary { grid-template-columns: 1fr; }
+  .category-header { align-items: start; }
+  .category-count { text-align: right; }
   .challenge-timer { margin-left: 0; }
   .submission-history li { grid-template-columns: 1fr; }
   .quest-summary { text-align: left; }
