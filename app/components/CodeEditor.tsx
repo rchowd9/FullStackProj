@@ -24,6 +24,10 @@ export default function CodeEditor({ language, value, onChange }: CodeEditorProp
         return [java()];
       case 'C++':
         return [cpp()];
+      case 'C#':
+      case 'Kotlin':
+      case 'R':
+        return [];
       case 'SQL':
         return [sql({ dialect: PostgreSQL })];
       default:

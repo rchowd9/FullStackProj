@@ -156,7 +156,7 @@ type InterviewQuestion = {
   examples?: { input: string; output: string }[];
 };
 
-const codingLanguages = ['Python', 'JavaScript', 'Java', 'C++', 'SQL'] as const;
+const codingLanguages = ['Python', 'JavaScript', 'Java', 'C++', 'C#', 'Kotlin', 'R', 'SQL'] as const;
 type CodingLanguage = (typeof codingLanguages)[number];
 type CodingStarterVariants = Partial<Record<CodingLanguage, string>>;
 
@@ -834,6 +834,315 @@ ORDER BY p.id;`,
       notes: 'This approachable implementation scans tentative distances to select each node. A min-priority queue reduces the selection cost to O((V + E) log V) for sparse graphs.',
     },
   },
+  {
+    id: 'csharp-two-sum',
+    mission: 'C# · Coding',
+    language: 'C#',
+    difficulty: 'Easy',
+    acceptance: '94.2%',
+    tags: ['Hash Map', 'Arrays'],
+    hint: 'Store values you have already seen and look up the complement needed to reach the target.',
+    question: 'Implement TwoSum(int[] numbers, int target). Return the two distinct indices whose values sum to target. Assume exactly one solution and target O(n) time.',
+    idealAnswer: `static int[] TwoSum(int[] numbers, int target) {
+    var indices = new Dictionary<int, int>();
+    for (var index = 0; index < numbers.Length; index++) {
+        var complement = target - numbers[index];
+        if (indices.TryGetValue(complement, out var previousIndex)) {
+            return new[] { previousIndex, index };
+        }
+        indices[numbers[index]] = index;
+    }
+    return Array.Empty<int>();
+}`,
+    starterCode: `static int[] TwoSum(int[] numbers, int target) {
+    // Return the two matching indices.
+}`,
+    examples: [
+      { input: 'numbers = [2, 7, 11, 15], target = 9', output: '[0, 1]' },
+      { input: 'numbers = [3, 2, 4], target = 6', output: '[1, 2]' },
+    ],
+    checklist: ['Use a dictionary of seen values', 'Look up the complement', 'Return distinct indices', 'O(n) time'],
+    keywords: ['dictionary', 'trygetvalue', 'complement', 'indices', 'o n'],
+    complexity: {
+      time: 'O(n) expected',
+      space: 'O(n)',
+      notes: 'The dictionary stores at most one entry per input value.',
+    },
+  },
+  {
+    id: 'csharp-valid-parentheses',
+    mission: 'C# · Coding',
+    language: 'C#',
+    difficulty: 'Easy',
+    acceptance: '91.6%',
+    tags: ['Stack', 'Strings'],
+    hint: 'Push the closing bracket expected for each opening bracket, then compare every closing bracket to the stack top.',
+    question: 'Implement IsValid(string text) for strings containing only (), [], and {}. Return true only when every bracket closes in the correct order. Target O(n) time.',
+    idealAnswer: `static bool IsValid(string text) {
+    var expected = new Stack<char>();
+    foreach (var character in text) {
+        if (character == '(') expected.Push(')');
+        else if (character == '[') expected.Push(']');
+        else if (character == '{') expected.Push('}');
+        else if (expected.Count == 0 || expected.Pop() != character) return false;
+    }
+    return expected.Count == 0;
+}`,
+    starterCode: `static bool IsValid(string text) {
+    // Return whether the brackets are balanced and correctly nested.
+}`,
+    examples: [
+      { input: '"({[]})"', output: 'true' },
+      { input: '"([)]"', output: 'false' },
+    ],
+    checklist: ['Use a stack', 'Push the matching closing bracket', 'Reject mismatched or extra closers', 'Check the stack is empty'],
+    keywords: ['stack', 'push', 'pop', 'matching', 'empty'],
+    complexity: {
+      time: 'O(n)',
+      space: 'O(n)',
+      notes: 'In the worst case, the stack holds every opening bracket.',
+    },
+  },
+  {
+    id: 'csharp-merge-intervals',
+    mission: 'C# · Coding',
+    language: 'C#',
+    difficulty: 'Medium',
+    acceptance: '87.8%',
+    tags: ['Sorting', 'Intervals'],
+    hint: 'Sort by each interval’s start, then merge it into the last output interval when they overlap.',
+    question: 'Implement MergeIntervals(int[][] intervals). Merge overlapping intervals, return them sorted by start, and handle empty input. Target O(n log n) time.',
+    idealAnswer: `static int[][] MergeIntervals(int[][] intervals) {
+    if (intervals.Length == 0) return Array.Empty<int[]>();
+    var sorted = intervals.OrderBy(interval => interval[0]);
+    var merged = new List<int[]>();
+    foreach (var interval in sorted) {
+        if (merged.Count == 0 || merged[^1][1] < interval[0]) {
+            merged.Add((int[])interval.Clone());
+        } else {
+            merged[^1][1] = Math.Max(merged[^1][1], interval[1]);
+        }
+    }
+    return merged.ToArray();
+}`,
+    starterCode: `static int[][] MergeIntervals(int[][] intervals) {
+    // Return sorted, merged intervals.
+}`,
+    examples: [
+      { input: '[[1, 3], [2, 6], [8, 10], [15, 18]]', output: '[[1, 6], [8, 10], [15, 18]]' },
+      { input: '[]', output: '[]' },
+    ],
+    checklist: ['Sort by start', 'Merge overlapping intervals', 'Keep disjoint intervals', 'Handle empty input'],
+    keywords: ['orderby', 'sort', 'interval', 'math max', 'empty'],
+    complexity: {
+      time: 'O(n log n)',
+      space: 'O(n)',
+      notes: 'Sorting dominates runtime; the result may contain all input intervals.',
+    },
+  },
+  {
+    id: 'kotlin-two-sum',
+    mission: 'Kotlin · Coding',
+    language: 'Kotlin',
+    difficulty: 'Easy',
+    acceptance: '94.2%',
+    tags: ['Hash Map', 'Arrays'],
+    hint: 'Track each visited number’s index and check whether its complement has already appeared.',
+    question: 'Implement twoSum(numbers: IntArray, target: Int). Return the two distinct indices whose values sum to target. Assume exactly one solution and target O(n) time.',
+    idealAnswer: `fun twoSum(numbers: IntArray, target: Int): IntArray {
+    val indices = mutableMapOf<Int, Int>()
+    for ((index, number) in numbers.withIndex()) {
+        val complement = target - number
+        indices[complement]?.let { previousIndex ->
+            return intArrayOf(previousIndex, index)
+        }
+        indices[number] = index
+    }
+    return intArrayOf()
+}`,
+    starterCode: `fun twoSum(numbers: IntArray, target: Int): IntArray {
+    // Return the two matching indices.
+}`,
+    examples: [
+      { input: 'numbers = intArrayOf(2, 7, 11, 15), target = 9', output: '[0, 1]' },
+      { input: 'numbers = intArrayOf(3, 2, 4), target = 6', output: '[1, 2]' },
+    ],
+    checklist: ['Use a map of seen values', 'Look up the complement', 'Return distinct indices', 'O(n) time'],
+    keywords: ['mutablemapof', 'indices', 'complement', 'intarrayof', 'o n'],
+    complexity: {
+      time: 'O(n) expected',
+      space: 'O(n)',
+      notes: 'The map stores at most one entry per input value.',
+    },
+  },
+  {
+    id: 'kotlin-valid-parentheses',
+    mission: 'Kotlin · Coding',
+    language: 'Kotlin',
+    difficulty: 'Easy',
+    acceptance: '91.6%',
+    tags: ['Stack', 'Strings'],
+    hint: 'Use a stack of expected closing brackets so nesting order is checked as you scan.',
+    question: 'Implement isValid(text: String) for strings containing only (), [], and {}. Return true only when every bracket closes in the correct order. Target O(n) time.',
+    idealAnswer: `fun isValid(text: String): Boolean {
+    val expected = ArrayDeque<Char>()
+    for (character in text) {
+        when (character) {
+            '(' -> expected.addLast(')')
+            '[' -> expected.addLast(']')
+            '{' -> expected.addLast('}')
+            else -> {
+                if (expected.isEmpty() || expected.removeLast() != character) return false
+            }
+        }
+    }
+    return expected.isEmpty()
+}`,
+    starterCode: `fun isValid(text: String): Boolean {
+    // Return whether the brackets are balanced and correctly nested.
+}`,
+    examples: [
+      { input: '"({[]})"', output: 'true' },
+      { input: '"([)]"', output: 'false' },
+    ],
+    checklist: ['Use a stack', 'Push the matching closing bracket', 'Reject mismatched or extra closers', 'Check the stack is empty'],
+    keywords: ['arraydeque', 'addlast', 'removelast', 'matching', 'empty'],
+    complexity: {
+      time: 'O(n)',
+      space: 'O(n)',
+      notes: 'In the worst case, the stack holds every opening bracket.',
+    },
+  },
+  {
+    id: 'kotlin-binary-search',
+    mission: 'Kotlin · Coding',
+    language: 'Kotlin',
+    difficulty: 'Easy',
+    acceptance: '89.4%',
+    tags: ['Binary Search', 'Arrays'],
+    hint: 'Maintain an inclusive search range and discard half of it after each comparison.',
+    question: 'Implement binarySearch(values: IntArray, target: Int) for a sorted ascending array. Return the index of target or -1 if it is absent. Target O(log n) time.',
+    idealAnswer: `fun binarySearch(values: IntArray, target: Int): Int {
+    var left = 0
+    var right = values.lastIndex
+    while (left <= right) {
+        val middle = left + (right - left) / 2
+        when {
+            values[middle] == target -> return middle
+            values[middle] < target -> left = middle + 1
+            else -> right = middle - 1
+        }
+    }
+    return -1
+}`,
+    starterCode: `fun binarySearch(values: IntArray, target: Int): Int {
+    // Return the target index, or -1 when it is absent.
+}`,
+    examples: [
+      { input: 'values = intArrayOf(1, 3, 5, 7, 9), target = 7', output: '3' },
+      { input: 'values = intArrayOf(1, 3, 5, 7, 9), target = 4', output: '-1' },
+    ],
+    checklist: ['Use left and right bounds', 'Compare the middle value', 'Discard half the range each step', 'Return -1 when absent'],
+    keywords: ['left', 'right', 'middle', 'sorted', 'o log n'],
+    complexity: {
+      time: 'O(log n)',
+      space: 'O(1)',
+      notes: 'Each comparison halves the remaining search range.',
+    },
+  },
+  {
+    id: 'r-first-unique-index',
+    mission: 'R · Coding',
+    language: 'R',
+    difficulty: 'Easy',
+    acceptance: '88.7%',
+    tags: ['Hash Map', 'Strings'],
+    hint: 'Count each character once, then scan the original sequence so the first unique character stays in order.',
+    question: 'Implement first_unique_index(text). Return the 1-based index of the first character that appears once, or NA_integer_ if none exists. Target O(n) time.',
+    idealAnswer: `first_unique_index <- function(text) {
+  characters <- strsplit(text, "", fixed = TRUE)[[1]]
+  counts <- table(characters)
+  for (index in seq_along(characters)) {
+    if (counts[[characters[[index]]]] == 1) {
+      return(as.integer(index))
+    }
+  }
+  NA_integer_
+}`,
+    starterCode: `first_unique_index <- function(text) {
+  # Return the 1-based index of the first unique character.
+}`,
+    examples: [
+      { input: 'first_unique_index("swiss")', output: '2' },
+      { input: 'first_unique_index("aabb")', output: 'NA_integer_' },
+    ],
+    checklist: ['Split the text into characters', 'Count each character', 'Scan in original order', 'Return NA_integer_ when none is unique'],
+    keywords: ['strsplit', 'table', 'seq along', 'as integer', 'na integer'],
+    complexity: {
+      time: 'O(n)',
+      space: 'O(k)',
+      notes: 'k is the number of distinct characters stored in the frequency table.',
+    },
+  },
+  {
+    id: 'r-rolling-averages',
+    mission: 'R · Coding',
+    language: 'R',
+    difficulty: 'Medium',
+    acceptance: '82.1%',
+    tags: ['Arrays', 'Prefix Sums'],
+    hint: 'Build cumulative sums with a leading zero, then subtract prefix sums at each window boundary.',
+    question: 'Implement rolling_averages(values, window) using base R. Return the mean of each consecutive window; return numeric(0) when window is larger than the input. Assume window is a positive integer. Target O(n) time.',
+    idealAnswer: `rolling_averages <- function(values, window) {
+  n <- length(values)
+  if (window > n) return(numeric(0))
+
+  prefix <- c(0, cumsum(values))
+  starts <- seq_len(n - window + 1)
+  (prefix[starts + window] - prefix[starts]) / window
+}`,
+    starterCode: `rolling_averages <- function(values, window) {
+  # Return the mean of each consecutive window.
+}`,
+    examples: [
+      { input: 'rolling_averages(c(1, 2, 3, 4), 2)', output: 'c(1.5, 2.5, 3.5)' },
+      { input: 'rolling_averages(c(1, 2), 3)', output: 'numeric(0)' },
+    ],
+    checklist: ['Build cumulative sums', 'Subtract the prefix before each window', 'Divide each window sum by its width', 'Return numeric(0) for an oversized window'],
+    keywords: ['cumsum', 'prefix', 'seq len', 'window', 'numeric 0'],
+    complexity: {
+      time: 'O(n)',
+      space: 'O(n)',
+      notes: 'Prefix sums make each window sum constant time after one linear pass.',
+    },
+  },
+  {
+    id: 'r-group-means',
+    mission: 'R · Coding',
+    language: 'R',
+    difficulty: 'Easy',
+    acceptance: '85.3%',
+    tags: ['Data Frames', 'Aggregation'],
+    hint: 'Use tapply to apply mean to each group and keep the group labels as names.',
+    question: 'Implement group_means(scores, groups) using base R. Return a named numeric vector containing each group’s mean score. Assume both vectors have the same length and no missing values.',
+    idealAnswer: `group_means <- function(scores, groups) {
+  tapply(scores, groups, mean)
+}`,
+    starterCode: `group_means <- function(scores, groups) {
+  # Return the mean score for each group as a named vector.
+}`,
+    examples: [
+      { input: 'group_means(c(80, 90, 70), c("A", "A", "B"))', output: 'A = 85, B = 70' },
+      { input: 'group_means(c(4, 6, 8, 10), c("x", "x", "y", "y"))', output: 'x = 5, y = 9' },
+    ],
+    checklist: ['Group scores by label', 'Apply mean within each group', 'Keep group labels in the result', 'Use base R'],
+    keywords: ['tapply', 'scores', 'groups', 'mean', 'named vector'],
+    complexity: {
+      time: 'O(n)',
+      space: 'O(n)',
+      notes: 'Each score is assigned to one group and included in one mean calculation.',
+    },
+  },
 ];
 
 const normalizeText = (value: string) => value.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -949,7 +1258,9 @@ auto debounce(Callback callback, std::chrono::milliseconds delay) {
 };
 
 const getCodingLanguages = (question: InterviewQuestion) =>
-  codingLanguages.filter((language) => Boolean(codingStarterVariants[question.id]?.[language]));
+  codingLanguages.filter((language) =>
+    Boolean(codingStarterVariants[question.id]?.[language]) || language === question.language
+  );
 
 const getStarterCode = (question: InterviewQuestion, language: CodingLanguage) =>
   codingStarterVariants[question.id]?.[language] ?? question.starterCode ?? '';
