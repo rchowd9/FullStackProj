@@ -839,34 +839,35 @@ ORDER BY p.id;`,
     mission: 'C# · Coding',
     language: 'C#',
     difficulty: 'Easy',
-    acceptance: '94.2%',
-    tags: ['Hash Map', 'Arrays'],
-    hint: 'Store values you have already seen and look up the complement needed to reach the target.',
-    question: 'Implement TwoSum(int[] numbers, int target). Return the two distinct indices whose values sum to target. Assume exactly one solution and target O(n) time.',
-    idealAnswer: `static int[] TwoSum(int[] numbers, int target) {
-    var indices = new Dictionary<int, int>();
-    for (var index = 0; index < numbers.Length; index++) {
-        var complement = target - numbers[index];
-        if (indices.TryGetValue(complement, out var previousIndex)) {
-            return new[] { previousIndex, index };
-        }
-        indices[numbers[index]] = index;
+    acceptance: '88.1%',
+    tags: ['Strings', 'Two Pointers'],
+    hint: 'Move two pointers inward, skipping non-alphanumeric characters before comparing.',
+    question: 'Implement IsPalindrome(string text). Return true when the text reads the same forward and backward after ignoring non-alphanumeric characters and letter case. Target O(n) time.',
+    idealAnswer: `static bool IsPalindrome(string text) {
+    var left = 0;
+    var right = text.Length - 1;
+    while (left < right) {
+        while (left < right && !char.IsLetterOrDigit(text[left])) left++;
+        while (left < right && !char.IsLetterOrDigit(text[right])) right--;
+        if (char.ToLowerInvariant(text[left]) != char.ToLowerInvariant(text[right])) return false;
+        left++;
+        right--;
     }
-    return Array.Empty<int>();
+    return true;
 }`,
-    starterCode: `static int[] TwoSum(int[] numbers, int target) {
-    // Return the two matching indices.
+    starterCode: `static bool IsPalindrome(string text) {
+    // Return whether text is a palindrome, ignoring punctuation and case.
 }`,
     examples: [
-      { input: 'numbers = [2, 7, 11, 15], target = 9', output: '[0, 1]' },
-      { input: 'numbers = [3, 2, 4], target = 6', output: '[1, 2]' },
+      { input: '"A man, a plan, a canal: Panama"', output: 'true' },
+      { input: '"race a car"', output: 'false' },
     ],
-    checklist: ['Use a dictionary of seen values', 'Look up the complement', 'Return distinct indices', 'O(n) time'],
-    keywords: ['dictionary', 'trygetvalue', 'complement', 'indices', 'o n'],
+    checklist: ['Use left and right pointers', 'Skip non-alphanumeric characters', 'Compare without case sensitivity', 'Stop at the middle'],
+    keywords: ['left', 'right', 'letterordigit', 'lowerinvariant', 'middle'],
     complexity: {
-      time: 'O(n) expected',
-      space: 'O(n)',
-      notes: 'The dictionary stores at most one entry per input value.',
+      time: 'O(n)',
+      space: 'O(1)',
+      notes: 'The two pointers scan inward without allocating another string.',
     },
   },
   {
@@ -874,33 +875,34 @@ ORDER BY p.id;`,
     mission: 'C# · Coding',
     language: 'C#',
     difficulty: 'Easy',
-    acceptance: '91.6%',
-    tags: ['Stack', 'Strings'],
-    hint: 'Push the closing bracket expected for each opening bracket, then compare every closing bracket to the stack top.',
-    question: 'Implement IsValid(string text) for strings containing only (), [], and {}. Return true only when every bracket closes in the correct order. Target O(n) time.',
-    idealAnswer: `static bool IsValid(string text) {
-    var expected = new Stack<char>();
-    foreach (var character in text) {
-        if (character == '(') expected.Push(')');
-        else if (character == '[') expected.Push(']');
-        else if (character == '{') expected.Push('}');
-        else if (expected.Count == 0 || expected.Pop() != character) return false;
+    acceptance: '86.7%',
+    tags: ['Strings', 'Prefix'],
+    hint: 'Start with the first word as the candidate prefix and shorten it until every word begins with it.',
+    question: 'Implement LongestCommonPrefix(string[] words). Return the longest prefix shared by every word, or an empty string when no prefix is shared. Return an empty string for an empty input array.',
+    idealAnswer: `static string LongestCommonPrefix(string[] words) {
+    if (words.Length == 0) return string.Empty;
+    var prefix = words[0];
+    foreach (var word in words) {
+        while (!word.StartsWith(prefix, StringComparison.Ordinal)) {
+            prefix = prefix[..^1];
+            if (prefix.Length == 0) return string.Empty;
+        }
     }
-    return expected.Count == 0;
+    return prefix;
 }`,
-    starterCode: `static bool IsValid(string text) {
-    // Return whether the brackets are balanced and correctly nested.
+    starterCode: `static string LongestCommonPrefix(string[] words) {
+    // Return the longest prefix shared by every word.
 }`,
     examples: [
-      { input: '"({[]})"', output: 'true' },
-      { input: '"([)]"', output: 'false' },
+      { input: '["flower", "flow", "flight"]', output: '"fl"' },
+      { input: '["dog", "racecar", "car"]', output: '""' },
     ],
-    checklist: ['Use a stack', 'Push the matching closing bracket', 'Reject mismatched or extra closers', 'Check the stack is empty'],
-    keywords: ['stack', 'push', 'pop', 'matching', 'empty'],
+    checklist: ['Handle an empty input', 'Use a candidate prefix', 'Shorten the prefix until each word matches', 'Return an empty prefix when none is shared'],
+    keywords: ['prefix', 'startswith', 'shorten', 'empty', 'ordinal'],
     complexity: {
-      time: 'O(n)',
-      space: 'O(n)',
-      notes: 'In the worst case, the stack holds every opening bracket.',
+      time: 'O(n × m)',
+      space: 'O(1) extra',
+      notes: 'n is the number of words and m is the length of the initial prefix.',
     },
   },
   {
@@ -908,36 +910,31 @@ ORDER BY p.id;`,
     mission: 'C# · Coding',
     language: 'C#',
     difficulty: 'Medium',
-    acceptance: '87.8%',
-    tags: ['Sorting', 'Intervals'],
-    hint: 'Sort by each interval’s start, then merge it into the last output interval when they overlap.',
-    question: 'Implement MergeIntervals(int[][] intervals). Merge overlapping intervals, return them sorted by start, and handle empty input. Target O(n log n) time.',
-    idealAnswer: `static int[][] MergeIntervals(int[][] intervals) {
-    if (intervals.Length == 0) return Array.Empty<int[]>();
-    var sorted = intervals.OrderBy(interval => interval[0]);
-    var merged = new List<int[]>();
-    foreach (var interval in sorted) {
-        if (merged.Count == 0 || merged[^1][1] < interval[0]) {
-            merged.Add((int[])interval.Clone());
-        } else {
-            merged[^1][1] = Math.Max(merged[^1][1], interval[1]);
-        }
+    acceptance: '90.3%',
+    tags: ['Arrays', 'In-Place'],
+    hint: 'Copy nonzero values forward in their original order, then fill the remaining positions with zero.',
+    question: 'Implement MoveZeros(int[] numbers) in place. Move every zero to the end while preserving the order of nonzero values, and return the same array. Target O(n) time.',
+    idealAnswer: `static int[] MoveZeros(int[] numbers) {
+    var writeIndex = 0;
+    foreach (var number in numbers) {
+        if (number != 0) numbers[writeIndex++] = number;
     }
-    return merged.ToArray();
+    while (writeIndex < numbers.Length) numbers[writeIndex++] = 0;
+    return numbers;
 }`,
-    starterCode: `static int[][] MergeIntervals(int[][] intervals) {
-    // Return sorted, merged intervals.
+    starterCode: `static int[] MoveZeros(int[] numbers) {
+    // Move zeros to the end in place and preserve nonzero order.
 }`,
     examples: [
-      { input: '[[1, 3], [2, 6], [8, 10], [15, 18]]', output: '[[1, 6], [8, 10], [15, 18]]' },
-      { input: '[]', output: '[]' },
+      { input: '[0, 1, 0, 3, 12]', output: '[1, 3, 12, 0, 0]' },
+      { input: '[1, 2, 3]', output: '[1, 2, 3]' },
     ],
-    checklist: ['Sort by start', 'Merge overlapping intervals', 'Keep disjoint intervals', 'Handle empty input'],
-    keywords: ['orderby', 'sort', 'interval', 'math max', 'empty'],
+    checklist: ['Keep the order of nonzero values', 'Write nonzero values in place', 'Fill remaining positions with zero', 'Return the input array'],
+    keywords: ['writeindex', 'in place', 'nonzero', 'order', 'zero'],
     complexity: {
-      time: 'O(n log n)',
-      space: 'O(n)',
-      notes: 'Sorting dominates runtime; the result may contain all input intervals.',
+      time: 'O(n)',
+      space: 'O(1)',
+      notes: 'The array is updated in place using a single write index.',
     },
   },
   {
@@ -945,34 +942,32 @@ ORDER BY p.id;`,
     mission: 'Kotlin · Coding',
     language: 'Kotlin',
     difficulty: 'Easy',
-    acceptance: '94.2%',
-    tags: ['Hash Map', 'Arrays'],
-    hint: 'Track each visited number’s index and check whether its complement has already appeared.',
-    question: 'Implement twoSum(numbers: IntArray, target: Int). Return the two distinct indices whose values sum to target. Assume exactly one solution and target O(n) time.',
-    idealAnswer: `fun twoSum(numbers: IntArray, target: Int): IntArray {
-    val indices = mutableMapOf<Int, Int>()
-    for ((index, number) in numbers.withIndex()) {
-        val complement = target - number
-        indices[complement]?.let { previousIndex ->
-            return intArrayOf(previousIndex, index)
-        }
-        indices[number] = index
+    acceptance: '90.8%',
+    tags: ['Arrays', 'Dynamic Programming'],
+    hint: 'At each position, decide whether to extend the previous best subarray or start a new one.',
+    question: 'Implement maxSubarraySum(values: IntArray) for a non-empty array. Return the largest sum of any contiguous subarray. Target O(n) time.',
+    idealAnswer: `fun maxSubarraySum(values: IntArray): Int {
+    var current = values[0]
+    var best = values[0]
+    for (index in 1 until values.size) {
+        current = maxOf(values[index], current + values[index])
+        best = maxOf(best, current)
     }
-    return intArrayOf()
+    return best
 }`,
-    starterCode: `fun twoSum(numbers: IntArray, target: Int): IntArray {
-    // Return the two matching indices.
+    starterCode: `fun maxSubarraySum(values: IntArray): Int {
+    // Return the largest sum of any contiguous subarray.
 }`,
     examples: [
-      { input: 'numbers = intArrayOf(2, 7, 11, 15), target = 9', output: '[0, 1]' },
-      { input: 'numbers = intArrayOf(3, 2, 4), target = 6', output: '[1, 2]' },
+      { input: 'intArrayOf(-2, 1, -3, 4, -1, 2, 1, -5, 4)', output: '6' },
+      { input: 'intArrayOf(-3, -1, -2)', output: '-1' },
     ],
-    checklist: ['Use a map of seen values', 'Look up the complement', 'Return distinct indices', 'O(n) time'],
-    keywords: ['mutablemapof', 'indices', 'complement', 'intarrayof', 'o n'],
+    checklist: ['Track the best sum ending at the current position', 'Choose between extending or restarting', 'Track the overall best sum', 'Handle all-negative arrays'],
+    keywords: ['current', 'best', 'maxof', 'contiguous', 'negative'],
     complexity: {
-      time: 'O(n) expected',
-      space: 'O(n)',
-      notes: 'The map stores at most one entry per input value.',
+      time: 'O(n)',
+      space: 'O(1)',
+      notes: 'Kadane’s algorithm scans once and stores only two running sums.',
     },
   },
   {
