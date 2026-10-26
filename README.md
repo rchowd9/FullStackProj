@@ -31,6 +31,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Responsive interface for desktop and mobile
 - Framer Motion animations for polished UI transitions
 - Hono-powered edge API health route at `/api/status`
+- Sandboxed code execution for the editor languages through a Judge0-compatible service; submissions run with CPU, memory, and request-size limits
 - PostgreSQL-ready schema and starter seed data in `db/schema.sql` and `db/seed.sql`
 
 ## Resume-ready project highlights
@@ -59,6 +60,19 @@ Additional framework installed:
 ## Progress storage
 
 Quest completion is stored in the browser under `code-quest:progress`, so the prototype works without authentication or a database. Leaderboard submissions use Upstash Redis when `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, and fall back to process memory for local development.
+
+### Code execution
+
+Configure a trusted Judge0-compatible service to enable the **Run code** action:
+
+```text
+JUDGE0_API_URL=https://your-judge0-host
+JUDGE0_API_KEY=your-server-side-api-key
+UPSTASH_REDIS_REST_URL=https://your-upstash-instance.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-upstash-token
+```
+
+`JUDGE0_API_KEY` is optional for self-hosted runners and must only be set in server-side environment settings, never with a `NEXT_PUBLIC_` prefix. The app sends editor source code and optional standard input to the configured runner. Execution is disabled until `JUDGE0_API_URL` is configured. The API enforces source/input size limits, execution resource limits, same-origin requests, and a per-IP request limit; Upstash Redis provides the shared rate-limit counter when configured. Without Redis, the development fallback rate limit is process-local and is not suitable for multi-instance production deployments. Only configure a runner you trust with learner-submitted code.
 
 ## Database starter files
 

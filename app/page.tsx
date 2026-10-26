@@ -175,6 +175,15 @@ type SubmissionHistoryItem = {
   code: string;
 };
 
+type ExecutionResult = {
+  status: string;
+  stdout: string;
+  stderr: string;
+  compileOutput: string;
+  time: string | null;
+  memory: number | null;
+};
+
 const interviewQuestions: InterviewQuestion[] = [
   {
     id: 'ai-agent-safety',
@@ -1387,6 +1396,10 @@ export default function HomePage() {
   const [activeTimerId, setActiveTimerId] = useState<string | null>(null);
   const [elapsedByChallenge, setElapsedByChallenge] = useState<Record<string, number>>({});
   const [submissionHistory, setSubmissionHistory] = useState<SubmissionHistoryItem[]>([]);
+  const [executionInputs, setExecutionInputs] = useState<Record<string, string>>({});
+  const [executionResults, setExecutionResults] = useState<Record<string, ExecutionResult>>({});
+  const [executionErrors, setExecutionErrors] = useState<Record<string, string>>({});
+  const [runningChallenges, setRunningChallenges] = useState<Record<string, boolean>>({});
   const [codingPracticeLoaded, setCodingPracticeLoaded] = useState(false);
   const [studyCoach, setStudyCoach] = useState({ focus: 'System Design', note: 'Keep momentum and complete a strong daily run.' });
 
@@ -1487,6 +1500,70 @@ export default function HomePage() {
       ...previous,
     ].slice(0, 100));
     setActiveTimerId((activeId) => activeId === question.id ? null : activeId);
+  };
+
+  const runChallengeCode = async (question: InterviewQuestion, language: CodingLanguage, source: string) => {
+    const challengeId = question.id;
+    setRunningChallenges((previous) => ({ ...previous, [challengeId]: true }));
+    setExecutionErrors((previous) => ({ ...previous, [challengeId]: '' }));
+
+    try {
+      const response = await fetch('/api/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language,
+          source,
+          stdin: executionInputs[challengeId] ?? '',
+        }),
+      });
+
+      let payload: unknown;
+      try {
+        payload = await response.json();
+      } catch {
+        throw new Error('The execution service returned an invalid response.');
+      }
+
+      if (!payload || typeof payload !== 'object') {
+        throw new Error('The execution service returned an invalid response.');
+      }
+
+      const result = payload as Record<string, unknown>;
+      if (!response.ok) {
+        throw new Error(typeof result.error === 'string' ? result.error : 'Code execution failed.');
+      }
+
+      if (
+        typeof result.status !== 'string'
+        || typeof result.stdout !== 'string'
+        || typeof result.stderr !== 'string'
+        || typeof result.compileOutput !== 'string'
+        || (result.time !== null && typeof result.time !== 'string')
+        || (result.memory !== null && typeof result.memory !== 'number')
+      ) {
+        throw new Error('The execution service returned an invalid response.');
+      }
+
+      setExecutionResults((previous) => ({
+        ...previous,
+        [challengeId]: {
+          status: result.status as string,
+          stdout: result.stdout as string,
+          stderr: result.stderr as string,
+          compileOutput: result.compileOutput as string,
+          time: result.time as string | null,
+          memory: result.memory as number | null,
+        },
+      }));
+    } catch (error) {
+      setExecutionErrors((previous) => ({
+        ...previous,
+        [challengeId]: error instanceof Error ? error.message : 'Code execution failed.',
+      }));
+    } finally {
+      setRunningChallenges((previous) => ({ ...previous, [challengeId]: false }));
+    }
   };
 
   const shareProgress = async () => {
@@ -2087,6 +2164,19 @@ export default function HomePage() {
                           }));
                         }}
                       />
+                      <label className="execution-stdin">
+                        <span>Standard input <small>(optional)</small></span>
+                        <textarea
+                          value={executionInputs[interview.id] ?? ''}
+                          onChange={(event) => setExecutionInputs((previous) => ({
+                            ...previous,
+                            [interview.id]: event.target.value,
+                          }))}
+                          rows={3}
+                          placeholder="Input passed to your program"
+                          aria-label={`Standard input for ${interview.question}`}
+                        />
+                      </label>
                     </>
                   : <textarea
                       className="interview-response"
@@ -2100,6 +2190,14 @@ export default function HomePage() {
                 <div className="interview-actions">
                   {isCodingChallenge ? (
                     <>
+                      <button
+                        type="button"
+                        className="interview-action-button"
+                        onClick={() => runChallengeCode(interview, editorLanguage, answer)}
+                        disabled={!answer.trim() || Boolean(runningChallenges[interview.id])}
+                      >
+                        {runningChallenges[interview.id] ? 'Running…' : 'Run code'}
+                      </button>
                       <button
                         type="button"
                         className="interview-action-button"
@@ -2152,6 +2250,27 @@ export default function HomePage() {
                     Clear
                   </button>
                 </div>
+
+                {isCodingChallenge && (executionResults[interview.id] || executionErrors[interview.id]) && (
+                  <section className="execution-output" aria-live="polite" aria-label="Code execution result">
+                    <div className="execution-output-heading">
+                      <strong>{executionErrors[interview.id] ? 'Execution error' : executionResults[interview.id].status}</strong>
+                      {executionResults[interview.id]?.time && <span>{executionResults[interview.id].time}s</span>}
+                      {executionResults[interview.id]?.memory !== null
+                        && executionResults[interview.id]?.memory !== undefined
+                        && <span>{executionResults[interview.id].memory} KB</span>}
+                    </div>
+                    {executionErrors[interview.id] ? (
+                      <pre>{executionErrors[interview.id]}</pre>
+                    ) : (
+                      <pre>{[
+                        executionResults[interview.id].stdout,
+                        executionResults[interview.id].stderr,
+                        executionResults[interview.id].compileOutput,
+                      ].filter(Boolean).join('\n') || '(No output)'}</pre>
+                    )}
+                  </section>
+                )}
 
                 {isCodingChallenge && questionSubmissions.length > 0 && (
                   <details className="submission-history">

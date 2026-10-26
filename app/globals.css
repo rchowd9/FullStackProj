@@ -754,6 +754,10 @@ a {
 .interview-language-control { display: grid; grid-template-columns: auto minmax(140px, 220px); gap: 8px 12px; align-items: center; color: var(--muted); font-size: 0.76rem; font-weight: 700; }
 .interview-language-control select { min-height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 10px; background: #101a2c; color: var(--text); font: inherit; }
 .interview-language-control small { grid-column: 1 / -1; color: var(--muted); font-size: 0.72rem; font-weight: 400; }
+.execution-stdin { display: grid; gap: 8px; color: var(--muted); font-size: 0.76rem; font-weight: 700; }
+.execution-stdin small { font-weight: 400; }
+.execution-stdin textarea { width: 100%; min-height: 70px; resize: vertical; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: rgba(15, 23, 42, 0.7); color: var(--text); font: 0.78rem/1.5 Consolas, 'Courier New', monospace; }
+.execution-stdin textarea:focus { outline: 2px solid rgba(88, 214, 197, 0.3); border-color: rgba(88, 214, 197, 0.5); }
 .interview-response { width: 100%; min-height: 112px; resize: vertical; padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; background: rgba(15, 23, 42, 0.7); color: var(--text); font: inherit; }
 .interview-response:focus { outline: 2px solid rgba(88, 214, 197, 0.3); border-color: rgba(88, 214, 197, 0.5); }
 .interview-code-response { min-height: 220px; font: 0.82rem/1.6 Consolas, 'Courier New', monospace; tab-size: 4; }
@@ -796,6 +800,10 @@ a {
 }
 
 .interview-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.execution-output { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(7, 19, 26, 0.7); }
+.execution-output-heading { display: flex; flex-wrap: wrap; gap: 12px; color: var(--secondary); font-size: 0.76rem; }
+.execution-output-heading span { color: var(--muted); }
+.execution-output pre { max-height: 240px; overflow: auto; margin: 0; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; font: 0.78rem/1.55 Consolas, 'Courier New', monospace; }
 .interview-action-button { border: 0; border-radius: 12px; background: linear-gradient(135deg, var(--secondary), var(--accent)); color: #0b1120; font-weight: 800; padding: 11px 16px; cursor: pointer; }
 .interview-action-button:disabled { opacity: 0.48; cursor: not-allowed; }
 .interview-action-button.secondary { background: rgba(148, 163, 184, 0.12); color: var(--text); border: 1px solid var(--border); }
