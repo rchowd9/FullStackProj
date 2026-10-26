@@ -63,7 +63,13 @@ Quest completion is stored in the browser under `code-quest:progress`, so the pr
 
 ### Code execution
 
-Configure a trusted Judge0-compatible service to enable the **Run code** action:
+Local development uses the public Judge0 CE service by default. The repository's ignored `.env.local` file sets:
+
+```text
+JUDGE0_API_URL=https://ce.judge0.com
+```
+
+Restart `npm run dev` after changing environment variables. For deployment, add these variables in the host's server-side environment settings:
 
 ```text
 JUDGE0_API_URL=https://your-judge0-host
@@ -72,7 +78,7 @@ UPSTASH_REDIS_REST_URL=https://your-upstash-instance.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-upstash-token
 ```
 
-`JUDGE0_API_KEY` is optional for self-hosted runners and must only be set in server-side environment settings, never with a `NEXT_PUBLIC_` prefix. The app sends editor source code and optional standard input to the configured runner. Execution is disabled until `JUDGE0_API_URL` is configured. The API enforces source/input size limits, execution resource limits, same-origin requests, and a per-IP request limit; Upstash Redis provides the shared rate-limit counter when configured. Without Redis, the development fallback rate limit is process-local and is not suitable for multi-instance production deployments. Only configure a runner you trust with learner-submitted code.
+`JUDGE0_API_KEY` is optional for self-hosted runners and must only be set in server-side environment settings, never with a `NEXT_PUBLIC_` prefix. The app sends editor source code and optional standard input to the configured runner; the public Judge0 CE service receives code and input while running locally. The API enforces source/input size limits, execution resource limits, same-origin requests, and a per-IP request limit; Upstash Redis provides the shared rate-limit counter when configured. Without Redis, the development fallback rate limit is process-local and is not suitable for multi-instance production deployments. Only configure a runner you trust with learner-submitted code.
 
 ## Database starter files
 
