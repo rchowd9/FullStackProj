@@ -21,6 +21,13 @@ const missions = [
     description: 'Train your agent instincts and reason through real AI challenges.',
   },
   {
+    title: 'FAANG Interview Lab',
+    category: 'Interview Prep',
+    difficulty: 'Advanced',
+    xp: 600,
+    description: 'Practice realistic FAANG-style questions across product, systems, and leadership conversations.',
+  },
+  {
     title: 'ML Lab',
     category: 'Machine Learning',
     difficulty: 'Intermediate',
