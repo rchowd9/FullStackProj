@@ -135,7 +135,8 @@ function parsePayload(value: unknown): RunPayload | null {
 }
 
 function getJudge0Endpoint(): { url: URL; apiKey?: string } | null {
-  const configuredUrl = process.env.JUDGE0_API_URL;
+  const configuredUrl = process.env.JUDGE0_API_URL
+    || (process.env.NODE_ENV === 'development' ? 'https://ce.judge0.com' : undefined);
   if (!configuredUrl) return null;
 
   try {

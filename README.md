@@ -63,7 +63,7 @@ Quest completion is stored in the browser under `code-quest:progress`, so the pr
 
 ### Code execution
 
-Local development uses the public Judge0 CE service by default. The repository's ignored `.env.local` file sets:
+Local development uses the public Judge0 CE service by default when `JUDGE0_API_URL` is unset. You can override it in the ignored `.env.local` file:
 
 ```text
 JUDGE0_API_URL=https://ce.judge0.com
