@@ -67,3 +67,45 @@ LEFT JOIN learner_progress lp
  AND lp.learner_id = :learner_id
 GROUP BY q.category
 ORDER BY completion_rate DESC NULLS LAST;
+
+-- 6) Show today's quest-goal progress for a learner.
+-- Validate :daily_goal as a positive integer before running this query.
+SELECT
+  :daily_goal AS target_quests,
+  COUNT(*) FILTER (WHERE status = 'completed') AS completed_quests,
+  GREATEST(
+    :daily_goal - COUNT(*) FILTER (WHERE status = 'completed'),
+    0
+  ) AS remaining_quests,
+  ROUND(
+    LEAST(
+      100.0 * COUNT(*) FILTER (WHERE status = 'completed') / NULLIF(:daily_goal, 0),
+      100.0
+    ),
+    2
+  ) AS completion_percent
+FROM learner_progress
+WHERE learner_id = :learner_id
+  AND updated_at >= CURRENT_DATE::timestamptz
+  AND updated_at < (CURRENT_DATE + INTERVAL '1 day')::timestamptz;
+
+-- 7) Return one row per day for the learner's seven-day activity calendar.
+WITH calendar AS (
+  SELECT day::date AS activity_date
+  FROM generate_series(
+    CURRENT_DATE - 6,
+    CURRENT_DATE,
+    INTERVAL '1 day'
+  ) AS dates(day)
+)
+SELECT
+  calendar.activity_date,
+  COUNT(lp.quest_id) AS completed_quests
+FROM calendar
+LEFT JOIN learner_progress lp
+  ON lp.learner_id = :learner_id
+ AND lp.status = 'completed'
+ AND lp.updated_at >= calendar.activity_date::timestamptz
+ AND lp.updated_at < (calendar.activity_date + 1)::timestamptz
+GROUP BY calendar.activity_date
+ORDER BY calendar.activity_date;
