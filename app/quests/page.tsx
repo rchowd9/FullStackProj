@@ -19,6 +19,13 @@ type Quest = {
   choiceExplanations?: Record<string, string>;
 };
 
+function getLocalDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function getDailyQuestIds(quests: Quest[]) {
   const dayKey = new Date().toISOString().slice(0, 10);
   const seeded = quests
@@ -46,6 +53,7 @@ function QuestsContent() {
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [missedIds, setMissedIds] = useState<string[]>([]);
+  const [dailyActivity, setDailyActivity] = useState<Record<string, string[]>>({});
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('All levels');
@@ -64,12 +72,25 @@ function QuestsContent() {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
     if (savedProgress) {
       try {
-        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown; missedIds?: unknown };
+        const parsed = JSON.parse(savedProgress) as {
+          completedIds?: unknown;
+          missedIds?: unknown;
+          dailyActivity?: unknown;
+        };
         if (Array.isArray(parsed.completedIds)) {
           setCompletedIds(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
         }
         if (Array.isArray(parsed.missedIds)) {
           setMissedIds(parsed.missedIds.filter((id): id is string => typeof id === 'string'));
+        }
+        if (parsed.dailyActivity && typeof parsed.dailyActivity === 'object' && !Array.isArray(parsed.dailyActivity)) {
+          setDailyActivity(Object.fromEntries(
+            Object.entries(parsed.dailyActivity).filter((entry): entry is [string, string[]] =>
+              /^\d{4}-\d{2}-\d{2}$/.test(entry[0])
+              && Array.isArray(entry[1])
+              && entry[1].every((id): id is string => typeof id === 'string')
+            )
+          ));
         }
       } catch {
         window.localStorage.removeItem('code-quest:progress');
@@ -84,9 +105,9 @@ function QuestsContent() {
 
   useEffect(() => {
     if (progressLoaded) {
-      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds }));
+      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds, dailyActivity }));
     }
-  }, [completedIds, missedIds, progressLoaded]);
+  }, [completedIds, missedIds, dailyActivity, progressLoaded]);
 
   const selectedCategory = searchParams.get('category');
   const dailyMode = searchParams.get('mode') === 'daily';
@@ -117,6 +138,11 @@ function QuestsContent() {
     if (quest?.correctAnswer === answer) {
       setCompletedIds((previous) => previous.includes(questId) ? previous : [...previous, questId]);
       setMissedIds((previous) => previous.filter((id) => id !== questId));
+      const today = getLocalDateKey(new Date());
+      setDailyActivity((previous) => ({
+        ...previous,
+        [today]: previous[today]?.includes(questId) ? previous[today] : [...(previous[today] ?? []), questId],
+      }));
     } else {
       setMissedIds((previous) => previous.includes(questId) ? previous : [...previous, questId]);
     }

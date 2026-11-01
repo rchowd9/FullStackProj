@@ -20,6 +20,8 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Reference solutions show time and space complexity, with notes about assumptions such as database indexes and execution plans
 - Adaptive study coach that recommends the next best focus based on missed challenges and momentum
 - Progress cockpit with XP, streak, cycle goals, daily challenge, and practice session tracking
+- Adjustable daily quest goals with saved settings and live completion progress
+- Seven-day study activity calendar with a streak calculated from completed quests
 - Searchable and filterable quest board with dynamic review flows for weak concepts
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Daily challenge engine that rotates three quests using a UTC-based deterministic selector

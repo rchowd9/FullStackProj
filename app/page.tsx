@@ -1405,6 +1405,38 @@ const challengeTopics = Array.from(new Set(
   interviewQuestions.flatMap((question) => question.tags ?? [question.mission])
 )).sort();
 
+function getLocalDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function isDailyActivity(value: unknown): value is Record<string, string[]> {
+  return typeof value === 'object'
+    && value !== null
+    && !Array.isArray(value)
+    && Object.entries(value).every(([date, questIds]) =>
+      /^\d{4}-\d{2}-\d{2}$/.test(date)
+      && Array.isArray(questIds)
+      && questIds.every((questId) => typeof questId === 'string')
+    );
+}
+
+function getCurrentStudyStreak(activity: Record<string, string[]>, today: string) {
+  if (!today) return 0;
+
+  const date = new Date(`${today}T12:00:00`);
+  if (!activity[today]?.length) date.setDate(date.getDate() - 1);
+
+  let streak = 0;
+  while (activity[getLocalDateKey(date)]?.length) {
+    streak += 1;
+    date.setDate(date.getDate() - 1);
+  }
+  return streak;
+}
+
 const formatDuration = (totalSeconds: number) => {
   const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
   const seconds = (totalSeconds % 60).toString().padStart(2, '0');
@@ -1414,6 +1446,10 @@ const formatDuration = (totalSeconds: number) => {
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
+  const [dailyActivity, setDailyActivity] = useState<Record<string, string[]>>({});
+  const [todayKey, setTodayKey] = useState('');
+  const [dailyGoal, setDailyGoal] = useState(3);
+  const [dailyGoalLoaded, setDailyGoalLoaded] = useState(false);
   const [shareStatus, setShareStatus] = useState('');
   const [apiStatus, setApiStatus] = useState('checking');
   const [signalIndex, setSignalIndex] = useState(0);
@@ -1473,6 +1509,29 @@ export default function HomePage() {
   const reviewedInterviewCount = interviewQuestions.filter((question) =>
     Boolean(interviewResults[question.id] && interviewAnswers[question.id]?.trim())
   ).length;
+  const todayQuestCount = dailyActivity[todayKey]?.length ?? 0;
+  const dailyGoalProgress = Math.min(100, (todayQuestCount / dailyGoal) * 100);
+  const studyStreak = getCurrentStudyStreak(dailyActivity, todayKey);
+  const weeklyActivity = todayKey
+    ? Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(`${todayKey}T12:00:00`);
+      date.setDate(date.getDate() - 6 + index);
+      const dateKey = getLocalDateKey(date);
+      return {
+        dateKey,
+        label: new Intl.DateTimeFormat('en', { weekday: 'short' }).format(date).slice(0, 1),
+        title: date.toLocaleDateString('en', { weekday: 'long', month: 'short', day: 'numeric' }),
+        count: dailyActivity[dateKey]?.length ?? 0,
+      };
+    })
+    : [];
+
+  useEffect(() => {
+    const updateToday = () => setTodayKey(getLocalDateKey(new Date()));
+    updateToday();
+    const interval = window.setInterval(updateToday, 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -1482,8 +1541,13 @@ export default function HomePage() {
     }
 
     try {
-      const parsed = JSON.parse(savedProgress) as { completedIds?: string[]; missedIds?: string[] };
+      const parsed = JSON.parse(savedProgress) as {
+        completedIds?: unknown;
+        missedIds?: unknown;
+        dailyActivity?: unknown;
+      };
       const missedCount = Array.isArray(parsed.missedIds) ? parsed.missedIds.length : 0;
+      if (isDailyActivity(parsed.dailyActivity)) setDailyActivity(parsed.dailyActivity);
       const focus = missedCount > 0
         ? 'Review queue'
         : 'System Design';
@@ -1496,6 +1560,23 @@ export default function HomePage() {
       setStudyCoach({ focus: 'System Design', note: 'Your momentum is strong. Maintain the streak and push into a harder systems challenge.' });
     }
   }, [completedQuests.length]);
+
+  useEffect(() => {
+    const savedGoal = window.localStorage.getItem('code-quest:daily-goal');
+    if (savedGoal !== null) {
+      const parsedGoal = Number(savedGoal);
+      if (Number.isInteger(parsedGoal) && parsedGoal >= 1 && parsedGoal <= 10) {
+        setDailyGoal(parsedGoal);
+      }
+    }
+    setDailyGoalLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (dailyGoalLoaded) {
+      window.localStorage.setItem('code-quest:daily-goal', String(dailyGoal));
+    }
+  }, [dailyGoal, dailyGoalLoaded]);
 
   const handleInterviewEvaluation = (question: InterviewQuestion) => {
     const result = evaluateInterviewAnswer(question, interviewAnswers[question.id] ?? '');
@@ -1664,10 +1745,11 @@ export default function HomePage() {
 
     if (savedProgress) {
       try {
-        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown };
+        const parsed = JSON.parse(savedProgress) as { completedIds?: unknown; dailyActivity?: unknown };
         if (Array.isArray(parsed.completedIds)) {
           setCompletedQuests(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
         }
+        if (isDailyActivity(parsed.dailyActivity)) setDailyActivity(parsed.dailyActivity);
       } catch {
         window.localStorage.removeItem('code-quest:progress');
       }
@@ -1902,6 +1984,74 @@ export default function HomePage() {
           <h3>Current focus: {studyCoach.focus}</h3>
         </div>
         <p>{studyCoach.note}</p>
+      </section>
+
+      <section className="study-tools" aria-label="Daily study goal and weekly activity">
+        <article className="study-tool-card">
+          <div className="study-tool-heading">
+            <div>
+              <p className="eyebrow">DAILY TARGET</p>
+              <h3>Your study goal</h3>
+            </div>
+            <div className="goal-stepper" aria-label="Set daily quest goal">
+              <button
+                type="button"
+                onClick={() => setDailyGoal((goal) => Math.max(1, goal - 1))}
+                disabled={dailyGoal <= 1}
+                aria-label="Decrease daily quest goal"
+              >−</button>
+              <strong>{dailyGoal}</strong>
+              <button
+                type="button"
+                onClick={() => setDailyGoal((goal) => Math.min(10, goal + 1))}
+                disabled={dailyGoal >= 10}
+                aria-label="Increase daily quest goal"
+              >+</button>
+            </div>
+          </div>
+          <p className="study-tool-description">Choose how many quests you want to clear each day.</p>
+          <div
+            className="daily-goal-meter"
+            role="progressbar"
+            aria-label="Daily quest goal progress"
+            aria-valuenow={Math.min(todayQuestCount, dailyGoal)}
+            aria-valuemin={0}
+            aria-valuemax={dailyGoal}
+          >
+            <span style={{ width: `${dailyGoalProgress}%` }} />
+          </div>
+          <div className="daily-goal-caption" aria-live="polite">
+            <strong>{todayQuestCount} / {dailyGoal} quests</strong>
+            <span>{todayQuestCount >= dailyGoal ? 'Goal complete!' : `${dailyGoal - todayQuestCount} to go`}</span>
+          </div>
+          <Link href="/quests" className="study-tool-link">Continue studying <span>→</span></Link>
+        </article>
+
+        <article className="study-tool-card">
+          <div className="study-tool-heading">
+            <div>
+              <p className="eyebrow">LAST 7 DAYS</p>
+              <h3>Study streak</h3>
+            </div>
+            <span className="streak-count">{studyStreak} {studyStreak === 1 ? 'day' : 'days'}</span>
+          </div>
+          <p className="study-tool-description">Answer a quest correctly to keep your momentum going.</p>
+          <div className="activity-week" aria-label="Quest activity over the last seven days">
+            {weeklyActivity.map((day) => (
+              <div
+                key={day.dateKey}
+                className={`activity-day ${day.count > 0 ? 'active' : ''} ${day.dateKey === todayKey ? 'today' : ''}`}
+                title={`${day.title}: ${day.count} ${day.count === 1 ? 'quest' : 'quests'}`}
+                aria-label={`${day.title}: ${day.count} ${day.count === 1 ? 'quest' : 'quests'}`}
+                aria-current={day.dateKey === todayKey ? 'date' : undefined}
+              >
+                <span>{day.label}</span>
+                <strong>{day.count || '·'}</strong>
+              </div>
+            ))}
+          </div>
+          <p className="activity-caption">{todayQuestCount} {todayQuestCount === 1 ? 'quest' : 'quests'} completed today</p>
+        </article>
       </section>
 
       <section className="feature-grid" aria-label="Progress and habit features">
