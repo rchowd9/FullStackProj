@@ -15,6 +15,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 ## Features
 
 - Gamified learning interface with a polished role-play dashboard and progress telemetry
+- Three progressive learning paths with topic-linked practice modules, plus a monthly reviewed industry-trends snapshot connected to related quests
 - CS concept cards and missions across 14+ topic areas and interview loops
 - LeetCode-style coding practice with an embedded syntax-aware editor for Python, JavaScript, Java, C++, and PostgreSQL; includes SQL and algorithm challenges such as BFS, Dijkstra, and genetic algorithms, searchable difficulty/topic filters, per-problem timers, hints, saved problems, persistent drafts, and submission history
 - Reference solutions show time and space complexity, with notes about assumptions such as database indexes and execution plans
