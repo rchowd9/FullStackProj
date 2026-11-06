@@ -142,6 +142,60 @@ const missions = [
 
 ];
 
+const learningPaths = [
+  {
+    title: 'Software Engineering Foundations',
+    description: 'Build core coding habits, then move into structures and engineering practice.',
+    level: 'Beginner to advanced',
+    modules: [
+      { title: 'Think in objects', category: 'OOP', skill: 'Model code with reusable components' },
+      { title: 'Choose the right structure', category: 'Data Structures', skill: 'Compare common structures and tradeoffs' },
+      { title: 'Ship maintainable software', category: 'Software Engineering', skill: 'Apply engineering practices to real systems' },
+    ],
+  },
+  {
+    title: 'AI & Data',
+    description: 'Progress from AI concepts through learning methods and data discovery.',
+    level: 'Beginner to advanced',
+    modules: [
+      { title: 'Explore artificial intelligence', category: 'AI', skill: 'Understand agents and AI fundamentals' },
+      { title: 'Learn from data', category: 'Machine Learning', skill: 'Reason about models and evaluation' },
+      { title: 'Find useful patterns', category: 'Data Mining', skill: 'Discover structure in complex datasets' },
+    ],
+  },
+  {
+    title: 'Production Systems',
+    description: 'Learn how connected services work before designing for scale.',
+    level: 'Progressive track',
+    modules: [
+      { title: 'Connect the network', category: 'Computer Networking', skill: 'Understand protocols and communication' },
+      { title: 'Coordinate distributed services', category: 'Distributed Systems', skill: 'Reason about coordination and reliability' },
+      { title: 'Design for scale', category: 'System Design', skill: 'Plan resilient, scalable architectures' },
+    ],
+  },
+];
+
+const industryTrends = [
+  {
+    title: 'AI agents move from demos to workflows',
+    category: 'AI',
+    tag: 'AI engineering',
+    detail: 'Tool use, evaluation, and guardrails are becoming essential skills for building dependable agent systems.',
+  },
+  {
+    title: 'Retrieval keeps AI connected to trusted knowledge',
+    category: 'Machine Learning',
+    tag: 'Applied AI',
+    detail: 'Retrieval-augmented generation makes data preparation, search quality, and evaluation practical areas to learn.',
+  },
+  {
+    title: 'Platform engineering puts developer experience first',
+    category: 'Software Engineering',
+    tag: 'Cloud & platform',
+    detail: 'Teams are investing in reliable internal platforms that make delivery safer and easier to repeat.',
+  },
+];
+
 type InterviewQuestion = {
   id: string;
   mission: string;
@@ -1976,6 +2030,69 @@ export default function HomePage() {
         {concepts.map((concept) => (
           <span key={concept} className="chip">{concept}</span>
         ))}
+      </section>
+
+      <section className="learning-paths" aria-labelledby="learning-paths-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">GUIDED PROGRESSION</p>
+            <h2 id="learning-paths-title">Learning paths</h2>
+          </div>
+          <Link href="/quests" className="text-link">Browse all modules →</Link>
+        </div>
+        <p className="learning-paths-intro">Follow a sequence from foundations to applied skills. Each module opens practice for its topic.</p>
+        <div className="learning-path-grid">
+          {learningPaths.map((path) => (
+            <article key={path.title} className="learning-path-card">
+              <div className="path-heading">
+                <span className="path-level">{path.level}</span>
+                <span className="path-module-count">{path.modules.length} modules</span>
+              </div>
+              <h3>{path.title}</h3>
+              <p>{path.description}</p>
+              <ol className="path-module-list">
+                {path.modules.map((module, index) => (
+                  <li key={module.category}>
+                    <span className="path-step">{String(index + 1).padStart(2, '0')}</span>
+                    <div className="path-module-copy">
+                      <strong>{module.title}</strong>
+                      <small>{module.skill}</small>
+                    </div>
+                    <Link
+                      href={{ pathname: '/quests', query: { category: module.category } }}
+                      aria-label={`Start ${module.title} module`}
+                    >
+                      →
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="industry-pulse" aria-labelledby="industry-pulse-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">INDUSTRY PULSE · MONTHLY REFRESH</p>
+            <h2 id="industry-pulse-title">Skills for what’s next</h2>
+          </div>
+          <span className="pulse-updated">Reviewed November 2026</span>
+        </div>
+        <p className="learning-paths-intro">A regularly reviewed snapshot of technologies shaping modern software teams, paired with a place to start learning.</p>
+        <div className="industry-trend-grid">
+          {industryTrends.map((trend) => (
+            <article key={trend.title} className="industry-trend-card">
+              <span className="trend-tag">{trend.tag}</span>
+              <h3>{trend.title}</h3>
+              <p>{trend.detail}</p>
+              <Link href={{ pathname: '/quests', query: { category: trend.category } }}>
+                Explore related practice <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="study-coach" aria-label="Adaptive study coach">
