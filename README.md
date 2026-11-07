@@ -24,6 +24,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Adjustable daily quest goals with saved settings and live completion progress
 - Seven-day study activity calendar with a streak calculated from completed quests
 - Searchable and filterable quest board with dynamic review flows for weak concepts
+- Peer code review board for sharing code samples, requesting focused feedback, and reviewing submissions with ratings and actionable comments
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Daily challenge engine that rotates three quests using a UTC-based deterministic selector
 - Interview lab with searchable prompts, auto-saved answer drafts, review progress, random practice, rubric scoring, and reference-answer feedback
@@ -35,7 +36,7 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Framer Motion animations for polished UI transitions
 - Hono-powered edge API health route at `/api/status`
 - Sandboxed code execution for the editor languages through a Judge0-compatible service; submissions run with CPU, memory, and request-size limits
-- PostgreSQL-ready schema and starter seed data in `db/schema.sql` and `db/seed.sql`
+- PostgreSQL-ready schema and starter seed data in `db/schema.sql` and `db/seed.sql`, including peer code review submissions and feedback
 
 ## Resume-ready project highlights
 
@@ -64,6 +65,8 @@ Additional framework installed:
 
 Quest completion is stored in the browser under `code-quest:progress`, so the prototype works without authentication or a database. Leaderboard submissions use Upstash Redis when `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, and fall back to process memory for local development.
 
+The peer review board is available at `/reviews`. It uses Upstash Redis for submissions and feedback when configured; without Redis, the development fallback is temporary process memory and is not shared across instances. Display names are pseudonyms, not authenticated identities. Only share code you are comfortable making public, and never include credentials or personal information.
+
 ### Code execution
 
 Local development uses the public Judge0 CE service by default when `JUDGE0_API_URL` is unset. You can override it in the ignored `.env.local` file:
@@ -85,4 +88,4 @@ UPSTASH_REDIS_REST_TOKEN=your-upstash-token
 
 ## Database starter files
 
-The files in `db/` describe an optional PostgreSQL persistence layer for quests, coding challenges, learner progress, and leaderboard entries. They are not required to run the local-first prototype. To initialize a database, either apply the ordered migrations in `db/migrations/` (`001_initial_schema.sql`, then `002_add_indexes.sql`, then `003_add_learner_sessions.sql`) or apply the consolidated `db/schema.sql`, and then run `db/seed.sql`. Do not apply both schema setup options to the same database. Additional helper scripts include `db/queries.sql` for common read/write patterns and `db/views.sql` for dashboard-style reporting views. The seed includes repeatable SQL learning questions and coding challenges. SQL coding challenge complexity is an expected estimate, not a measured query plan; actual database cost depends on data size, indexes, and the optimizer.
+The files in `db/` describe an optional PostgreSQL persistence layer for quests, coding challenges, learner progress, leaderboard entries, and peer code reviews. They are not required to run the local-first prototype. To initialize a database, either apply the ordered migrations in `db/migrations/` (`001_initial_schema.sql`, then `002_add_indexes.sql`, `003_add_learner_sessions.sql`, and `004_peer_code_reviews.sql`) or apply the consolidated `db/schema.sql`, and then run `db/seed.sql`. Do not apply both schema setup options to the same database. Additional helper scripts include `db/queries.sql` for common read/write patterns and `db/views.sql` for dashboard-style reporting views. The seed includes repeatable SQL learning questions and coding challenges. SQL coding challenge complexity is an expected estimate, not a measured query plan; actual database cost depends on data size, indexes, and the optimizer.

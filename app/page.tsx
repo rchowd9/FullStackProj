@@ -1949,6 +1949,7 @@ export default function HomePage() {
         <div className="nav-links">
           <a href="#missions">Missions</a>
           <Link href="/quests">Quest board</Link>
+          <Link href="/reviews">Peer reviews</Link>
           <span className="profile-pill"><span className="online-dot" /> Byte Knight</span>
         </div>
       </nav>

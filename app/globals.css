@@ -1853,6 +1853,14 @@ a {
 @media (max-width: 760px) {
   .top-nav { margin-bottom: 42px; }
   .nav-links a { display: none; }
+  .review-hero h1 { font-size: 2.8rem; }
+  .review-submit-card,
+  .review-submission-card { padding: 18px; }
+  .review-submission-heading { flex-direction: column; }
+  .peer-review-form { grid-template-columns: 1fr; }
+  .peer-review-form h4,
+  .peer-review-form label:last-of-type { grid-column: auto; }
+  .review-code { max-height: 280px; }
   .learning-path-grid,
   .industry-trend-grid { grid-template-columns: 1fr; }
   .section-heading { align-items: start; gap: 12px; }

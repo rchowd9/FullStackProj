@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import QuestFeedback from '../components/QuestFeedback';
@@ -170,6 +171,7 @@ function QuestsContent() {
             ? `Focus on ${selectedCategory} challenges and earn XP.`
             : 'Answer challenges to earn XP and unlock new topics.'}
         </p>
+        <Link href="/reviews" className="study-tool-link">Share code for peer feedback <span>→</span></Link>
       </section>
 
       <section className="quest-toolbar" aria-label="Quest filters">
