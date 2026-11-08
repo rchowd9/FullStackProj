@@ -1321,12 +1321,24 @@ a {
 .quest-card .mission-topline { justify-content: flex-start; gap: 10px; margin-bottom: 18px; }
 .quest-card .xp, .quest-card .completed-label { margin-left: auto; }
 .question-count { color: var(--muted); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; }
-.quest-card .concept-tag { margin-bottom: 12px; }
-.quest-card h2 { font-size: clamp(1.35rem, 2.5vw, 1.7rem); line-height: 1.25; }
+.mission-heading { display: grid; grid-template-columns: minmax(0, 1fr) 142px; gap: 22px; align-items: center; margin-bottom: 16px; }
+.mission-heading-copy .concept-tag { margin-bottom: 12px; }
+.mission-heading-copy h2 { margin-bottom: 0; font-size: clamp(1.35rem, 2.5vw, 1.7rem); line-height: 1.25; }
+.mission-art { position: relative; display: grid; min-height: 116px; place-items: center; overflow: hidden; border: 1px solid rgba(88, 214, 197, 0.22); border-radius: 16px; background: radial-gradient(circle at center, rgba(88, 214, 197, 0.16), rgba(88, 214, 197, 0.025) 68%); }
+.mission-art-orbit { position: absolute; width: 76px; height: 76px; border: 1px solid rgba(88, 214, 197, 0.32); border-radius: 50%; }
+.mission-art-orbit-outer { width: 100px; height: 100px; border-style: dashed; animation: mission-orbit 22s linear infinite; }
+.mission-art-orbit-inner { width: 64px; height: 64px; border-color: rgba(246, 200, 95, 0.4); }
+.mission-art-icon { z-index: 1; font-size: 2.3rem; filter: drop-shadow(0 0 14px rgba(88, 214, 197, 0.32)); }
+.mission-art-label { position: absolute; bottom: 8px; color: var(--muted); font-size: 0.52rem; font-weight: 800; letter-spacing: 0.12em; }
+@keyframes mission-orbit { to { transform: rotate(360deg); } }
 .quest-card .prompt { max-width: 900px; margin: 0; padding: 16px 18px; border-left: 2px solid var(--secondary); border-radius: 0 12px 12px 0; background: rgba(88, 214, 197, 0.045); line-height: 1.7; }
 .quest-code { overflow-x: auto; margin: 12px 0 0; padding: 16px 18px; border: 1px solid var(--border); border-radius: 12px; background: rgba(4, 12, 20, 0.72); color: #d9f4ed; font: 0.9rem/1.65 Consolas, 'Courier New', monospace; tab-size: 2; }
 .quest-empty-state { padding: 32px; border: 1px dashed var(--border); border-radius: 18px; color: var(--text); text-align: center; background: rgba(15, 23, 42, 0.5); }
 .quest-empty-state p { margin: 8px 0 0; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-art-orbit-outer { animation: none; }
+}
 
 .concept-tag {
   display: inline-block;
@@ -1878,6 +1890,12 @@ a {
   .quest-toolbar { grid-template-columns: 1fr; }
   .quest-header { padding: 22px; }
   .quest-card { padding: 20px; }
+  .mission-heading { grid-template-columns: minmax(0, 1fr) 92px; gap: 12px; }
+  .mission-art { min-height: 92px; }
+  .mission-art-orbit-outer { width: 78px; height: 78px; }
+  .mission-art-orbit-inner { width: 50px; height: 50px; }
+  .mission-art-icon { font-size: 1.8rem; }
+  .mission-art-label { font-size: 0.44rem; }
   .practice-summary { grid-template-columns: 1fr; }
   .category-header { align-items: start; }
   .category-count { text-align: right; }
