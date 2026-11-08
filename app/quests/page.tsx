@@ -20,6 +20,25 @@ type Quest = {
   choiceExplanations?: Record<string, string>;
 };
 
+const categoryIllustrations: Record<string, string> = {
+  'Mobile Development': '📱',
+  'System Design': '🏙️',
+  Cybersecurity: '🛡️',
+  'Distributed Systems': '🕸️',
+  'Machine Learning': '🧠',
+  AI: '✨',
+  'Data Mining': '⛏️',
+  'Data Structures': '🧱',
+  DBMS: '🗄️',
+  SQL: '🧮',
+  'Operating Systems': '⚙️',
+  Cryptography: '🔐',
+  'Computer Architecture': '💻',
+  'Software Engineering': '🛠️',
+  'Computer Networking': '🌐',
+  OOP: '🧩',
+};
+
 function getLocalDateKey(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -233,8 +252,18 @@ function QuestsContent() {
                     <span className={completedIds.includes(quest.id) ? 'completed-label' : 'xp'}>{completedIds.includes(quest.id) ? '✓ CLEARED' : `+${quest.xp} XP`}</span>
                   </div>
 
-                  <p className="concept-tag">{quest.concept}</p>
-                  <h2>{quest.title}</h2>
+                  <div className="mission-heading">
+                    <div className="mission-heading-copy">
+                      <p className="concept-tag">{quest.concept}</p>
+                      <h2>{quest.title}</h2>
+                    </div>
+                    <div className="mission-art" aria-hidden="true">
+                      <span className="mission-art-orbit mission-art-orbit-outer" />
+                      <span className="mission-art-orbit mission-art-orbit-inner" />
+                      <span className="mission-art-icon">{categoryIllustrations[quest.category] ?? '🧩'}</span>
+                      <span className="mission-art-label">CONCEPT SIGNAL</span>
+                    </div>
+                  </div>
                   <p className="prompt">{quest.prompt}</p>
                   {quest.code && (
                     <pre className="quest-code"><code>{quest.code}</code></pre>
