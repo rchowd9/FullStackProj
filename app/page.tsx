@@ -1684,6 +1684,10 @@ export default function HomePage() {
     }
   }, [dailyGoal, dailyGoalLoaded]);
 
+  useEffect(() => {
+    window.localStorage.setItem('code-quest:focus-plan', JSON.stringify(focusTasks));
+  }, [focusTasks]);
+
   const handleInterviewEvaluation = (question: InterviewQuestion) => {
     const result = evaluateInterviewAnswer(question, interviewAnswers[question.id] ?? '');
     setInterviewResults((prev) => ({ ...prev, [question.id]: result }));
@@ -1710,6 +1714,25 @@ export default function HomePage() {
     setInterviewAnswers((previous) => ({ ...previous, [questionId]: nextAnswer }));
     setSelectedLanguages((previous) => ({ ...previous, [questionId]: language }));
   };
+
+  const toggleFocusTask = (taskId: string) => {
+    setFocusTasks((previous) => previous.map((task) => (
+      task.id === taskId ? { ...task, done: !task.done } : task
+    )));
+  };
+
+  const addFocusTask = () => {
+    const trimmed = newFocusTask.trim();
+    if (!trimmed) return;
+
+    setFocusTasks((previous) => [
+      ...previous,
+      { id: `focus-${Date.now()}`, text: trimmed, done: false },
+    ]);
+    setNewFocusTask('');
+  };
+
+  const currentFlashcard = studyFlashcards[flashcardIndex % studyFlashcards.length];
 
   const focusRandomPrompt = () => {
     const prompt = filteredInterviewQuestions[Math.floor(Math.random() * filteredInterviewQuestions.length)];
@@ -2291,6 +2314,88 @@ export default function HomePage() {
                 <small>{habit.note}</small>
               </div>
             ))}
+          </div>
+        </motion.article>
+
+        <motion.article
+          className="feature-panel focus-plan-panel"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.12, ease: 'easeOut' }}
+        >
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">FOCUS PLAN</p>
+              <h3>Daily sprint board</h3>
+            </div>
+            <span className="panel-badge">{focusTasks.filter((task) => task.done).length}/{focusTasks.length}</span>
+          </div>
+
+          <div className="focus-plan">
+            <div className="focus-input-row">
+              <input
+                type="text"
+                value={newFocusTask}
+                onChange={(event) => setNewFocusTask(event.target.value)}
+                placeholder="Add a focus block"
+                aria-label="Add a focus block"
+              />
+              <button type="button" onClick={addFocusTask}>Add</button>
+            </div>
+
+            <div className="task-list">
+              {focusTasks.map((task) => (
+                <label key={task.id} className={`task-item ${task.done ? 'done' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={task.done}
+                    onChange={() => toggleFocusTask(task.id)}
+                    aria-label={`Toggle ${task.text}`}
+                  />
+                  <span>{task.text}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </motion.article>
+
+        <motion.article
+          className="feature-panel"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, delay: 0.16, ease: 'easeOut' }}
+        >
+          <div className="panel-header">
+            <div>
+              <p className="eyebrow">REVIEW DRILL</p>
+              <h3>Quick concept check</h3>
+            </div>
+            <span className="panel-badge panel-badge-alt">Flashcard</span>
+          </div>
+
+          <div className="flashcard-container">
+            <div
+              className="flashcard"
+              onClick={() => setFlashcardFlipped((prev) => !prev)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  setFlashcardFlipped((prev) => !prev);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label="Flip flashcard"
+            >
+              <span className="flashcard-side-label">{flashcardFlipped ? 'Answer' : 'Prompt'}</span>
+              <h4>{flashcardFlipped ? currentFlashcard.answer : currentFlashcard.prompt}</h4>
+              <p>{flashcardFlipped ? currentFlashcard.hint : 'Tap to reveal the answer and reinforce the takeaway.'}</p>
+            </div>
+
+            <div className="flashcard-actions">
+              <button type="button" onClick={() => setFlashcardFlipped((prev) => !prev)}>Flip</button>
+              <button type="button" className="light-button" onClick={() => { setFlashcardFlipped(false); setFlashcardIndex((prev) => (prev + 1) % studyFlashcards.length); }}>Next</button>
+            </div>
           </div>
         </motion.article>
       </section>
