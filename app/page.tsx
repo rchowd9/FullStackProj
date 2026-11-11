@@ -245,6 +245,30 @@ type ExecutionResult = {
   memory: number | null;
 };
 
+type FocusTask = {
+  id: string;
+  text: string;
+  done: boolean;
+};
+
+const studyFlashcards = [
+  {
+    prompt: 'What is the best first move when a system is slowing down under load?',
+    answer: 'Measure the bottleneck first, then optimize the hottest path with fewer high-cost calls and tighter data boundaries.',
+    hint: 'Start with evidence, not guesses.',
+  },
+  {
+    prompt: 'How do you keep a learning routine sustainable over months?',
+    answer: 'Use a small daily plan, review weak concepts consistently, and track streaks without turning study into a penalty loop.',
+    hint: 'Consistency beats intensity.',
+  },
+  {
+    prompt: 'Why do strong interview answers talk about tradeoffs?',
+    answer: 'Tradeoffs show judgment: you can explain constraints, assumptions, and the reason a design choice is good enough for the scenario.',
+    hint: 'Good answers are reasoned, not absolute.',
+  },
+];
+
 const interviewQuestions: InterviewQuestion[] = [
   {
     id: 'ai-agent-safety',
@@ -1539,6 +1563,34 @@ export default function HomePage() {
   const [runningChallenges, setRunningChallenges] = useState<Record<string, boolean>>({});
   const [codingPracticeLoaded, setCodingPracticeLoaded] = useState(false);
   const [studyCoach, setStudyCoach] = useState({ focus: 'System Design', note: 'Keep momentum and complete a strong daily run.' });
+  const [focusTasks, setFocusTasks] = useState<FocusTask[]>(() => {
+    if (typeof window === 'undefined') return [
+      { id: 'review-graphs', text: 'Review graph patterns', done: false },
+      { id: 'solve-sql', text: 'Solve one SQL challenge', done: false },
+      { id: 'systems-reflection', text: 'Write a quick systems recap', done: false },
+    ];
+
+    try {
+      const savedPlan = window.localStorage.getItem('code-quest:focus-plan');
+      if (savedPlan) {
+        const parsedPlan = JSON.parse(savedPlan) as FocusTask[];
+        if (Array.isArray(parsedPlan) && parsedPlan.length > 0) {
+          return parsedPlan;
+        }
+      }
+    } catch {
+      // Ignore malformed local storage data and keep the default plan.
+    }
+
+    return [
+      { id: 'review-graphs', text: 'Review graph patterns', done: false },
+      { id: 'solve-sql', text: 'Solve one SQL challenge', done: false },
+      { id: 'systems-reflection', text: 'Write a quick systems recap', done: false },
+    ];
+  });
+  const [newFocusTask, setNewFocusTask] = useState('');
+  const [flashcardIndex, setFlashcardIndex] = useState(0);
+  const [flashcardFlipped, setFlashcardFlipped] = useState(false);
 
   const currentSignal = signalStates[signalIndex];
   const readiness = Math.min(96, 58 + completedQuests.length * 7);
