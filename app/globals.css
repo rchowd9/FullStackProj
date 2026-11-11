@@ -617,6 +617,137 @@ a {
   box-shadow: var(--shadow);
 }
 
+.focus-plan {
+  display: grid;
+  gap: 14px;
+}
+
+.focus-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.focus-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+
+.focus-input-row input::placeholder {
+  color: var(--muted);
+}
+
+.focus-input-row button,
+.flashcard-actions button {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(88, 214, 197, 0.12);
+  color: var(--text);
+  cursor: pointer;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.focus-input-row button:hover,
+.flashcard-actions button:hover {
+  border-color: rgba(88, 214, 197, 0.45);
+}
+
+.task-list {
+  display: grid;
+  gap: 10px;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+
+.task-item input {
+  accent-color: var(--secondary);
+}
+
+.task-item.done {
+  opacity: 0.76;
+}
+
+.task-item.done span {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.flashcard-container {
+  display: grid;
+  gap: 12px;
+}
+
+.flashcard {
+  min-height: 176px;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(88, 214, 197, 0.08), rgba(15, 23, 42, 0.72));
+  cursor: pointer;
+  outline: none;
+}
+
+.flashcard:hover,
+.flashcard:focus-visible {
+  border-color: rgba(88, 214, 197, 0.4);
+}
+
+.flashcard-side-label {
+  display: inline-flex;
+  align-self: start;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(88, 214, 197, 0.25);
+  color: var(--secondary);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.flashcard h4 {
+  margin: 0;
+  font-size: clamp(1.1rem, 2vw, 1.42rem);
+  line-height: 1.45;
+}
+
+.flashcard p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.flashcard-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.flashcard-actions .light-button {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+
 .panel-header {
   display: flex;
   align-items: center;
