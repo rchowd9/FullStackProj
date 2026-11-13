@@ -37,6 +37,12 @@ const categoryIllustrations: Record<string, string> = {
   'Software Engineering': '🛠️',
   'Computer Networking': '🌐',
   OOP: '🧩',
+  'Frontend Development': '🖥️',
+  'Cloud Computing': '☁️',
+  DevOps: '🚀',
+  'Platform Engineering': '🧰',
+  'Product Strategy': '📈',
+  'Security Operations': '🛰️',
 };
 
 function getLocalDateKey(date: Date) {

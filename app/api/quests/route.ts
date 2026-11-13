@@ -767,6 +767,114 @@ const quests = [
   correctAnswer: 'Circular references can cause memory leaks without garbage collection',
   explanation: 'Manual memory management requires careful handling of reference cycles to avoid leaks.'
 },
+{
+  id: 'frontend-accessibility',
+  title: 'Accessible Semantics',
+  difficulty: 'Beginner',
+  xp: 170,
+  category: 'Frontend Development',
+  concept: 'Web Accessibility',
+  prompt: 'When a button triggers an action, what is the best semantic choice to keep screen readers and keyboard users well-supported?',
+  choices: ['<div onclick="save()">Save</div>', '<button type="button">Save</button>', '<span role="button">Save</span>', '<input type="text" value="Save">'],
+  correctAnswer: '<button type="button">Save</button>',
+  explanation: 'Native button semantics provide keyboard support, built-in focus states, and screen reader semantics.',
+  choiceExplanations: {
+    '<div onclick="save()">Save</div>': 'A generic div needs manual keyboard and accessibility work, and it does not expose button semantics automatically.',
+    '<button type="button">Save</button>': 'Correct. A native button is focusable, clickable by keyboard, and announced appropriately by assistive technologies.',
+    '<span role="button">Save</span>': 'Role can help, but it still requires more careful keyboard handling than a native button with correct semantics.',
+    '<input type="text" value="Save">': 'This is a text field, not an action trigger, so it is the wrong element for a button-like action.'
+  }
+},
+{
+  id: 'devops-observability',
+  title: 'Signal Before Scale',
+  difficulty: 'Intermediate',
+  xp: 330,
+  category: 'DevOps',
+  concept: 'Observability',
+  prompt: 'A service is consistently slow after deployment. Which step gives the clearest first signal?',
+  choices: ['Increase replica count without measuring', 'Check logs, traces, and latency metrics to isolate the bottleneck', 'Delete old containers', 'Disable health checks'],
+  correctAnswer: 'Check logs, traces, and latency metrics to isolate the bottleneck',
+  explanation: 'Observability helps you connect symptoms to the affected service, dependency, and request path before scaling or guessing.',
+  choiceExplanations: {
+    'Increase replica count without measuring': 'More instances may mask the issue without diagnosing the real bottleneck or leak.',
+    'Check logs, traces, and latency metrics to isolate the bottleneck': 'Correct. This narrows the problem to the exact service, dependency, or route that is slowing the response.',
+    'Delete old containers': 'Deleting work may remove evidence or take healthy capacity offline without solving the cause.',
+    'Disable health checks': 'Health checks are meant to keep services safe and discover failures, not hide them.'
+  }
+},
+{
+  id: 'cloud-scaling',
+  title: 'Elasticity',
+  difficulty: 'Intermediate',
+  xp: 360,
+  category: 'Cloud Computing',
+  concept: 'Autoscaling',
+  prompt: 'Which cloud design best handles bursts without wasting cost during quiet periods?',
+  choices: ['Keep a fixed cluster of oversized servers', 'Use autoscaling policies that match demand patterns and health checks', 'Run every request on a single instance', 'Disable instance health checks'],
+  correctAnswer: 'Use autoscaling policies that match demand patterns and health checks',
+  explanation: 'Autoscaling adds capacity when demand rises and removes excess capacity when traffic settles.',
+  choiceExplanations: {
+    'Keep a fixed cluster of oversized servers': 'A fixed cluster wastes cost during idle periods and cannot respond well to real demand spikes.',
+    'Use autoscaling policies that match demand patterns and health checks': 'Correct. This scales capacity as demand changes while preserving reliability through health-based safety checks.',
+    'Run every request on a single instance': 'A single instance creates a bottleneck and offers no elasticity during spikes.',
+    'Disable instance health checks': 'Without health checks, unhealthy instances can remain in the pool and worsen outages.'
+  }
+},
+{
+  id: 'platform-golden-path',
+  title: 'Golden Path',
+  difficulty: 'Advanced',
+  xp: 490,
+  category: 'Platform Engineering',
+  concept: 'Developer Experience',
+  prompt: 'Why do platform teams often create a standard internal workflow instead of leaving every team to build its own tooling?',
+  choices: ['It makes every project slower to ship', 'It reduces repeated setup, enforces guardrails, and increases reliability', 'It eliminates the need for CI/CD', 'It removes all architectural decisions'],
+  correctAnswer: 'It reduces repeated setup, enforces guardrails, and increases reliability',
+  explanation: 'A shared platform standardizes the path to production while keeping the team’s responsibilities consistent.',
+  choiceExplanations: {
+    'It makes every project slower to ship': 'A standard workflow is often faster because it removes duplicate setup and reduces errors, not because it adds friction.',
+    'It reduces repeated setup, enforces guardrails, and increases reliability': 'Correct. Platform standards make delivery consistent and reduce the chance of fragile, ad hoc setups.',
+    'It eliminates the need for CI/CD': 'CI/CD remains important; the platform makes it easier to use safely and consistently.',
+    'It removes all architectural decisions': 'Platforms still require architecture decisions; they just provide a safer default path.'
+  }
+},
+{
+  id: 'product-north-star',
+  title: 'North Star Signal',
+  difficulty: 'Beginner',
+  xp: 210,
+  category: 'Product Strategy',
+  concept: 'Product Thinking',
+  prompt: 'What is the best way to prioritize a product roadmap when teams have competing requests?',
+  choices: ['Choose features by loudest stakeholder voice', 'Tie work to user value, measurable outcomes, and business impact', 'Ship everything in the next sprint', 'Keep all experiments without review'],
+  correctAnswer: 'Tie work to user value, measurable outcomes, and business impact',
+  explanation: 'Product roadmaps should align to customer value and outcome metrics rather than opinion or urgency alone.',
+  choiceExplanations: {
+    'Choose features by loudest stakeholder voice': 'The loudest voice is not always the most valuable or most aligned with user needs.',
+    'Tie work to user value, measurable outcomes, and business impact': 'Correct. Great product decisions balance evidence, urgency, and value to the customer and business.',
+    'Ship everything in the next sprint': 'A broad backlog can dilute focus and confuse users instead of delivering the most valuable changes.',
+    'Keep all experiments without review': 'Unchecked experimentation creates waste and makes it harder to learn from the right signals.'
+  }
+},
+{
+  id: 'security-alert-fatigue',
+  title: 'Alert Fatigue',
+  difficulty: 'Advanced',
+  xp: 540,
+  category: 'Security Operations',
+  concept: 'Detection Engineering',
+  prompt: 'A team gets hundreds of alerts every day. What improves security response without missing real incidents?',
+  choices: ['Turn off noisy alerts entirely', 'Prioritize actionable signals, enrich telemetry, and tune false positives', 'Ignore logs from production', 'Route every alert to the same engineer without triage'],
+  correctAnswer: 'Prioritize actionable signals, enrich telemetry, and tune false positives',
+  explanation: 'Good detection engineering reduces noise and makes meaningful signs of compromise easier to recognize quickly.',
+  choiceExplanations: {
+    'Turn off noisy alerts entirely': 'Silencing alerts completely creates blind spots and increases the chance of missing genuine incidents.',
+    'Prioritize actionable signals, enrich telemetry, and tune false positives': 'Correct. Better signal quality and triage reduce noise while keeping high-value alerts visible.',
+    'Ignore logs from production': 'Production logs provide the evidence needed to investigate incidents and validate detections.',
+    'Route every alert to the same engineer without triage': 'Unstructured routing creates bottlenecks and degrades real response quality.'
+  }
+}
 
 ];
 
