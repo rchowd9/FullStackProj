@@ -77,6 +77,13 @@ const missions = [
     description: 'Build reliable native apps with Kotlin, coroutines, Swift, and SwiftUI.',
   },
   {
+    title: 'Frontend Flow',
+    category: 'Frontend Development',
+    difficulty: 'Beginner',
+    xp: 180,
+    description: 'Craft accessible interfaces, responsive layouts, and reliable user interactions.',
+  },
+  {
     title: 'System Forge',
     category: 'System Design',
     difficulty: 'Advanced',
@@ -90,7 +97,41 @@ const missions = [
     xp: 540,
     description: 'Explore hashes, encryption, and the secrets behind secure communication.',
   },
-
+  {
+    title: 'Cloud Command',
+    category: 'Cloud Computing',
+    difficulty: 'Intermediate',
+    xp: 360,
+    description: 'Use autoscaling, aware infrastructure, and cloud-native thinking to handle demand spikes.',
+  },
+  {
+    title: 'DevOps Drift',
+    category: 'DevOps',
+    difficulty: 'Intermediate',
+    xp: 330,
+    description: 'Tighten feedback loops with observability, deployment safety, and service health checks.',
+  },
+  {
+    title: 'Platform Pulse',
+    category: 'Platform Engineering',
+    difficulty: 'Advanced',
+    xp: 540,
+    description: 'Build internal platforms that remove toil and standardize production-grade developer workflows.',
+  },
+  {
+    title: 'Product Launch Lab',
+    category: 'Product Strategy',
+    difficulty: 'Beginner',
+    xp: 210,
+    description: 'Prioritize real user value, measurable outcomes, and roadmap decisions with confidence.',
+  },
+  {
+    title: 'Signal Shield',
+    category: 'Security Operations',
+    difficulty: 'Advanced',
+    xp: 550,
+    description: 'Triage risk, tune detections, and keep alert quality high when the environment is fast-moving.',
+  },
   {
     title: 'Architecture Analyzers',
     category: 'Computer Architecture',
@@ -98,48 +139,41 @@ const missions = [
     xp: 560,
     description: 'Discover how a computer is organized and designed.',
   },
-
   {
-    title: 'Cyber Evangelists', 
+    title: 'Cyber Evangelists',
     category: 'Cybersecurity',
     difficulty: 'Advanced',
     xp: 580,
     description: 'Find out how to protect your computers from attacks.',
   },
-
   {
-    title: 'Tech Devs', 
+    title: 'Tech Devs',
     category: 'Software Engineering',
     difficulty: 'Advanced',
-    xp: 580, 
+    xp: 580,
     description: 'Design and write programs for computers and other devices.',
   },
-
   {
-    title: 'Redistributed',  
+    title: 'Redistributed',
     category: 'Distributed Systems',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'Collection of independent computers and devices that work together over a network.', 
-  }, 
-
+    description: 'Collection of independent computers and devices that work together over a network.',
+  },
   {
-    title: 'Networking Nerds',  
+    title: 'Networking Nerds',
     category: 'Computer Networking',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'System of interconnected computing devices that communicate and share resources with one another.', 
-  }, 
-
+    description: 'System of interconnected computing devices that communicate and share resources with one another.',
+  },
   {
-    title: 'Object-Oriented',  
+    title: 'Object-Oriented',
     category: 'OOP',
     difficulty: 'Advanced',
     xp: 580,
-    description: 'Organizing complex programs by breaking them into objects.', 
-  }, 
-
-
+    description: 'Organizing complex programs by breaking them into objects.',
+  },
 ];
 
 const learningPaths = [
