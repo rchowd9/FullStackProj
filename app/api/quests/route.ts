@@ -1098,6 +1098,36 @@ const choiceExplanations: Record<string, Record<string, string>> = {
     'Objects never reference each other': 'Wrong because objects commonly reference one another, and those relationships are part of the lifecycle challenge.',
     'Constructors always free memory': 'Wrong because constructors initialize objects; freeing memory is a separate responsibility handled by destruction or explicit release.',
     'Destructors run automatically at compile time': 'Wrong because destruction happens during execution, and manual-memory languages require deliberate lifetime management.'
+  },
+  'frontend-accessibility': {
+    '<div onclick="save()">Save</div>': 'Wrong because a generic div does not have native button behavior or keyboard/focus semantics built in.',
+    '<span role="button">Save</span>': 'Wrong because it can be made accessible, but a native button is safer and simpler for a straightforward action control.',
+    '<input type="text" value="Save">': 'Wrong because it is a text field, not an action element, and it would be confusing as a button control.'
+  },
+  'devops-observability': {
+    'Increase replica count without measuring': 'Wrong because scaling without diagnosis can hide a faulty dependency or route while increasing cost and complexity.',
+    'Delete old containers': 'Wrong because removing infrastructure without evidence can make service availability worse while losing historical context.',
+    'Disable health checks': 'Wrong because health checks are meant to surface failure early, not hide it.'
+  },
+  'cloud-scaling': {
+    'Keep a fixed cluster of oversized servers': 'Wrong because it wastes capacity during low traffic and still leaves the service unable to adapt gracefully to spikes.',
+    'Run every request on a single instance': 'Wrong because a single instance becomes a bottleneck and offers no resilience during demand surges.',
+    'Disable instance health checks': 'Wrong because unhealthy nodes would stay in the pool and make the service less reliable.'
+  },
+  'platform-golden-path': {
+    'It makes every project slower to ship': 'Wrong because the platform reduces duplicate work and repeated setup. A good golden path speeds delivery while keeping guardrails in place.',
+    'It eliminates the need for CI/CD': 'Wrong because CI/CD is still necessary; a platform just makes the workflow repeatable and supported.',
+    'It removes all architectural decisions': 'Wrong because platforms provide a default path, not a complete elimination of engineering choices.'
+  },
+  'product-north-star': {
+    'Choose features by loudest stakeholder voice': 'Wrong because stakeholder volume does not equal user impact or measurable business value.',
+    'Ship everything in the next sprint': 'Wrong because broad delivery without prioritization dilutes focus and creates more confusion than clarity.',
+    'Keep all experiments without review': 'Wrong because unreviewed experiments create wasted effort and make it harder to learn which ideas actually help customers.'
+  },
+  'security-alert-fatigue': {
+    'Turn off noisy alerts entirely': 'Wrong because silencing alerts removes visibility and can leave real incidents unnoticed.',
+    'Ignore logs from production': 'Wrong because production logs are a key source of evidence for detecting and investigating attacks.',
+    'Route every alert to the same engineer without triage': 'Wrong because operational bottlenecks and poor prioritization make real incidents slower to resolve.'
   }
 };
 
