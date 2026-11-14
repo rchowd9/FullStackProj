@@ -176,6 +176,37 @@ const missions = [
   },
 ];
 
+const careerPaths = [
+  {
+    title: 'Frontend Engineer',
+    description: 'Build user-facing products with strong interaction design and product intuition.',
+    focus: 'UI systems',
+    category: 'Frontend Development',
+    skills: ['HTML, CSS, and JavaScript fundamentals', 'React component architecture', 'Accessibility and responsive layouts', 'Performance and UI test strategy'],
+  },
+  {
+    title: 'Backend Engineer',
+    description: 'Design APIs, secure data flows, and reliable services that power production apps.',
+    focus: 'Core services',
+    category: 'Software Engineering',
+    skills: ['API design and REST patterns', 'Database modeling and SQL', 'Authentication and authorization', 'Observability and service reliability'],
+  },
+  {
+    title: 'Full-Stack Engineer',
+    description: 'Connect interfaces and infrastructure so products ship end to end with solid tradeoffs.',
+    focus: 'Product delivery',
+    category: 'System Design',
+    skills: ['Frontend and backend integration', 'Deployment and environment management', 'Caching and persistence choices', 'Feature ownership across the stack'],
+  },
+  {
+    title: 'Data & AI Engineer',
+    description: 'Turn data into models, pipelines, and trustworthy product experiences.',
+    focus: 'Data + models',
+    category: 'AI',
+    skills: ['Python and data analysis workflows', 'Machine learning foundations', 'Feature pipelines and evaluation', 'Responsible AI and deployment patterns'],
+  },
+];
+
 const learningPaths = [
   {
     title: 'Software Engineering Foundations',
