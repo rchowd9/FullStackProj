@@ -2173,6 +2173,34 @@ export default function HomePage() {
         ))}
       </section>
 
+      <section className="career-paths" aria-labelledby="career-paths-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">CAREER GUIDE</p>
+            <h2 id="career-paths-title">What skills to build for each path</h2>
+          </div>
+          <Link href="/quests" className="text-link">Start with the basics →</Link>
+        </div>
+        <p className="learning-paths-intro">Choose a path based on the kind of work you want to do, then build the fundamentals and product habits that make you effective in real teams.</p>
+        <div className="career-path-grid">
+          {careerPaths.map((path) => (
+            <article key={path.title} className="career-path-card">
+              <span className="career-focus">{path.focus}</span>
+              <h3>{path.title}</h3>
+              <p>{path.description}</p>
+              <ul className="career-skills-list">
+                {path.skills.map((skill) => (
+                  <li key={skill}>{skill}</li>
+                ))}
+              </ul>
+              <Link href={{ pathname: '/quests', query: { category: path.category } }} className="career-path-link">
+                Practice {path.category} <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="learning-paths" aria-labelledby="learning-paths-title">
         <div className="section-heading">
           <div>

@@ -269,6 +269,7 @@ a {
   font-size: 0.92rem;
 }
 
+.career-paths,
 .learning-paths,
 .industry-pulse {
   margin-top: 68px;
@@ -281,13 +282,15 @@ a {
   line-height: 1.6;
 }
 
+.career-path-grid,
 .learning-path-grid,
 .industry-trend-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
+.career-path-card,
 .learning-path-card,
 .industry-trend-card {
   min-width: 0;
@@ -295,6 +298,68 @@ a {
   border: 1px solid var(--border);
   border-radius: 20px;
   background: rgba(15, 23, 42, 0.82);
+}
+
+.career-focus {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 9px;
+  border: 1px solid rgba(88, 214, 197, 0.22);
+  border-radius: 999px;
+  background: rgba(88, 214, 197, 0.07);
+  color: var(--secondary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.career-path-card h3,
+.learning-path-card h3,
+.industry-trend-card h3 {
+  margin: 18px 0 8px;
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.career-path-card > p,
+.learning-path-card > p,
+.industry-trend-card > p {
+  min-height: 3.2em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.career-skills-list {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding-left: 18px;
+  color: var(--text);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.career-skills-list li::marker {
+  color: var(--lime);
+}
+
+.career-path-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  color: var(--secondary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.learning-path-grid,
+.industry-trend-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .path-heading {
