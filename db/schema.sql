@@ -9,10 +9,14 @@ CREATE TABLE IF NOT EXISTS quests (
   category VARCHAR(80) NOT NULL,
   concept VARCHAR(120) NOT NULL,
   prompt TEXT NOT NULL,
-  choices JSONB NOT NULL,
+  choices JSONB NOT NULL CHECK (
+    jsonb_typeof(choices) = 'array' AND jsonb_array_length(choices) >= 2
+  ),
   correct_answer TEXT NOT NULL,
   explanation TEXT NOT NULL,
-  choice_explanations JSONB NOT NULL DEFAULT '{}'::jsonb
+  choice_explanations JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (
+    jsonb_typeof(choice_explanations) = 'object'
+  )
 );
 
 CREATE TABLE IF NOT EXISTS learner_progress (

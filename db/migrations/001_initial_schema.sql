@@ -9,10 +9,14 @@ CREATE TABLE IF NOT EXISTS quests (
   category VARCHAR(80) NOT NULL,
   concept VARCHAR(120) NOT NULL,
   prompt TEXT NOT NULL,
-  choices JSONB NOT NULL,
+  choices JSONB NOT NULL CHECK (
+    jsonb_typeof(choices) = 'array' AND jsonb_array_length(choices) >= 2
+  ),
   correct_answer TEXT NOT NULL,
   explanation TEXT NOT NULL,
-  choice_explanations JSONB NOT NULL DEFAULT '{}'::jsonb
+  choice_explanations JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (
+    jsonb_typeof(choice_explanations) = 'object'
+  )
 );
 
 CREATE TABLE IF NOT EXISTS learner_progress (
@@ -33,10 +37,10 @@ CREATE TABLE IF NOT EXISTS coding_challenges (
   prompt TEXT NOT NULL,
   starter_code TEXT NOT NULL,
   reference_solution TEXT NOT NULL,
-  examples JSONB NOT NULL DEFAULT '[]'::jsonb,
-  checklist JSONB NOT NULL DEFAULT '[]'::jsonb,
-  keywords JSONB NOT NULL DEFAULT '[]'::jsonb,
-  tags JSONB NOT NULL DEFAULT '[]'::jsonb,
+  examples JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(examples) = 'array'),
+  checklist JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(checklist) = 'array'),
+  keywords JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(keywords) = 'array'),
+  tags JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(tags) = 'array'),
   hint TEXT NOT NULL DEFAULT '',
   acceptance VARCHAR(20),
   time_complexity TEXT NOT NULL,
