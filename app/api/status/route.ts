@@ -10,6 +10,12 @@ const api = new Hono().get('*', (context) => {
     runtime: 'vercel-edge',
     framework: 'hono',
     checkedAt: new Date().toISOString(),
+    database: {
+      kind: 'starter-postgres',
+      seeded: true,
+      source: 'db/seed.sql',
+      note: 'Demo data is ready for the project database starter files.',
+    },
   });
 });
 

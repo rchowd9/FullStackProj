@@ -27,6 +27,29 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO quests (
   id, title, difficulty, xp, category, concept, prompt, choices,
   correct_answer, explanation, choice_explanations
+) VALUES (
+  'ops-health-check',
+  'Service Health Check',
+  'Beginner',
+  120,
+  'Operations',
+  'System Monitoring',
+  'Which signal is most useful when confirming that an API is healthy after deploy?',
+  '["A 200 response from the status endpoint", "A stale cache entry", "A missing log line", "A blank browser tab"]'::jsonb,
+  'A 200 response from the status endpoint',
+  'A successful status check indicates the service is responding as expected and can be used as a quick deployment health signal.',
+  '{
+    "A 200 response from the status endpoint": "Correct. A healthy HTTP response confirms the app is reachable and responding.",
+    "A stale cache entry": "A cached response can be misleading and does not confirm the live service is healthy.",
+    "A missing log line": "Missing logs can indicate a problem, but not a health signal by itself.",
+    "A blank browser tab": "A blank tab usually indicates a failure rather than a successful health check."
+  }'::jsonb
+)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO quests (
+  id, title, difficulty, xp, category, concept, prompt, choices,
+  correct_answer, explanation, choice_explanations
 ) VALUES
   (
     'sql-join',
