@@ -2151,6 +2151,9 @@ a {
   .mission-art-icon { font-size: 1.8rem; }
   .mission-art-label { font-size: 0.44rem; }
   .practice-summary { grid-template-columns: 1fr; }
+  .session-actions { justify-content: stretch; }
+  .session-actions .session-reset { flex: 1; }
+  .session-history-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .category-header { align-items: start; }
   .category-count { text-align: right; }
   .challenge-timer { margin-left: 0; }
