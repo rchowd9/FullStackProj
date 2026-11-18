@@ -2365,22 +2365,35 @@ export default function HomePage() {
           </div>
 
           <div className="mastery-list">
-            {masteryMap.map((skill) => (
+            {[
+              { label: 'Algorithms', tone: 'cyan', categories: ['Data Structures', 'AI', 'Machine Learning', 'Data Mining'] },
+              { label: 'Databases', tone: 'violet', categories: ['DBMS', 'SQL'] },
+              { label: 'Systems', tone: 'gold', categories: ['System Design', 'Distributed Systems', 'Operating Systems', 'Computer Networking', 'Computer Architecture', 'Cloud Computing', 'DevOps', 'Platform Engineering'] },
+              { label: 'Security', tone: 'lime', categories: ['Security Operations', 'Cybersecurity', 'Cryptography'] },
+            ].map((skill) => {
+              const matchingQuests = questCatalog.filter((quest) => skill.categories.includes(quest.category));
+              const completedInSkill = matchingQuests.filter((quest) => completedQuests.includes(quest.id)).length;
+              const value = matchingQuests.length > 0
+                ? Math.round((completedInSkill / matchingQuests.length) * 100)
+                : 0;
+
+              return (
               <div key={skill.label} className="mastery-row">
                 <div className="mastery-meta">
                   <span>{skill.label}</span>
-                  <strong>{skill.value}%</strong>
+                  <strong>{value}%</strong>
                 </div>
                 <div className="progress-bar">
                   <motion.span
                     className={`progress-fill ${skill.tone}`}
                     initial={{ width: 0 }}
-                    animate={{ width: `${skill.value}%` }}
+                    animate={{ width: `${value}%` }}
                     transition={{ duration: 0.7, ease: 'easeOut' }}
                   />
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </motion.article>
 

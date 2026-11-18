@@ -1511,6 +1511,63 @@ a {
   background: rgba(255, 138, 76, 0.16);
 }
 
+.session-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: end;
+}
+
+.session-history {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.76);
+}
+
+.session-history-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.session-history-heading h2 {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+}
+
+.session-history-heading > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.session-history-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.session-history-list article {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.session-history-list strong {
+  color: var(--lime);
+}
+
+.session-history-list span,
+.session-history-list time {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
 .completed-label { color: var(--lime); font-size: 0.8rem; font-weight: 800; }
 
 .quest-card { padding: 26px; background: linear-gradient(145deg, rgba(19, 29, 51, 0.96), rgba(12, 20, 34, 0.94)); box-shadow: 0 16px 34px rgba(3, 19, 27, 0.18); }
@@ -1983,6 +2040,7 @@ a {
   .quest-toolbar { grid-template-columns: minmax(0, 1fr) 170px; }
   .quest-summary { text-align: left; }
   .practice-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .session-history-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .session-reset { align-self: center; }
   .command-bar, .daily-challenge { grid-template-columns: 1fr 1fr; }
   .interview-grid { grid-template-columns: 1fr; }

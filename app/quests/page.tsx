@@ -20,6 +20,14 @@ type Quest = {
   choiceExplanations?: Record<string, string>;
 };
 
+type StudySession = {
+  id: string;
+  minutes: number;
+  seconds: number;
+  completedQuests: number;
+  endedAt: string;
+};
+
 const categoryIllustrations: Record<string, string> = {
   'Mobile Development': '📱',
   'System Design': '🏙️',
@@ -85,14 +93,43 @@ function QuestsContent() {
   const [difficulty, setDifficulty] = useState('All levels');
   const [reviewMisses, setReviewMisses] = useState(false);
   const [sessionSeconds, setSessionSeconds] = useState(0);
+  const [sessionRunning, setSessionRunning] = useState(true);
+  const [studySessions, setStudySessions] = useState<StudySession[]>([]);
 
   useEffect(() => {
+    if (!sessionRunning) return;
     const interval = window.setInterval(() => {
       setSessionSeconds((current) => current + 1);
     }, 1000);
 
     return () => window.clearInterval(interval);
+  }, [sessionRunning]);
+
+  useEffect(() => {
+    try {
+      const savedSessions = window.localStorage.getItem('code-quest:study-sessions');
+      if (savedSessions) {
+        const parsed = JSON.parse(savedSessions) as unknown;
+        if (Array.isArray(parsed)) {
+          setStudySessions(parsed.filter((session): session is StudySession =>
+            typeof session === 'object'
+            && session !== null
+            && typeof (session as StudySession).id === 'string'
+            && typeof (session as StudySession).minutes === 'number'
+            && typeof (session as StudySession).seconds === 'number'
+            && typeof (session as StudySession).completedQuests === 'number'
+            && typeof (session as StudySession).endedAt === 'string'
+          ).slice(0, 5));
+        }
+      }
+    } catch {
+      window.localStorage.removeItem('code-quest:study-sessions');
+    }
   }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('code-quest:study-sessions', JSON.stringify(studySessions));
+  }, [studySessions]);
 
   useEffect(() => {
     const savedProgress = window.localStorage.getItem('code-quest:progress');
@@ -175,9 +212,20 @@ function QuestsContent() {
   };
 
   const resetSession = () => {
+    if (sessionSeconds >= 30) {
+      const session: StudySession = {
+        id: `session-${Date.now()}`,
+        minutes: Math.max(1, Math.ceil(sessionSeconds / 60)),
+        seconds: sessionSeconds,
+        completedQuests: completedIds.length,
+        endedAt: new Date().toISOString(),
+      };
+      setStudySessions((previous) => [session, ...previous].slice(0, 5));
+    }
     setSelectedAnswers({});
     setSubmitted({});
     setSessionSeconds(0);
+    setSessionRunning(true);
   };
 
   const explainChoice = (quest: Quest, choice: string) => {
@@ -232,8 +280,34 @@ function QuestsContent() {
           <p className="eyebrow">XP GAINED</p>
           <strong>{completedIds.length * 120} XP</strong>
         </div>
-        <button type="button" className="session-reset" onClick={resetSession}>Reset session</button>
+        <div className="session-actions">
+          <button type="button" className="session-reset" onClick={() => setSessionRunning((current) => !current)}>
+            {sessionRunning ? 'Pause timer' : 'Resume timer'}
+          </button>
+          <button type="button" className="session-reset" onClick={resetSession}>Finish session</button>
+        </div>
       </section>
+
+      {studySessions.length > 0 && (
+        <section className="session-history" aria-label="Recent study sessions">
+          <div className="session-history-heading">
+            <div>
+              <p className="eyebrow">RECENT SESSIONS</p>
+              <h2>Study history</h2>
+            </div>
+            <span>{studySessions.length} saved</span>
+          </div>
+          <div className="session-history-list">
+            {studySessions.map((session) => (
+              <article key={session.id}>
+                <strong>{session.minutes} min</strong>
+                <span>{session.completedQuests} quests cleared</span>
+                <time dateTime={session.endedAt}>{new Date(session.endedAt).toLocaleDateString()}</time>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="quest-list">
         {groupedQuests.map((group) => (
