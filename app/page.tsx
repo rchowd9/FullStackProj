@@ -1525,13 +1525,6 @@ const concepts = [
   'Debugging',
 ];
 
-const masteryMap = [
-  { label: 'Algorithms', value: 86, tone: 'cyan' },
-  { label: 'Databases', value: 72, tone: 'violet' },
-  { label: 'Systems', value: 63, tone: 'gold' },
-  { label: 'Security', value: 58, tone: 'lime' },
-];
-
 const habitBoard = [
   { label: 'Practice streak', value: 7, total: 7, note: '7-day run' },
   { label: 'Daily challenges', value: 4, total: 5, note: '1 left today' },
@@ -1589,6 +1582,7 @@ const formatDuration = (totalSeconds: number) => {
 export default function HomePage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [completedQuests, setCompletedQuests] = useState<string[]>([]);
+  const [questCatalog, setQuestCatalog] = useState<Array<{ id: string; category: string }>>([]);
   const [dailyActivity, setDailyActivity] = useState<Record<string, string[]>>({});
   const [todayKey, setTodayKey] = useState('');
   const [dailyGoal, setDailyGoal] = useState(3);
@@ -1948,6 +1942,21 @@ export default function HomePage() {
         window.localStorage.removeItem('code-quest:progress');
       }
     }
+    fetch('/api/quests')
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data.quests)) {
+          setQuestCatalog(data.quests
+            .filter((quest: unknown): quest is { id: string; category: string } =>
+              typeof quest === 'object'
+              && quest !== null
+              && typeof (quest as { id?: unknown }).id === 'string'
+              && typeof (quest as { category?: unknown }).category === 'string'
+            )
+            .map((quest: { id: string; category: string }) => ({ id: quest.id, category: quest.category })));
+        }
+      })
+      .catch(() => setQuestCatalog([]));
   }, []);
 
   useEffect(() => {
