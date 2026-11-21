@@ -1574,6 +1574,22 @@ a {
 .quest-card .mission-topline { justify-content: flex-start; gap: 10px; margin-bottom: 18px; }
 .quest-card .xp, .quest-card .completed-label { margin-left: auto; }
 .question-count { color: var(--muted); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; }
+.quest-bookmark {
+  margin-left: 4px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.quest-bookmark.active {
+  border-color: rgba(246, 200, 95, 0.48);
+  background: rgba(246, 200, 95, 0.12);
+  color: #f6c85f;
+}
 .mission-heading { display: grid; grid-template-columns: minmax(0, 1fr) 142px; gap: 22px; align-items: center; margin-bottom: 16px; }
 .mission-heading-copy .concept-tag { margin-bottom: 12px; }
 .mission-heading-copy h2 { margin-bottom: 0; font-size: clamp(1.35rem, 2.5vw, 1.7rem); line-height: 1.25; }

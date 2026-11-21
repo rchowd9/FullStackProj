@@ -87,6 +87,8 @@ function QuestsContent() {
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [missedIds, setMissedIds] = useState<string[]>([]);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+  const [showBookmarks, setShowBookmarks] = useState(false);
   const [dailyActivity, setDailyActivity] = useState<Record<string, string[]>>({});
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [search, setSearch] = useState('');
@@ -139,12 +141,16 @@ function QuestsContent() {
           completedIds?: unknown;
           missedIds?: unknown;
           dailyActivity?: unknown;
+          bookmarkedIds?: unknown;
         };
         if (Array.isArray(parsed.completedIds)) {
           setCompletedIds(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
         }
         if (Array.isArray(parsed.missedIds)) {
           setMissedIds(parsed.missedIds.filter((id): id is string => typeof id === 'string'));
+        }
+        if (Array.isArray(parsed.bookmarkedIds)) {
+          setBookmarkedIds(parsed.bookmarkedIds.filter((id): id is string => typeof id === 'string'));
         }
         if (parsed.dailyActivity && typeof parsed.dailyActivity === 'object' && !Array.isArray(parsed.dailyActivity)) {
           setDailyActivity(Object.fromEntries(
@@ -168,9 +174,9 @@ function QuestsContent() {
 
   useEffect(() => {
     if (progressLoaded) {
-      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds, dailyActivity }));
+      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds, bookmarkedIds, dailyActivity }));
     }
-  }, [completedIds, missedIds, dailyActivity, progressLoaded]);
+  }, [completedIds, missedIds, bookmarkedIds, dailyActivity, progressLoaded]);
 
   const selectedCategory = searchParams.get('category');
   const dailyMode = searchParams.get('mode') === 'daily';
@@ -181,9 +187,10 @@ function QuestsContent() {
     const matchesDailyRun = !dailyMode || dailyQuestIds.includes(quest.id);
     const matchesDifficulty = difficulty === 'All levels' || quest.difficulty === difficulty;
     const matchesReview = (!reviewMisses && !reviewMode) || missedIds.includes(quest.id);
+    const matchesBookmark = !showBookmarks || bookmarkedIds.includes(quest.id);
     const searchTerm = search.trim().toLowerCase();
     const matchesSearch = !searchTerm || `${quest.title} ${quest.concept} ${quest.prompt}`.toLowerCase().includes(searchTerm);
-    return matchesCategory && matchesDailyRun && matchesDifficulty && matchesReview && matchesSearch;
+    return matchesCategory && matchesDailyRun && matchesDifficulty && matchesReview && matchesBookmark && matchesSearch;
   });
 
   const groupedQuests = Array.from(
@@ -232,6 +239,14 @@ function QuestsContent() {
     return quest.choiceExplanations?.[choice] ?? 'This option does not fit the concept being tested.';
   };
 
+  const toggleBookmark = (questId: string) => {
+    setBookmarkedIds((previous) =>
+      previous.includes(questId)
+        ? previous.filter((id) => id !== questId)
+        : [...previous, questId]
+    );
+  };
+
   return (
     <main className="page-shell quest-page">
       <section className="quest-header">
@@ -260,6 +275,9 @@ function QuestsContent() {
         </select>
         <button type="button" className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
           Review misses <strong>{missedIds.length}</strong>
+        </button>
+        <button type="button" className={`review-toggle ${showBookmarks ? 'active' : ''}`} onClick={() => setShowBookmarks((current) => !current)}>
+          Bookmarks <strong>{bookmarkedIds.length}</strong>
         </button>
         <div className="quest-summary">
           <strong>{dailyMode ? visibleQuests.filter((quest) => completedIds.includes(quest.id)).length : completedIds.length}</strong> cleared <span>•</span>
@@ -329,6 +347,15 @@ function QuestsContent() {
                   <div className="mission-topline">
                     <span className="question-count">QUESTION {String(index + 1).padStart(2, '0')}</span>
                     <span className="difficulty">{quest.difficulty}</span>
+                    <button
+                      type="button"
+                      className={`quest-bookmark ${bookmarkedIds.includes(quest.id) ? 'active' : ''}`}
+                      aria-label={bookmarkedIds.includes(quest.id) ? `Remove bookmark from ${quest.title}` : `Bookmark ${quest.title}`}
+                      aria-pressed={bookmarkedIds.includes(quest.id)}
+                      onClick={() => toggleBookmark(quest.id)}
+                    >
+                      {bookmarkedIds.includes(quest.id) ? '★ Saved' : '☆ Save'}
+                    </button>
                     <span className={completedIds.includes(quest.id) ? 'completed-label' : 'xp'}>{completedIds.includes(quest.id) ? '✓ CLEARED' : `+${quest.xp} XP`}</span>
                   </div>
 

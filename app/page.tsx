@@ -1485,20 +1485,50 @@ const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) 
   }
 
   const normalizedResponse = normalizeText(trimmed);
+  const starterCode = getStarterCode(question, question.language ?? 'Python');
+  const normalizedStarter = normalizeText(starterCode);
+  const hasOnlyStarterCode = Boolean(normalizedStarter)
+    && normalizedResponse === normalizedStarter;
+  const hasOnlyComments = question.language
+    ? /^((?:\/\/|#|--|\*)|[^A-Za-z0-9]*$)/.test(trimmed)
+    : false;
+
+  if (hasOnlyStarterCode || hasOnlyComments) {
+    return {
+      score: 0,
+      label: 'No implementation submitted',
+      feedback: 'This submission does not contain a new implementation. Complete the starter code or replace it with your solution before evaluating.',
+      answer: question.idealAnswer,
+    };
+  }
+
   const matchedKeywords = question.keywords.filter((keyword) => normalizedResponse.includes(normalizeText(keyword)));
-  const keywordCoverage = Math.round((matchedKeywords.length / question.keywords.length) * 100);
+  const matchedChecklist = question.checklist.filter((item) =>
+    item
+      .split(/[\s,]+/)
+      .map(normalizeText)
+      .filter((term) => term.length >= 3)
+      .some((term) => normalizedResponse.includes(term))
+  );
+  const keywordCoverage = question.keywords.length
+    ? (matchedKeywords.length / question.keywords.length) * 100
+    : 0;
+  const checklistCoverage = question.checklist.length
+    ? (matchedChecklist.length / question.checklist.length) * 100
+    : 0;
   const hasStructure = question.language
     ? question.language === 'SQL'
       ? /\b(?:select|from|with)\b/i.test(trimmed)
       : /(?:\breturn\b|\bfunction\b|\bdef\b|\bfor\b|\bif\b|=>)/i.test(trimmed)
     : /(first|next|then|finally|because|for example|in summary|if|when)/i.test(trimmed);
-  const score = Math.min(100, keywordCoverage + (hasStructure ? 10 : 0) + (trimmed.length > 160 ? 5 : 0));
+  const completeness = (keywordCoverage * 0.7) + (checklistCoverage * 0.3);
+  const score = Math.min(100, Math.round(completeness + (hasStructure ? 8 : 0) + (trimmed.length > 160 && completeness >= 40 ? 4 : 0)));
 
   const label = question.language
     ? score >= 85 ? 'Strong rubric match' : score >= 65 ? 'Good rubric match' : 'Review the implementation'
     : score >= 85 ? 'Strong answer' : score >= 65 ? 'Solid answer' : 'Needs more depth';
   const missingPoints = question.checklist
-    .filter((item) => !matchedKeywords.some((keyword) => normalizeText(item).includes(normalizeText(keyword))))
+    .filter((item) => !matchedChecklist.includes(item))
     .slice(0, 2);
   const feedback = question.language
     ? `Text-based rubric matched ${matchedKeywords.length}/${question.keywords.length} implementation signals. ${matchedKeywords.length === question.keywords.length ? 'All tracked signals are present.' : 'Compare your solution with the checklist and sample cases.'} Code is not executed; verify the sample cases yourself.`
