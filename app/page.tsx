@@ -1485,10 +1485,14 @@ const evaluateInterviewAnswer = (question: InterviewQuestion, response: string) 
   }
 
   const normalizedResponse = normalizeText(trimmed);
-  const starterCode = getStarterCode(question, question.language ?? 'Python');
-  const normalizedStarter = normalizeText(starterCode);
-  const hasOnlyStarterCode = Boolean(normalizedStarter)
-    && normalizedResponse === normalizedStarter;
+  const starterVariants = [
+    getStarterCode(question, question.language ?? 'Python'),
+    ...Object.values(codingStarterVariants[question.id] ?? {}),
+  ];
+  const hasOnlyStarterCode = starterVariants.some((starterCode) => {
+    const normalizedStarter = normalizeText(starterCode);
+    return Boolean(normalizedStarter) && normalizedResponse === normalizedStarter;
+  });
   const hasOnlyComments = question.language
     ? /^((?:\/\/|#|--|\*)|[^A-Za-z0-9]*$)/.test(trimmed)
     : false;
