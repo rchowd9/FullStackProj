@@ -72,6 +72,15 @@ function getDailyQuestIds(quests: Quest[]) {
   return seeded.slice(0, 3).map((quest) => quest.id);
 }
 
+function getRecommendedDifficulty(results: boolean[]) {
+  const recent = results.slice(-10);
+  if (recent.length < 3) return 'Intermediate';
+  const accuracy = recent.filter(Boolean).length / recent.length;
+  if (accuracy >= 0.8) return 'Advanced';
+  if (accuracy <= 0.4) return 'Beginner';
+  return 'Intermediate';
+}
+
 export default function QuestsPage() {
   return (
     <Suspense fallback={<main className="page-shell quest-page"><p>Loading quests...</p></main>}>
@@ -93,6 +102,8 @@ function QuestsContent() {
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('All levels');
+  const [adaptiveMode, setAdaptiveMode] = useState(true);
+  const [recentResults, setRecentResults] = useState<boolean[]>([]);
   const [reviewMisses, setReviewMisses] = useState(false);
   const [sessionSeconds, setSessionSeconds] = useState(0);
   const [sessionRunning, setSessionRunning] = useState(true);
@@ -142,6 +153,7 @@ function QuestsContent() {
           missedIds?: unknown;
           dailyActivity?: unknown;
           bookmarkedIds?: unknown;
+          recentResults?: unknown;
         };
         if (Array.isArray(parsed.completedIds)) {
           setCompletedIds(parsed.completedIds.filter((id): id is string => typeof id === 'string'));
@@ -151,6 +163,9 @@ function QuestsContent() {
         }
         if (Array.isArray(parsed.bookmarkedIds)) {
           setBookmarkedIds(parsed.bookmarkedIds.filter((id): id is string => typeof id === 'string'));
+        }
+        if (Array.isArray(parsed.recentResults)) {
+          setRecentResults(parsed.recentResults.filter((result): result is boolean => typeof result === 'boolean').slice(-10));
         }
         if (parsed.dailyActivity && typeof parsed.dailyActivity === 'object' && !Array.isArray(parsed.dailyActivity)) {
           setDailyActivity(Object.fromEntries(
@@ -174,14 +189,15 @@ function QuestsContent() {
 
   useEffect(() => {
     if (progressLoaded) {
-      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds, bookmarkedIds, dailyActivity }));
+      window.localStorage.setItem('code-quest:progress', JSON.stringify({ completedIds, missedIds, bookmarkedIds, dailyActivity, recentResults }));
     }
-  }, [completedIds, missedIds, bookmarkedIds, dailyActivity, progressLoaded]);
+  }, [completedIds, missedIds, bookmarkedIds, dailyActivity, recentResults, progressLoaded]);
 
   const selectedCategory = searchParams.get('category');
   const dailyMode = searchParams.get('mode') === 'daily';
   const reviewMode = searchParams.get('mode') === 'review';
   const dailyQuestIds = getDailyQuestIds(quests);
+  const recommendedDifficulty = getRecommendedDifficulty(recentResults);
   const visibleQuests = quests.filter((quest) => {
     const matchesCategory = !selectedCategory || quest.category === selectedCategory;
     const matchesDailyRun = !dailyMode || dailyQuestIds.includes(quest.id);
@@ -191,6 +207,9 @@ function QuestsContent() {
     const searchTerm = search.trim().toLowerCase();
     const matchesSearch = !searchTerm || `${quest.title} ${quest.concept} ${quest.prompt}`.toLowerCase().includes(searchTerm);
     return matchesCategory && matchesDailyRun && matchesDifficulty && matchesReview && matchesBookmark && matchesSearch;
+  }).sort((left, right) => {
+    if (!adaptiveMode) return 0;
+    return Number(right.difficulty === recommendedDifficulty) - Number(left.difficulty === recommendedDifficulty);
   });
 
   const groupedQuests = Array.from(
@@ -201,10 +220,14 @@ function QuestsContent() {
   }));
 
   const handleAnswer = (questId: string, answer: string) => {
+    const isNewAttempt = selectedAnswers[questId] !== answer;
     setSelectedAnswers((prev) => ({ ...prev, [questId]: answer }));
     setSubmitted((prev) => ({ ...prev, [questId]: true }));
 
     const quest = quests.find((item) => item.id === questId);
+    if (isNewAttempt && quest) {
+      setRecentResults((previous) => [...previous, quest.correctAnswer === answer].slice(-10));
+    }
     if (quest?.correctAnswer === answer) {
       setCompletedIds((previous) => previous.includes(questId) ? previous : [...previous, questId]);
       setMissedIds((previous) => previous.filter((id) => id !== questId));
@@ -259,7 +282,10 @@ function QuestsContent() {
             ? `Focus on ${selectedCategory} challenges and earn XP.`
             : 'Answer challenges to earn XP and unlock new topics.'}
         </p>
-        <Link href="/reviews" className="study-tool-link">Share code for peer feedback <span>→</span></Link>
+        <div className="quest-feature-links">
+          <Link href="/reviews" className="study-tool-link">Share code for peer feedback <span>→</span></Link>
+          <Link href="/collaborate" className="study-tool-link">Open a shared coding room <span>→</span></Link>
+        </div>
       </section>
 
       <section className="quest-toolbar" aria-label="Quest filters">
@@ -273,6 +299,14 @@ function QuestsContent() {
           <option>Intermediate</option>
           <option>Advanced</option>
         </select>
+        <button
+          type="button"
+          className={`review-toggle ${adaptiveMode ? 'active' : ''}`}
+          onClick={() => setAdaptiveMode((current) => !current)}
+          aria-pressed={adaptiveMode}
+        >
+          Adaptive path <strong>{adaptiveMode ? 'On' : 'Off'}</strong>
+        </button>
         <button type="button" className={`review-toggle ${reviewMisses ? 'active' : ''}`} onClick={() => setReviewMisses((current) => !current)}>
           Review misses <strong>{missedIds.length}</strong>
         </button>
@@ -284,6 +318,12 @@ function QuestsContent() {
           <strong>{visibleQuests.filter((quest) => !completedIds.includes(quest.id)).length}</strong> remaining
         </div>
       </section>
+
+      <p className="adaptive-guidance" role="status">
+        {adaptiveMode
+          ? `Adaptive path is prioritizing ${recommendedDifficulty.toLowerCase()} challenges based on your last ${recentResults.length} ${recentResults.length === 1 ? 'answer' : 'answers'}.`
+          : 'Adaptive ordering is paused. Your difficulty filter still works as usual.'}
+      </p>
 
       <section className="practice-summary" aria-label="Practice session summary">
         <div>
