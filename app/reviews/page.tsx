@@ -118,6 +118,7 @@ export default function PeerReviewsPage() {
         <div className="nav-links">
           <Link href="/">Academy</Link>
           <Link href="/quests">Quest board</Link>
+          <Link href="/collaborate">Collaborate</Link>
           <span className="profile-pill"><span className="online-dot" /> Peer reviews</span>
         </div>
       </nav>

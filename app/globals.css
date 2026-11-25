@@ -1457,7 +1457,9 @@ a {
 .quest-header { padding: 28px 30px; border: 1px solid var(--border); border-radius: 22px; background: linear-gradient(120deg, rgba(88, 214, 197, 0.08), rgba(17, 23, 45, 0.84) 55%, rgba(239, 111, 81, 0.08)); }
 .quest-header h1 { margin: 0; font-size: clamp(2.2rem, 5vw, 3.6rem); letter-spacing: -0.045em; }
 .quest-header .eyebrow { margin-bottom: 10px; }
-.quest-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) 170px auto auto; gap: 12px; align-items: center; margin: 24px 0 18px; padding: 14px; border: 1px solid var(--border); border-radius: 18px; background: rgba(15, 23, 42, 0.56); }
+.quest-feature-links { display: flex; flex-wrap: wrap; gap: 18px; }
+.adaptive-guidance { margin: -4px 0 18px; color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
+.quest-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) 170px repeat(3, auto) auto; gap: 12px; align-items: center; margin: 24px 0 18px; padding: 14px; border: 1px solid var(--border); border-radius: 18px; background: rgba(15, 23, 42, 0.56); }
 .search-field { display: flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 14px; border: 1px solid var(--border); border-radius: 12px; background: rgba(15, 23, 42, 0.72); color: var(--muted); }
 .search-field input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text); }
 .search-field input::placeholder { color: #7180a5; }

@@ -2133,6 +2133,7 @@ export default function HomePage() {
           <a href="#missions">Missions</a>
           <Link href="/quests">Quest board</Link>
           <Link href="/reviews">Peer reviews</Link>
+          <Link href="/collaborate">Collaborate</Link>
           <span className="profile-pill"><span className="online-dot" /> Byte Knight</span>
         </div>
       </nav>

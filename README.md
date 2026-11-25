@@ -25,6 +25,8 @@ A full-stack CS learning platform built for structured study, interview rehearsa
 - Seven-day study activity calendar with a streak calculated from completed quests
 - Searchable and filterable quest board with dynamic review flows for weak concepts
 - Peer code review board for sharing code samples, requesting focused feedback, and reviewing submissions with ratings and actionable comments
+- Shared coding rooms at `/collaborate` with a collaborative code editor and group discussion; room updates poll every three seconds and use Upstash Redis when configured
+- Adaptive quest ordering that uses the learner's ten most recent quiz answers to prioritize a suitable challenge difficulty, with immediate explanations and choice-by-choice feedback
 - Persistent local quest completion state shared across the home dashboard and quiz flow
 - Daily challenge engine that rotates three quests using a UTC-based deterministic selector
 - Interview lab with searchable prompts, auto-saved answer drafts, review progress, random practice, rubric scoring, and reference-answer feedback
@@ -66,6 +68,8 @@ Additional framework installed:
 Quest completion is stored in the browser under `code-quest:progress`, so the prototype works without authentication or a database. Leaderboard submissions use Upstash Redis when `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are present, and fall back to process memory for local development.
 
 The peer review board is available at `/reviews`. It uses Upstash Redis for submissions and feedback when configured; without Redis, the development fallback is temporary process memory and is not shared across instances. Display names are pseudonyms, not authenticated identities. Only share code you are comfortable making public, and never include credentials or personal information.
+
+Shared coding rooms are available at `/collaborate`. Create a room and share its link with your group; anyone with the link can edit its code and post messages. Room data uses Upstash Redis when configured and otherwise lives only in the current server process. This prototype does not authenticate members or provide conflict-free simultaneous editing, so use pseudonyms and do not share secrets or personal information.
 
 ### Code execution
 
