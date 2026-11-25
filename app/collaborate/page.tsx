@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { FormEvent, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import CodeEditor from '../components/CodeEditor';
 import styles from './page.module.css';
 
@@ -28,6 +28,14 @@ function emptyRoom(): SharedRoom {
 }
 
 export default function CollaboratePage() {
+  return (
+    <Suspense fallback={<main className={`page-shell ${styles.page}`}><p>Loading coding room…</p></main>}>
+      <CollaborateContent />
+    </Suspense>
+  );
+}
+
+function CollaborateContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roomId = searchParams.get('room')?.toLowerCase() ?? '';
